@@ -163,7 +163,7 @@ body { font-family: var(--ff); background: var(--bg); color: var(--t1); font-siz
   backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flip-bk { transform: rotateY(180deg); }
 .flip-f > .kpi, .flip-bk > .kpi { height: 100%; }
-.kpi { background: var(--sf); border-radius: var(--r); padding: 15px 17px; box-shadow: var(--sh); border: 1px solid var(--br); position: relative; overflow: hidden; height: 100%; }
+.kpi { background: var(--sf); border-radius: var(--r); padding: 15px 17px; box-shadow: var(--sh); border: 1px solid var(--br); position: relative; overflow: hidden; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3.5px; background: var(--B); z-index: 2; }
 .kpi.pos::before { background: var(--pos); }
 .kpi.neg::before { background: var(--neg); }
@@ -172,9 +172,9 @@ body { font-family: var(--ff); background: var(--bg); color: var(--t1); font-siz
   background: linear-gradient(105deg, transparent, rgba(255,255,255,.62), transparent);
   transform: skewX(-22deg); animation: sweep 5.5s ease-in-out infinite; pointer-events: none; z-index: 1; }
 @keyframes sweep { 0%, 62% { left: -60%; } 86%, 100% { left: 130%; } }
-.kl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--t3); margin-bottom: 5px; }
-.kv { font-size: 24px; font-weight: 800; color: var(--t1); letter-spacing: -.3px; line-height: 1.1; }
-.ks { margin-top: 5px; font-size: 13px; color: var(--t2); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.kl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--t3); margin-bottom: 8px; text-align: center; }
+.kv { font-size: 38px; font-weight: 900; color: var(--t1); letter-spacing: -.5px; line-height: 1.05; text-align: center; }
+.ks { margin-top: 7px; font-size: 13px; color: var(--t2); display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; text-align: center; }
 .flip-hint { position: absolute; bottom: 7px; right: 9px; font-size: 9px; color: var(--t3); opacity: .55; z-index: 2; }
 .kpi-bk { background: linear-gradient(150deg, var(--N), var(--B)); color: #fff; }
 .kpi-bk .kl { color: rgba(255,255,255,.5); }
@@ -471,8 +471,8 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 .exp-row .ex-arr { display: inline-block; width: 12px; color: var(--B); font-size: 10px; transition: transform .15s; }
 .exp-row .ex-arr-spc { display: inline-block; width: 12px; }
 .exp-row .ex-dist-cnt { font-size: 10.5px; color: var(--t3); font-weight: 600; margin-left: 4px; }
-.exp-row .ex-n { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; color: var(--t1); }
-.exp-row .ex-n.b { color: var(--t2); }
+.exp-row .ex-n { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; color: var(--B); }
+.exp-row .ex-n.b { color: var(--B); }
 .exp-row .ex-n.g.p { color: var(--pos); }
 .exp-row .ex-n.g.n { color: var(--neg); }
 .exp-row .ex-n.pct.p { color: var(--pos); font-weight: 800; }
@@ -1063,11 +1063,17 @@ function fmtK(n) {
   var sign = n<0 ? "-" : (n>0 ? "+" : "");
   return sign + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n)) + "K";
 }
-// GAP value with sign + thousands separator, NO "K" suffix (Explanations tab)
+// GAP for Explanations tab: "+$12,5K" / "-$263,4K" — sign + $ + (value/1000, 1 decimal).
+// Values are stored in KUSD; dividing by 1000 gives the $K figure. Decimal shown
+// with a comma (VN style) per request, e.g. -12485 → "-$12,5K".
 function fmtG(n) {
   if (n==null||isNaN(n)) return "—";
-  var sign = n<0 ? "-" : (n>0 ? "+" : "");
-  return sign + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n));
+  var sign = n<0 ? "-" : "+";
+  var k = Math.abs(n)/1000;
+  var str = (k>=100 ? Math.round(k).toString()
+                    : new Intl.NumberFormat("en-US",{minimumFractionDigits:1,maximumFractionDigits:1}).format(k));
+  str = str.replace(".", ",");   // VN decimal comma
+  return sign + "$" + str + "K";
 }
 function kc(v) { return v>=0?"pos":"neg"; }
 function arrIcon(v) { return v>0?'<span class="arr-u">↑</span>':v<0?'<span class="arr-d">↓</span>':'<span class="arr-e">→</span>'; }
@@ -2421,7 +2427,9 @@ function rOV(D) {
       cls:kc(gt.gap), lbl:"GAP vs Budget Mani",
       val:gt.gap, mode:"k", prefix:gt.gap>=0?"+$":"-$", abs:true,
       sub:fP(gt.gp),
-      bk:segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap))];})
+      bk:[["Thailand",(D.ctys[0].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
+          ["Viet Nam",(D.ctys[1].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
+        .concat(segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))
     });
 
   document.getElementById("ov-sc").innerHTML = scHTML(D);
@@ -2550,14 +2558,15 @@ function rSEG(D) {
      +"</div></div>"
      +'<div class="cb">'
      +'<div class="kr" style="margin-bottom:12px">'
-     + flipKPI({cls:"", lbl:"Budget Mani", val:seg.bm, mode:"k", prefix:"$", fontSize:"18px",
+     + flipKPI({cls:"", lbl:"Budget Mani", val:seg.bm, mode:"k", prefix:"$",
          bk:[["Thailand","$"+fK(thd.bm)],["Viet Nam","$"+fK(vnd.bm)]].concat(bkBudget)})
-     + flipKPI({cls:"", lbl:"Forecast / Actual", val:seg.fc, mode:"k", prefix:"$", fontSize:"18px",
+     + flipKPI({cls:"", lbl:"Forecast / Actual", val:seg.fc, mode:"k", prefix:"$",
          sub:pp(seg.gp),
          bk:[["Thailand","$"+fK(thd.fc)],["Viet Nam","$"+fK(vnd.fc)]].concat(bkDist)})
      + flipKPI({cls:kc(seg.gap), lbl:"GAP vs Budget Mani", val:seg.gap, mode:"k",
-         prefix:seg.gap>=0?"+$":"-$", abs:true, fontSize:"18px",
-         bk:bkGap})
+         prefix:seg.gap>=0?"+$":"-$", abs:true,
+         bk:[["Thailand",(thd.gap>=0?"+$":"-$")+fK(Math.abs(thd.gap)),thd.gap>=0?"#86EFAC":"#FCA5A5"],
+             ["Viet Nam",(vnd.gap>=0?"+$":"-$")+fK(Math.abs(vnd.gap)),vnd.gap>=0?"#86EFAC":"#FCA5A5"]].concat(bkGap)})
      +'</div>'
      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">'
      +'<div><div class="seg-hd" style="margin-top:0">🌏 Country</div>'+coRows+"</div>"
@@ -2699,7 +2708,9 @@ function rGAP(D) {
   document.getElementById("kr-gap").innerHTML =
     flipKPI({cls:kc(G.gap), lbl:"Total GAP vs Budget Mani", val:G.gap, mode:"k",
        prefix:G.gap>=0?"+$":"-$", abs:true, sub:pp(G.gp),
-       bk:D.segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];})})
+       bk:[["Thailand",(D.ctys[0].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
+           ["Viet Nam",(D.ctys[1].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
+         .concat(D.segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))})
    +flipKPI({cls:"pos", lbl:"Total Positive GAP", val:tp, mode:"k", prefix:"+$",
        sub:pos.length+" distributors above",
        bk:pos.map(function(d){return [cleanNm(d.nm,d.sg),"+$"+fK(d.gap),"#86EFAC"];})})
@@ -2905,7 +2916,15 @@ function renderExpContent() {
         + (v.fy ? '<span class="vbadge2">'+esc(v.fy)+'</span>' : '')
         + '<span class="vc" id="exp-vc-'+vi+'"></span>'
       + '</div>'
-      + '<div class="exp-blk">';
+      + '<div class="exp-blk">'
+      + '<div class="exp-row exp-colhd">'
+        + '<div class="ex-id"></div>'
+        + '<div class="ex-n">Budget</div>'
+        + '<div class="ex-n">Forecast</div>'
+        + '<div class="ex-n">GAP</div>'
+        + '<div class="ex-n">%</div>'
+        + '<div class="ex-txt">Explanation</div>'
+      + '</div>';
 
     // ── Iterate countries (Thailand → Viet Nam → Grand Total) ──
     var countries = (v.countries || []).filter(function(co){
@@ -2921,15 +2940,7 @@ function renderExpContent() {
 
       // Country header
       html += '<div class="'+coClass+'">'
-        + '<div class="exp-co-hd">'+coFlag+' <span>'+esc(coDisp)+'</span></div>'
-        + '<div class="exp-row exp-colhd">'
-          + '<div class="ex-id"></div>'
-          + '<div class="ex-n">Budget</div>'
-          + '<div class="ex-n">Forecast</div>'
-          + '<div class="ex-n">GAP</div>'
-          + '<div class="ex-n">%</div>'
-          + '<div class="ex-txt">Explanation</div>'
-        + '</div>';
+        + '<div class="exp-co-hd">'+coFlag+' <span>'+esc(coDisp)+'</span></div>';
 
       // Segments (chỉ với Thailand/VN, không có với Grand Total)
       var segments = (co.segments || []).filter(function(sg){
@@ -3318,14 +3329,14 @@ function tryFetchLive(onDone, opts) {
 // Uses PptxGenJS (loaded via CDN). All numbers come from computeD() — the
 // exact same data the dashboard shows — so the deck never invents figures.
 // ════════════════════════════════════════════════════════════════════
-// MMH brand palette
+// MMH brand palette — matches the dashboard (--B #3A5CAA, --N #0E2F5F, --Y #FFE100)
 var PPT_BRAND = {
   blue:   "3A5CAA",
-  navy:   "003047",
+  navy:   "0E2F5F",
   navy2:  "0E2F5F",
   yellow: "FFE100",
   lblue:  "CFE2F3",
-  pale:   "F0F7FF",
+  pale:   "EEF3FB",
   gray:   "F5F5F5",
   border: "D9D9D9",
   pos:    "16A34A",
@@ -3355,6 +3366,22 @@ function exportPPT() {
     var isFY = (S.period === "fy");
     var single = D;                              // period-specific numbers
     var ytd = D.cum;                             // cumulative-to-date (null when FY)
+    var monLabel = periodLabel.split(" · ")[0];  // "Apr-26" / "Q3" / "FY67 (Full Year)"
+
+    // segment order used by the Japanese monthly report
+    var SEG_ORDER = ["Surgical","Eyeless","Dental","MMG"];
+    var SEG_JP = {Surgical:"サージカル計／Surgical", Eyeless:"アイレス計／Eyeless",
+                  Dental:"デンタル計／Dental", MMG:"MMG製品計／MMG"};
+
+    function segRow(src, sg) {
+      var s = (src.segs || []).find(function(x){ return x.sg === sg; }) || {bm:0, fc:0, gap:0, gp:0};
+      // NOTE: the dashboard does not store a true "previous-month forecast" (前月見込),
+      // so column (C) is left blank rather than showing a misleading figure.
+      var bmK = s.bm/1000, fcK = s.fc/1000, gapK = s.gap/1000;
+      return { sg:sg, budget:bmK, actual:fcK,
+               fcst:null, gapVsB:gapK,
+               pctVsB:(bmK!==0? (s.gap/s.bm) : 0) };
+    }
 
     var pptx = new PptxGenJS();
     pptx.defineLayout({ name: "MMH16x9", width: 13.333, height: 7.5 });
@@ -3362,129 +3389,250 @@ function exportPPT() {
     pptx.author = "MMH Turnover Dashboard";
     pptx.company = "MANI Medical Hanoi";
 
-    // ─────────────────────────────────────────────────────────
-    // SLIDE 1 — Title (white bg, yellow right column per brand)
-    // ─────────────────────────────────────────────────────────
-    var s1 = pptx.addSlide();
-    s1.background = { color: PPT_BRAND.white };
-    s1.addShape(pptx.ShapeType.rect, { x:10.0, y:0.0, w:3.333, h:7.5, fill:{color:PPT_BRAND.yellow}, line:{type:"none"} });
-    s1.addText("MMH TURNOVER REPORT", { x:1.056, y:1.0, w:8.5, h:0.5, fontFace:"Aptos", fontSize:14, color:PPT_BRAND.navy, bold:false });
-    s1.addText("SALES BUDGET, ACTUAL\nPERFORMANCE & FORECAST", { x:1.056, y:2.0, w:8.5, h:2.0, fontFace:"Aptos", fontSize:40, color:PPT_BRAND.navy, bold:true, lineSpacingMultiple:1.0 });
-    s1.addText(periodLabel.replace(" · FY67"," — FY67"), { x:1.056, y:5.0, w:8.5, h:0.5, fontFace:"Aptos", fontSize:20, color:PPT_BRAND.blue, bold:true });
-    s1.addText("FY67 · Sep 2025 → Aug 2026", { x:1.056, y:5.6, w:8.5, h:0.4, fontFace:"Aptos", fontSize:14, color:PPT_BRAND.muted });
-    s1.addText("MANI", { x:10.66, y:6.2, w:1.9, h:0.6, fontFace:"Arial", fontSize:30, color:PPT_BRAND.navy, bold:true, align:"center" });
+    var B = PPT_BRAND;
+    var FF = "Arial";
 
-    // ─────────────────────────────────────────────────────────
-    // SLIDE 2 — Result + Forecast (mirrors the uploaded report)
-    // ─────────────────────────────────────────────────────────
-    var s2 = pptx.addSlide();
-    s2.background = { color: PPT_BRAND.white };
+    // ───────────────────────────────────────────────────────────
+    // SLIDE 1 — Title (月次販売レポート / MONTHLY SALES REPORT)
+    // ───────────────────────────────────────────────────────────
+    var s1 = pptx.addSlide(); s1.background = { color: B.white };
+    s1.addShape(pptx.ShapeType.rect, { x:10.0, y:0.0, w:3.333, h:7.5, fill:{color:B.yellow}, line:{type:"none"} });
+    s1.addText("月次販売レポート", { x:1.0, y:1.5, w:8.5, h:0.6, fontFace:FF, fontSize:24, color:B.navy, bold:true });
+    s1.addText("MONTHLY SALES REPORT", { x:1.0, y:2.15, w:8.5, h:0.7, fontFace:FF, fontSize:36, color:B.navy, bold:true });
+    s1.addText([
+      { text:"月 / Month：", options:{fontSize:16, color:B.muted} },
+      { text:monLabel, options:{fontSize:16, color:B.blue, bold:true} }
+    ], { x:1.0, y:3.4, w:8.5, h:0.5 });
+    s1.addText([
+      { text:"組織名 / Organization：", options:{fontSize:16, color:B.muted} },
+      { text:"MMH (MANI Medical Hanoi)", options:{fontSize:16, color:B.navy, bold:true} }
+    ], { x:1.0, y:3.95, w:8.5, h:0.5 });
+    s1.addText("単位 / Unit：thousand USD", { x:1.0, y:5.6, w:8.5, h:0.4, fontFace:FF, fontSize:12, color:B.muted, italic:true });
+    s1.addText("MANI", { x:10.66, y:6.2, w:1.9, h:0.6, fontFace:FF, fontSize:30, color:B.navy, bold:true, align:"center" });
 
-    // Title
-    s2.addText("I. SALES BUDGET, ACTUAL PERFORMANCE AND FUTURE FORECAST",
-      { x:0.55, y:0.30, w:11.5, h:0.55, fontFace:"Aptos", fontSize:22, color:PPT_BRAND.navy, bold:true });
-    s2.addShape(pptx.ShapeType.rect, { x:0.55, y:0.86, w:12.23, h:0.02, fill:{color:PPT_BRAND.border}, line:{type:"none"} });
+    // ───────────────────────────────────────────────────────────
+    // Helper: build a results table slide (single or cumulative)
+    // ───────────────────────────────────────────────────────────
+    function fmtNum(v) {
+      if (v==null || isNaN(v)) return "—";
+      return new Intl.NumberFormat("en-US",{minimumFractionDigits:1, maximumFractionDigits:1}).format(v);
+    }
+    function fmtSign(v) {
+      if (v==null || isNaN(v)) return "—";
+      return (v>=0?"+":"") + new Intl.NumberFormat("en-US",{minimumFractionDigits:1, maximumFractionDigits:1}).format(v);
+    }
+    function fmtP(v) {
+      if (v==null || isNaN(v)) return "—";
+      return (v>=0?"+":"") + Math.round(v*100) + "%";
+    }
 
-    // Narrative line (auto-built from real numbers)
-    var topSeg = single.segs.slice().sort(function(a,b){return b.gp-a.gp;});
-    var bestSeg = topSeg[0];
-    var narr = "MMH " + (isFY?"FY67":periodLabel.split(" · ")[0]) + " achieved $"
-      + pptK(single.gt.fc).replace("K","") + "K, "
-      + (single.gt.gap>=0 ? "exceeding" : "below") + " budget by " + pptPct(single.gt.gp)
-      + (bestSeg ? ", led by " + bestSeg.sg + " (" + pptPct(bestSeg.gp) + ")." : ".");
-    s2.addText(narr, { x:0.55, y:0.95, w:12.23, h:0.5, fontFace:"Aptos", fontSize:13, color:PPT_BRAND.navy, italic:true });
+    function resultsSlide(titleJP, titleEN, src) {
+      var s = pptx.addSlide(); s.background = { color: B.white };
+      s.addText([
+        { text:titleJP+"  ", options:{fontSize:18, color:B.navy, bold:true} },
+        { text:titleEN, options:{fontSize:14, color:B.muted} }
+      ], { x:0.5, y:0.3, w:12.3, h:0.5 });
+      s.addText([
+        { text:"月 / Month: ", options:{color:B.muted} },
+        { text:monLabel+"   ", options:{color:B.navy, bold:true} },
+        { text:"単位 / Unit: thousand USD", options:{color:B.muted, italic:true} }
+      ], { x:0.5, y:0.82, w:12.3, h:0.32, fontFace:FF, fontSize:11 });
 
-    // ── Two KPI panels (left = selected period, right = YTD) ──
-    function kpiPanel(slide, x, title, data, sub) {
-      var W = 5.9, hHd = 0.38;
-      // Header band
-      slide.addShape(pptx.ShapeType.rect, { x:x, y:1.5, w:W, h:hHd, fill:{color:PPT_BRAND.blue}, line:{type:"none"} });
-      slide.addText(title, { x:x, y:1.5, w:W, h:hHd, fontFace:"Aptos", fontSize:12, color:PPT_BRAND.white, bold:true, align:"center", valign:"middle" });
-
-      // Top row: Budget / Actual / Vs Budget
-      var topY = 1.96, cardH = 0.82, gap = 0.1, cardW = (W - 2*gap)/3;
-      var gapPos = data.gt.gap >= 0;
-      var cells = [
-        { lbl:"BUDGET",     val:"$"+pptK(data.gt.bm), sub:"", col:PPT_BRAND.navy },
-        { lbl:"ACTUAL/FC",  val:"$"+pptK(data.gt.fc), sub:"", col:PPT_BRAND.navy },
-        { lbl:"Vs. BUDGET", val:(gapPos?"+":"-")+"$"+pptK(Math.abs(data.gt.gap)), sub:pptPct(data.gt.gp), col:(gapPos?PPT_BRAND.pos:PPT_BRAND.neg) }
+      // Table header + rows
+      var head = [
+        { text:"Segment", options:{bold:true, color:B.white, fill:B.blue, align:"left", valign:"middle"} },
+        { text:"期初予算\nBUDGET\n(A)", options:{bold:true, color:B.white, fill:B.blue, align:"center"} },
+        { text:"実績\nACTUALS\n(B)", options:{bold:true, color:B.white, fill:B.blue, align:"center"} },
+        { text:"前月見込\nFORECAST\n(C)", options:{bold:true, color:B.white, fill:B.blue, align:"center"} },
+        { text:"対予算\nB-A", options:{bold:true, color:B.white, fill:B.navy, align:"center"} },
+        { text:"対予算\nB/A", options:{bold:true, color:B.white, fill:B.navy, align:"center"} }
       ];
-      cells.forEach(function(c, i){
-        var cx = x + i*(cardW+gap);
-        slide.addShape(pptx.ShapeType.roundRect, { x:cx, y:topY, w:cardW, h:cardH, rectRadius:0.05, fill:{color:PPT_BRAND.pale}, line:{color:PPT_BRAND.border, width:0.5} });
-        slide.addText(c.lbl, { x:cx, y:topY+0.05, w:cardW, h:0.22, fontFace:"Aptos", fontSize:8.5, color:PPT_BRAND.muted, bold:true, align:"center" });
-        slide.addText(c.val, { x:cx, y:topY+0.25, w:cardW, h:0.34, fontFace:"Aptos", fontSize:15, color:c.col, bold:true, align:"center" });
-        if (c.sub) slide.addText(c.sub, { x:cx, y:topY+0.58, w:cardW, h:0.2, fontFace:"Aptos", fontSize:9, color:c.col, bold:true, align:"center" });
+      var rows = [head];
+      SEG_ORDER.forEach(function(sg){
+        var r = segRow(src, sg);
+        var gpos = r.gapVsB >= 0;
+        rows.push([
+          { text:SEG_JP[sg], options:{align:"left", color:B.navy, bold:true, fontSize:10} },
+          { text:fmtNum(r.budget), options:{align:"right"} },
+          { text:fmtNum(r.actual), options:{align:"right", bold:true} },
+          { text:(r.fcst!=null?fmtNum(r.fcst):"—"), options:{align:"right", color:B.muted} },
+          { text:fmtSign(r.gapVsB), options:{align:"right", color:(gpos?B.pos:B.neg), bold:true} },
+          { text:fmtP(r.pctVsB), options:{align:"right", color:(gpos?B.pos:B.neg), bold:true} }
+        ]);
+      });
+      // G.TOTAL
+      var gt = { budget:src.gt? src.gt.bm/1000 : src.bm/1000,
+                 actual: src.gt? src.gt.fc/1000 : src.fc/1000,
+                 gap:    src.gt? src.gt.gap/1000 : src.gap/1000,
+                 gp:     src.gt? (src.gt.bm? src.gt.gap/src.gt.bm:0) : (src.bm? src.gap/src.bm:0) };
+      var tpos = gt.gap >= 0;
+      rows.push([
+        { text:"G. TOTAL", options:{align:"left", bold:true, color:B.white, fill:B.navy} },
+        { text:fmtNum(gt.budget), options:{align:"right", bold:true, color:B.white, fill:B.navy} },
+        { text:fmtNum(gt.actual), options:{align:"right", bold:true, color:B.white, fill:B.navy} },
+        { text:"—", options:{align:"right", color:B.white, fill:B.navy} },
+        { text:fmtSign(gt.gap), options:{align:"right", bold:true, color:B.white, fill:B.navy} },
+        { text:fmtP(gt.gp), options:{align:"right", bold:true, color:B.white, fill:B.navy} }
+      ]);
+
+      s.addTable(rows, {
+        x:0.5, y:1.3, w:12.33,
+        colW:[3.6, 1.75, 1.75, 1.75, 1.74, 1.74],
+        fontFace:FF, fontSize:11, border:{type:"solid", color:B.border, pt:0.5},
+        align:"center", valign:"middle", rowH:0.45, autoPage:false
       });
 
-      // Country row
-      var coY = topY + cardH + 0.1, coH = 0.62, coW = (W - gap)/2;
-      data.ctys.forEach(function(co, i){
-        var cx = x + i*(coW+gap);
-        var coName = co.co==="VietNam" ? "VIETNAM" : "THAILAND";
-        var gp = co.gp>=0;
-        slide.addShape(pptx.ShapeType.roundRect, { x:cx, y:coY, w:coW, h:coH, rectRadius:0.05, fill:{color:PPT_BRAND.lblue}, line:{type:"none"} });
-        slide.addText(coName, { x:cx+0.12, y:coY+0.05, w:coW-0.2, h:0.2, fontFace:"Aptos", fontSize:8.5, color:PPT_BRAND.muted, bold:true });
-        slide.addText("$"+pptK(co.fc), { x:cx+0.12, y:coY+0.23, w:coW-0.2, h:0.26, fontFace:"Aptos", fontSize:13.5, color:PPT_BRAND.navy, bold:true });
-        slide.addText(pptPct(co.gp), { x:cx+0.12, y:coY+0.44, w:coW-0.2, h:0.16, fontFace:"Aptos", fontSize:8.5, color:(gp?PPT_BRAND.pos:PPT_BRAND.neg), bold:true });
-      });
-
-      // Segment row (4 small cards)
-      var sgY = coY + coH + 0.1, sgH = 0.62, sgW = (W - 3*gap)/4;
-      data.segs.forEach(function(sg, i){
-        var cx = x + i*(sgW+gap);
-        var gp = sg.gp>=0;
-        slide.addShape(pptx.ShapeType.roundRect, { x:cx, y:sgY, w:sgW, h:sgH, rectRadius:0.05, fill:{color:PPT_BRAND.gray}, line:{type:"none"} });
-        slide.addText(sg.sg.toUpperCase(), { x:cx+0.04, y:sgY+0.04, w:sgW-0.08, h:0.18, fontFace:"Aptos", fontSize:7, color:PPT_BRAND.muted, bold:true, align:"center" });
-        slide.addText("$"+pptK(sg.fc), { x:cx+0.04, y:sgY+0.21, w:sgW-0.08, h:0.24, fontFace:"Aptos", fontSize:11.5, color:PPT_BRAND.navy, bold:true, align:"center" });
-        slide.addText(pptPct(sg.gp), { x:cx+0.04, y:sgY+0.44, w:sgW-0.08, h:0.16, fontFace:"Aptos", fontSize:7.5, color:(gp?PPT_BRAND.pos:PPT_BRAND.neg), bold:true, align:"center" });
-      });
-      return sgY + sgH;   // bottom Y of the panel
+      s.addText("(A) 期初予算 BUDGET   (B) 実績 ACTUALS   (C) 前月見込 FORECAST   B-A / B/A = 対予算 vs Budget",
+        { x:0.5, y:6.95, w:12.3, h:0.3, fontFace:FF, fontSize:9, color:B.muted });
+      s.addText("MANI", { x:11.9, y:7.05, w:0.9, h:0.3, fontFace:FF, fontSize:13, color:B.navy, bold:true, align:"right" });
+      return s;
     }
 
-    var panelBottom = kpiPanel(s2, 0.55, (isFY ? "FY67" : periodLabel.split(" · ")[0]), single);
+    // SLIDE 2 — Single-month results table
+    resultsSlide("販売実績", "Sales Result — Current Month (単月)", single);
+
+    // SLIDE 3 — Cumulative results table (only when not FY)
     if (ytd) {
-      kpiPanel(s2, 6.88, "YTD " + (periodLabel.split(" · ")[0]), { gt:ytd, ctys:ytd.ctys.map(function(c){return {co:c.co, fc:c.fc, gp:c.gp};}), segs:ytd.segs });
-    } else {
-      // FY view: no separate YTD — show a note panel
-      s2.addShape(pptx.ShapeType.roundRect, { x:6.88, y:1.5, w:5.9, h:2.6, rectRadius:0.06, fill:{color:PPT_BRAND.pale}, line:{color:PPT_BRAND.border, width:0.5} });
-      s2.addText("Full-Year view selected — the left panel already shows the\ncomplete FY67 figures. Switch to a Month or Quarter to see\nthe period-vs-YTD comparison.", { x:7.1, y:2.4, w:5.4, h:1.1, fontFace:"Aptos", fontSize:12, color:PPT_BRAND.muted, italic:true });
+      resultsSlide("累計実績", "Cumulative Sales Result (累計)", { gt:ytd, segs:ytd.segs });
     }
 
-    // ── Two by-segment bar charts (Vietnam / Thailand) — placed BELOW panels ──
-    var chartTitleY = panelBottom + 0.18;
-    var chartY = chartTitleY + 0.3, chartH = 1.95, chartW = 5.9;
-    ["VietNam","Thailand"].forEach(function(co, ci){
-      var cx = 0.55 + ci*(chartW + 0.43);
-      var cdata = single.ctys.find(function(c){return c.co===co;});
-      var cName = co==="VietNam" ? "Vietnam — By Segment" : "Thailand — By Segment";
-      s2.addText(cName, { x:cx, y:chartTitleY, w:chartW, h:0.28, fontFace:"Aptos", fontSize:12, color:PPT_BRAND.navy, bold:true, align:"center" });
-      var cats = single.segs.map(function(s){return s.sg;});
-      var budgetArr = cats.map(function(sg){var s=cdata.segs.find(function(x){return x.sg===sg;})||{bm:0}; return Math.round(s.bm/1000);});
-      var fcArr     = cats.map(function(sg){var s=cdata.segs.find(function(x){return x.sg===sg;})||{fc:0}; return Math.round(s.fc/1000);});
-      s2.addChart(pptx.ChartType.bar, [
-        { name:"Budget",          labels:cats, values:budgetArr },
-        { name:"Actual/Forecast", labels:cats, values:fcArr }
-      ], {
-        x:cx, y:chartY, w:chartW, h:chartH,
-        barDir:"col", barGrouping:"clustered",
-        chartColors:[PPT_BRAND.border, PPT_BRAND.blue],
-        showLegend:true, legendPos:"b", legendFontSize:8,
-        showValue:false,
-        catAxisLabelFontSize:8, valAxisLabelFontSize:7,
-        valAxisTitle:"K USD", showValAxisTitle:true, valAxisTitleFontSize:7,
-        dataLabelFontSize:7
+    // ───────────────────────────────────────────────────────────
+    // SLIDES 4+ — Comments by Business Segment
+    // (Market / Industry / Background — sourced from explanations)
+    // ───────────────────────────────────────────────────────────
+    function commentSlide(sg) {
+      var ex = (typeof findExplBySeg === "function") ? findExplBySeg(sg, periodToExplFilter()) : null;
+      var s = pptx.addSlide(); s.background = { color: B.white };
+      var clr = (typeof SEGC !== "undefined" && SEGC[sg]) ? SEGC[sg].replace("#","") : B.blue;
+      s.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.333, h:0.9, fill:{color:clr}, line:{type:"none"} });
+      s.addText("コメント（セグメント別）/ Comments — " + sg, { x:0.5, y:0.12, w:12.3, h:0.6, fontFace:FF, fontSize:20, color:B.white, bold:true, valign:"middle" });
+
+      var r = segRow(single, sg);          // values already in KUSD
+      var gpos = r.gapVsB >= 0;
+
+      // ── RIGHT COLUMN: KPI boxes + mini chart ──
+      var rx = 8.55, rw = 4.28;
+      // 3 KPI boxes stacked
+      var kpis = [
+        { lbl:"BUDGET MANI",     val:"$"+fmtNum(r.budget)+"K", col:B.navy,  top:"#3A5CAA" },
+        { lbl:"ACTUAL / FORECAST",val:"$"+fmtNum(r.actual)+"K", col:B.navy,  top:"#3A5CAA" },
+        { lbl:"GAP vs BUDGET",   val:fmtSign(r.gapVsB)+"K  ("+fmtP(r.pctVsB)+")", col:(gpos?B.pos:B.neg), top:(gpos?B.pos:B.neg) }
+      ];
+      var ky = 1.2, kh = 0.92, kgap = 0.14;
+      kpis.forEach(function(k, i){
+        var yy = ky + i*(kh+kgap);
+        s.addShape(pptx.ShapeType.roundRect, { x:rx, y:yy, w:rw, h:kh, rectRadius:0.06, fill:{color:B.pale}, line:{color:B.border, width:0.5} });
+        s.addShape(pptx.ShapeType.rect, { x:rx, y:yy, w:rw, h:0.06, fill:{color:k.top}, line:{type:"none"} });
+        s.addText(k.lbl, { x:rx, y:yy+0.12, w:rw, h:0.26, fontFace:FF, fontSize:10, color:B.muted, bold:true, align:"center" });
+        s.addText(k.val, { x:rx, y:yy+0.38, w:rw, h:0.46, fontFace:FF, fontSize:(i===2?17:20), color:k.col, bold:true, align:"center" });
       });
-    });
 
-    // Footer brand
-    s2.addText("MANI Medical Hanoi · " + periodLabel, { x:0.55, y:7.15, w:9, h:0.28, fontFace:"Aptos", fontSize:9, color:PPT_BRAND.muted });
-    s2.addText("MANI", { x:11.9, y:7.08, w:0.9, h:0.3, fontFace:"Arial", fontSize:13, color:PPT_BRAND.navy, bold:true, align:"right" });
+      // Bar chart: Budget vs Actual by country (Thailand / Viet Nam)
+      var thSeg = (single.ctys.find(function(c){return c.co==="Thailand";})||{segs:[]}).segs.find(function(x){return x.sg===sg;}) || {bm:0,fc:0};
+      var vnSeg = (single.ctys.find(function(c){return c.co==="VietNam";})||{segs:[]}).segs.find(function(x){return x.sg===sg;}) || {bm:0,fc:0};
+      var chY = ky + 3*(kh+kgap) + 0.22;
+      s.addText(sg + " — Budget vs Actual by Country (KUSD)", { x:rx, y:chY-0.04, w:rw, h:0.3, fontFace:FF, fontSize:11, color:B.navy, bold:true, align:"center" });
+      s.addChart(pptx.ChartType.bar, [
+        { name:"Budget",  labels:["Thailand","Viet Nam"], values:[Math.round(thSeg.bm/1000), Math.round(vnSeg.bm/1000)] },
+        { name:"Actual",  labels:["Thailand","Viet Nam"], values:[Math.round(thSeg.fc/1000), Math.round(vnSeg.fc/1000)] }
+      ], {
+        x:rx, y:chY+0.32, w:rw, h:2.55,
+        barDir:"col", barGrouping:"clustered", barGapWidthPct:60,
+        chartColors:["A0AEC0", B.blue],
+        showLegend:true, legendPos:"b", legendFontSize:10, legendColor:B.navy,
+        showValue:true, dataLabelFontSize:10, dataLabelPosition:"outEnd", dataLabelColor:B.navy, dataLabelFontBold:true,
+        catAxisLabelFontSize:11, catAxisLabelColor:B.navy,
+        valAxisHidden:true, valGridLine:{style:"none"}, catGridLine:{style:"none"},
+        showTitle:false, chartColorsOpacity:[100,100]
+      });
 
-    var fname = ymdToday() + "_MMH_Turnover_" + periodLabel.split(" · ")[0].replace(/[^A-Za-z0-9]/g,"") + ".pptx";
+      // ── LEFT COLUMN: result summary + comments ──
+      s.addText([
+        { text:"Current Result: ", options:{bold:true, color:B.navy} },
+        { text:"Sales " + Math.round(r.actual) + " KUSD", options:{color:B.navy} },
+        { text:"   vs Budget ", options:{color:B.muted} },
+        { text:fmtP(r.pctVsB), options:{bold:true, color:(gpos?B.pos:B.neg)} },
+        { text:"   (" + fmtSign(r.gapVsB) + " KUSD)", options:{color:(gpos?B.pos:B.neg)} }
+      ], { x:0.5, y:1.15, w:7.8, h:0.4, fontFace:FF, fontSize:13 });
+
+      var bodyItems = [];
+      if (ex && ex.entries && ex.entries.length) {
+        ex.entries.forEach(function(it){
+          var coName = it.country === "t" ? "Thailand" : (it.country === "v" ? "Viet Nam" : it.countryName);
+          var gp = it.vsb >= 0;
+          // it.vsb is in KUSD → divide by 1000 for the $K figure
+          var vsbK = it.vsb/1000;
+          bodyItems.push({ text:"■ " + coName + "  (vs Budget " + fmtSign(vsbK) + "K)",
+                           options:{bold:true, color:B.navy, fontSize:12.5, breakLine:true, paraSpaceBefore:8} });
+          bodyItems.push({ text:(it.e||"").trim(), options:{color:"333333", fontSize:11, breakLine:true, paraSpaceAfter:4} });
+        });
+      } else {
+        bodyItems.push({ text:"No explanation recorded for this segment in the selected period.",
+                         options:{italic:true, color:B.muted, fontSize:12} });
+      }
+      s.addText(bodyItems, { x:0.5, y:1.7, w:7.8, h:5.1, fontFace:FF, valign:"top", lineSpacingMultiple:1.05 });
+      s.addText("MANI", { x:11.9, y:7.05, w:0.9, h:0.3, fontFace:FF, fontSize:13, color:B.navy, bold:true, align:"right" });
+    }
+    SEG_ORDER.forEach(commentSlide);
+
+    // ───────────────────────────────────────────────────────────
+    // FINAL SLIDE — Cumulative comment (overall)
+    // ───────────────────────────────────────────────────────────
+    if (ytd) {
+      var sc = pptx.addSlide(); sc.background = { color: B.white };
+      sc.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.333, h:0.9, fill:{color:B.navy}, line:{type:"none"} });
+      sc.addText("累計コメント / Cumulative Comment", { x:0.5, y:0.12, w:12.3, h:0.6, fontFace:FF, fontSize:20, color:B.white, bold:true, valign:"middle" });
+      var tpos2 = ytd.gap >= 0;
+      sc.addText([
+        { text:"Cumulative " + monLabel + ": ", options:{bold:true, color:B.navy} },
+        { text:Math.round(ytd.fc/1000) + " KUSD", options:{color:B.navy} },
+        { text:"   vs Budget ", options:{color:B.muted} },
+        { text:fmtP(ytd.bm? ytd.gap/ytd.bm : 0), options:{bold:true, color:(tpos2?B.pos:B.neg)} }
+      ], { x:0.5, y:1.15, w:12.3, h:0.4, fontFace:FF, fontSize:13 });
+
+      // Grand total explanation (if any)
+      var gex = (typeof findExplGrand === "function") ? findExplGrand(periodToExplFilter()) : null;
+      var ctext = (gex && gex.e) ? gex.e.trim()
+        : "Cumulative comment is generated from the Grand Total explanation in the dashboard. "
+          + "Add an explanation to the Grand Total row in the backend sheet to populate this section.";
+      sc.addText(ctext, { x:0.5, y:1.7, w:7.8, h:5.1, fontFace:FF, fontSize:12, color:"333333", valign:"top", lineSpacingMultiple:1.1 });
+
+      // RIGHT: YTD KPI boxes + by-segment chart
+      var rx2 = 8.55, rw2 = 4.28;
+      var ykp = [
+        { lbl:"YTD BUDGET",  val:"$"+fmtNum(ytd.bm/1000)+"K", col:B.navy, top:"#3A5CAA" },
+        { lbl:"YTD ACTUAL",  val:"$"+fmtNum(ytd.fc/1000)+"K", col:B.navy, top:"#3A5CAA" },
+        { lbl:"YTD GAP",     val:fmtSign(ytd.gap/1000)+"K  ("+fmtP(ytd.bm?ytd.gap/ytd.bm:0)+")", col:(tpos2?B.pos:B.neg), top:(tpos2?B.pos:B.neg) }
+      ];
+      var ky2=1.2, kh2=0.92, kg2=0.14;
+      ykp.forEach(function(k,i){
+        var yy=ky2+i*(kh2+kg2);
+        sc.addShape(pptx.ShapeType.roundRect, { x:rx2, y:yy, w:rw2, h:kh2, rectRadius:0.06, fill:{color:B.pale}, line:{color:B.border, width:0.5} });
+        sc.addShape(pptx.ShapeType.rect, { x:rx2, y:yy, w:rw2, h:0.06, fill:{color:k.top}, line:{type:"none"} });
+        sc.addText(k.lbl, { x:rx2, y:yy+0.12, w:rw2, h:0.26, fontFace:FF, fontSize:10, color:B.muted, bold:true, align:"center" });
+        sc.addText(k.val, { x:rx2, y:yy+0.38, w:rw2, h:0.46, fontFace:FF, fontSize:(i===2?17:20), color:k.col, bold:true, align:"center" });
+      });
+      var chY2 = ky2 + 3*(kh2+kg2) + 0.22;
+      sc.addText("YTD Budget vs Actual by Segment (KUSD)", { x:rx2, y:chY2-0.04, w:rw2, h:0.3, fontFace:FF, fontSize:11, color:B.navy, bold:true, align:"center" });
+      var ycats = SEG_ORDER;
+      sc.addChart(pptx.ChartType.bar, [
+        { name:"Budget", labels:ycats, values:ycats.map(function(sg){var x=(ytd.segs||[]).find(function(z){return z.sg===sg;})||{bm:0};return Math.round(x.bm/1000);}) },
+        { name:"Actual", labels:ycats, values:ycats.map(function(sg){var x=(ytd.segs||[]).find(function(z){return z.sg===sg;})||{fc:0};return Math.round(x.fc/1000);}) }
+      ], {
+        x:rx2, y:chY2+0.32, w:rw2, h:2.55, barDir:"col", barGrouping:"clustered", barGapWidthPct:50,
+        chartColors:["A0AEC0", B.blue], showLegend:true, legendPos:"b", legendFontSize:10, legendColor:B.navy,
+        showValue:true, dataLabelFontSize:9, dataLabelPosition:"outEnd", dataLabelColor:B.navy, dataLabelFontBold:true,
+        catAxisLabelFontSize:10, catAxisLabelColor:B.navy,
+        valAxisHidden:true, valGridLine:{style:"none"}, catGridLine:{style:"none"}, showTitle:false
+      });
+
+      sc.addText("MANI", { x:11.9, y:7.05, w:0.9, h:0.3, fontFace:FF, fontSize:13, color:B.navy, bold:true, align:"right" });
+    }
+
+    var fname = ymdToday() + "_MMH_Monthly_Sales_Report_" + monLabel.replace(/[^A-Za-z0-9]/g,"") + ".pptx";
     pptx.writeFile({ fileName: fname }).then(function(){
       if (btn) btn.classList.remove("spinning");
-      showToast("PowerPoint exported: " + fname, "success");
+      showToast("Report exported: " + fname, "success");
     }).catch(function(e){
       if (btn) btn.classList.remove("spinning");
       showToast("Export failed: " + e.message, "warn");
