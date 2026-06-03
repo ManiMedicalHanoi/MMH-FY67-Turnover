@@ -463,6 +463,21 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 .exp-row.exp-colhd { background: transparent; border: none; padding-top: 2px; padding-bottom: 4px; }
 .exp-row.exp-colhd .ex-n, .exp-row.exp-colhd .ex-txt { font-size: 10.5px; font-weight: 800; color: var(--t3); text-transform: uppercase; letter-spacing: .4px; }
 .exp-row.exp-colhd .ex-txt { text-align: left; }
+
+/* ══ NEWEST UPDATES BANNER (marquee under nav) ══ */
+.upd-banner { display: flex; align-items: stretch; gap: 0; background: linear-gradient(90deg, var(--N), var(--B)); color: #fff; border-radius: 10px; margin: 0 0 14px; overflow: hidden; box-shadow: var(--sh); }
+.upd-tag { flex-shrink: 0; display: flex; align-items: center; padding: 8px 14px; font-size: 11.5px; font-weight: 800; letter-spacing: .5px; background: rgba(255,225,0,.18); color: var(--Y); border-right: 1px solid rgba(255,255,255,.15); white-space: nowrap; }
+.upd-viewport { position: relative; flex: 1; overflow: hidden; }
+.upd-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: updScroll 38s linear infinite; padding-left: 100%; }
+.upd-banner:hover .upd-track { animation-play-state: paused; }
+@keyframes updScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+.upd-item { display: inline-flex; align-items: center; gap: 7px; padding: 8px 26px; font-size: 12.5px; border-right: 1px dashed rgba(255,255,255,.22); }
+.upd-item .upd-who { font-weight: 800; color: var(--Y); }
+.upd-item .upd-meta { color: rgba(255,255,255,.72); font-size: 11.5px; }
+.upd-item .upd-val { color: #fff; font-weight: 600; }
+.upd-item .upd-time { color: rgba(255,255,255,.6); font-size: 11px; font-style: italic; }
+.upd-item.upd-empty { color: rgba(255,255,255,.7); font-style: italic; border: none; }
+.upd-dotsep { color: rgba(255,255,255,.4); margin: 0 2px; }
 /* Layout chung exp-row — grid 6 cột (ID, B, F, GAP, %, Text) */
 .exp-row { display: grid; grid-template-columns: 280px 95px 95px 90px 75px 1fr; gap: 10px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--br); font-size: 12.5px; transition: background .12s; }
 .exp-row:hover { background: rgba(58,92,170,.04); }
@@ -503,6 +518,302 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
   .exp-row .ex-n, .exp-row .ex-txt { text-align: left; }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   v6 NEW FEATURES — Dark mode · Currency · Accuracy · Gauge · Search ·
+   Sticky context · Bottom nav · Trend sparkline · Version compare
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── (10) DARK MODE — swap CSS variables on <html data-theme="dark"> ── */
+html[data-theme="dark"] {
+  --Y: #FFE100; --B: #5B82D6; --N: #0A1A33;
+  --L1: #2A3E63; --L3: #22304F; --P: #18233B;
+  --bg: #0D1626; --sf: #16203A; --br: #2A3854;
+  --t1: #E6ECF7; --t2: #9FB0CC; --t3: #6B7C9C;
+  --pos: #34D399; --neg: #F87171; --pb: #12281E; --nb: #2A1717;
+  --sh: 0 1px 4px rgba(0,0,0,.4), 0 4px 20px rgba(0,0,0,.5);
+}
+html[data-theme="dark"] body { background: var(--bg); color: var(--t1); }
+html[data-theme="dark"] .kpi { background: var(--sf); }
+html[data-theme="dark"] thead th { background: #1E2C49; color: #DCE6F8; }
+html[data-theme="dark"] tbody tr:nth-child(even) { background: rgba(255,255,255,.03); }
+html[data-theme="dark"] tbody tr:hover { background: rgba(91,130,214,.16); }
+html[data-theme="dark"] .sc-box { background: #14203A; }
+html[data-theme="dark"] .sc-box.cum-box { border-color: var(--Y); }
+html[data-theme="dark"] .feed-i,
+html[data-theme="dark"] .exp-i { background: rgba(255,255,255,.04); }
+html[data-theme="dark"] .pb.on,
+html[data-theme="dark"] .mc.on,
+html[data-theme="dark"] .nt.on { color: var(--N); }
+html[data-theme="dark"] .chart-expl-tip { background:#0A1A33; }
+html[data-theme="dark"] .seg-btn { background: var(--sf); }
+html[data-theme="dark"] .ev,
+html[data-theme="dark"] .card { background: var(--sf); }
+html { transition: none; }
+html[data-theme] body, html[data-theme] .card, html[data-theme] .kpi,
+html[data-theme] thead th, html[data-theme] table td { transition: background .3s ease, color .3s ease, border-color .3s ease; }
+
+/* Theme toggle button in header */
+.theme-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color:#fff; border-radius:8px; padding:6px 10px; font-family:var(--ff); font-size:15px; cursor:pointer; transition: all .15s; line-height:1; }
+.theme-btn:hover { background: rgba(255,255,255,.2); }
+
+/* ── (13) CURRENCY TOGGLE pill ── */
+.cur-sw { display:flex; align-items:center; gap:4px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:3px 4px; }
+.cur-sw button { background:transparent; border:none; color:rgba(255,255,255,.55); font-family:var(--ff); font-size:11px; font-weight:800; padding:4px 9px; border-radius:6px; cursor:pointer; transition:all .12s; }
+.cur-sw button.on { background:var(--Y); color:var(--N); }
+
+/* ── (9) GLOBAL SEARCH / QUICK JUMP ── */
+.gs-trigger { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:6px 12px; color:rgba(255,255,255,.65); font-size:12px; font-weight:600; cursor:pointer; font-family:var(--ff); transition:all .15s; }
+.gs-trigger:hover { background:rgba(255,255,255,.2); color:#fff; }
+.gs-trigger kbd { background:rgba(255,255,255,.15); border-radius:4px; padding:1px 5px; font-size:10px; font-family:var(--ff); }
+.gs-overlay { position:fixed; inset:0; z-index:10000; background:rgba(5,12,28,.55); backdrop-filter:blur(3px); display:none; align-items:flex-start; justify-content:center; padding-top:11vh; }
+.gs-overlay.on { display:flex; animation:gsFade .18s ease; }
+@keyframes gsFade { from{opacity:0} to{opacity:1} }
+.gs-box { width:min(560px,92vw); background:var(--sf); border-radius:14px; box-shadow:0 24px 70px rgba(0,0,0,.45); border:1px solid var(--br); overflow:hidden; animation:gsPop .22s cubic-bezier(.34,1.56,.64,1); }
+@keyframes gsPop { from{transform:translateY(-14px) scale(.97);opacity:0} to{transform:none;opacity:1} }
+.gs-inp { width:100%; border:none; outline:none; background:transparent; color:var(--t1); font-family:var(--ff); font-size:17px; padding:16px 18px; border-bottom:1px solid var(--br); }
+.gs-inp::placeholder { color:var(--t3); }
+.gs-results { max-height:50vh; overflow-y:auto; padding:6px; }
+.gs-res { display:flex; align-items:center; gap:11px; padding:10px 13px; border-radius:9px; cursor:pointer; }
+.gs-res.sel, .gs-res:hover { background:var(--P); }
+.gs-res .gs-ic { font-size:16px; width:24px; text-align:center; flex-shrink:0; }
+.gs-res .gs-main { flex:1; min-width:0; }
+.gs-res .gs-nm { font-size:14px; font-weight:700; color:var(--t1); }
+.gs-res .gs-sub { font-size:11px; color:var(--t3); }
+.gs-res .gs-val { font-size:13px; font-weight:800; }
+.gs-empty { padding:26px; text-align:center; color:var(--t3); font-size:13px; }
+.gs-foot { display:flex; gap:14px; padding:9px 16px; border-top:1px solid var(--br); font-size:11px; color:var(--t3); }
+.gs-foot kbd { background:var(--P); border:1px solid var(--br); border-radius:4px; padding:1px 6px; font-family:var(--ff); }
+
+/* ── (8) STICKY PERIOD CONTEXT BANNER ── */
+.ctx-banner { display:none; align-items:center; gap:10px; flex-wrap:wrap; background:linear-gradient(90deg,var(--P),transparent); border:1px solid var(--L1); border-left:4px solid var(--Y); border-radius:10px; padding:8px 14px; margin-bottom:12px; font-size:12.5px; }
+.ctx-banner.on { display:flex; animation:secIn .35s ease; }
+.ctx-banner .ctx-lbl { font-weight:800; color:var(--B); text-transform:uppercase; letter-spacing:.5px; font-size:11px; }
+.ctx-banner .ctx-chip { background:var(--sf); border:1px solid var(--br); border-radius:20px; padding:3px 11px; font-weight:700; color:var(--t1); }
+.ctx-banner .ctx-chip b { color:var(--B); }
+
+/* ── (11) TREND SPARKLINE cell in distributor table ── */
+td.spark-cell { padding:3px 8px; min-width:96px; }
+td.spark-cell svg { display:block; }
+
+/* ── (1) FORECAST ACCURACY tab ── */
+.acc-legend { display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--t2); margin-bottom:10px; align-items:center; }
+.acc-legend .swatch { display:inline-block; width:13px; height:13px; border-radius:3px; margin-right:5px; vertical-align:-2px; }
+.acc-grade { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:800; color:#fff; }
+.acc-cell { text-align:center; font-weight:800; border-radius:5px; color:#fff; }
+
+/* Accuracy intro panel */
+.acc-intro-bar { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:9px 16px; background:linear-gradient(90deg, rgba(58,92,170,.08), transparent); border:1px solid var(--br); border-left:3px solid var(--B); border-radius:8px; cursor:pointer; transition:background .15s; font-size:12.5px; color:var(--t1); margin-bottom:10px; }
+.acc-intro-bar:hover { background:linear-gradient(90deg, rgba(58,92,170,.14), transparent); }
+.acc-intro-bar.acc-intro-bar-open { border-radius:8px 8px 0 0; margin-bottom:0; border-bottom:none; }
+.acc-intro-bar-l { flex:1; min-width:0; }
+.acc-intro-bar-l i { color:var(--B); font-style:normal; font-weight:600; padding:0 4px; }
+.acc-intro-bar-r { font-size:11px; font-weight:800; color:var(--B); white-space:nowrap; }
+.acc-intro-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; padding:12px 14px; background:var(--P); border:1px solid var(--br); border-top:none; border-radius:0 0 8px 8px; margin-bottom:10px; }
+.acc-intro-block { background:var(--P); border-left:3px solid var(--B); border-radius:8px; padding:11px 14px; }
+.acc-intro-hd { font-size:12px; font-weight:800; color:var(--B); margin-bottom:5px; letter-spacing:.3px; }
+.acc-intro-tx { font-size:12.5px; line-height:1.55; color:var(--t1); }
+
+/* Accuracy scope toolbar */
+.acc-scope-row { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:12px; padding:10px 14px;
+  background:var(--sf); border-radius:var(--r); box-shadow:var(--sh); border:1px solid var(--br); }
+.acc-scope-grp { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.acc-scope-grp.acc-scope-months { flex-wrap:wrap; }
+.acc-scope-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--B); margin-right:3px; }
+.seg-btn.mc-small { padding:4px 10px; font-size:11.5px; }
+
+/* ════════════════════════════════════════════════════════════════════
+   COMPARISON TAB (replaces Live Feed)
+   ════════════════════════════════════════════════════════════════════ */
+.cmp-controls { padding:14px 16px; margin-bottom:14px; }
+.cmp-mode-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed var(--br); }
+.cmp-mode-row .cmp-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--B); margin-right:6px; }
+.cmp-pick-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.cmp-pick-grid { display:flex; flex-wrap:wrap; gap:6px; }
+.cmp-pill { padding:5px 14px; border-radius:20px; border:1.5px solid var(--br); background:var(--sf); color:var(--t2); font-size:13px; font-weight:700; cursor:pointer; font-family:var(--ff); transition:all .15s; user-select:none; }
+.cmp-pill:hover { border-color:var(--B); color:var(--B); }
+.cmp-pill.on { background:var(--B); color:#fff; border-color:var(--B); }
+.cmp-pill.on.cmp-cA { background:#3A5CAA; border-color:#3A5CAA; }
+.cmp-pill.on.cmp-cB { background:#16A34A; border-color:#16A34A; }
+.cmp-pill.on.cmp-cC { background:#F59E0B; border-color:#F59E0B; }
+.cmp-pill[disabled] { opacity:.4; cursor:not-allowed; }
+.cmp-hint { font-size:11.5px; color:var(--t3); margin-left:8px; font-style:italic; }
+.cmp-clear { background:none; border:none; color:var(--neg); font-size:12px; font-weight:700; cursor:pointer; margin-left:auto; font-family:var(--ff); }
+.cmp-clear:hover { text-decoration:underline; }
+
+/* side-by-side columns layout */
+.cmp-cols { display:grid; gap:14px; margin-bottom:14px; }
+.cmp-cols.n2 { grid-template-columns:1fr 1fr; }
+.cmp-cols.n3 { grid-template-columns:1fr 1fr 1fr; }
+@media (max-width:900px){
+  .cmp-cols.n2, .cmp-cols.n3 { grid-template-columns:1fr; }
+}
+.cmp-col { background:var(--sf); border-radius:var(--r); box-shadow:var(--sh); border:1px solid var(--br); border-top:4px solid; overflow:hidden; }
+.cmp-col.cA { border-top-color:#3A5CAA; }
+.cmp-col.cB { border-top-color:#16A34A; }
+.cmp-col.cC { border-top-color:#F59E0B; }
+.cmp-hd { padding:11px 14px 8px; border-bottom:1px solid var(--br); background:linear-gradient(180deg,var(--P),transparent); }
+.cmp-hd-nm { font-size:15px; font-weight:900; color:var(--t1); display:flex; align-items:center; gap:8px; }
+.cmp-hd-tag { font-size:10.5px; padding:1px 7px; border-radius:5px; font-weight:800; color:#fff; }
+.cmp-hd-sub { font-size:11.5px; color:var(--t3); margin-top:2px; }
+.cmp-kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px; }
+.cmp-kpi { background:var(--P); border-radius:8px; padding:9px 11px; border:1px solid var(--br); }
+.cmp-kpi.full { grid-column:1/-1; }
+.cmp-kpi .cmp-k-l { font-size:10.5px; font-weight:800; color:var(--t3); text-transform:uppercase; letter-spacing:.4px; margin-bottom:3px; }
+.cmp-kpi .cmp-k-v { font-size:18px; font-weight:900; color:var(--t1); line-height:1.1; font-variant-numeric:tabular-nums; }
+.cmp-kpi .cmp-k-s { font-size:11px; color:var(--t2); margin-top:2px; font-weight:600; }
+.cmp-kpi .cmp-k-v.pos { color:var(--pos); } .cmp-kpi .cmp-k-v.neg { color:var(--neg); }
+
+.cmp-chart-wrap { padding:8px 14px 12px; }
+.cmp-chart-ttl { font-size:11px; font-weight:800; text-transform:uppercase; color:var(--B); letter-spacing:.4px; margin-bottom:5px; }
+.cmp-chart-box { height:170px; position:relative; }
+
+.cmp-seg-list { padding:6px 14px 14px; }
+.cmp-seg-row { display:flex; align-items:center; gap:8px; font-size:12px; padding:4px 0; border-bottom:1px dashed var(--br); }
+.cmp-seg-row:last-child { border-bottom:none; }
+.cmp-seg-nm { width:78px; font-weight:700; color:var(--t2); }
+.cmp-seg-bar { flex:1; height:10px; background:var(--P); border-radius:4px; overflow:hidden; position:relative; }
+.cmp-seg-fill { height:100%; border-radius:4px; transition:width .9s cubic-bezier(.22,.61,.36,1); }
+.cmp-seg-val { width:62px; text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+
+.cmp-expl { background:#FFFBEB; border-top:1px solid #FCD34D; padding:10px 14px; font-size:11.5px; }
+html[data-theme="dark"] .cmp-expl { background:rgba(245,158,11,.08); border-top-color:rgba(245,158,11,.3); }
+.cmp-expl-hd { font-size:10.5px; font-weight:800; color:#92400E; margin-bottom:4px; letter-spacing:.4px; }
+html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
+.cmp-expl-tx { color:var(--t1); line-height:1.5; white-space:pre-wrap; max-height:120px; overflow-y:auto; }
+.cmp-expl-empty { color:var(--t3); font-style:italic; }
+
+/* delta-vs-A bar in column headers */
+.cmp-delta-strip { display:flex; gap:14px; font-size:11px; padding:6px 14px; background:var(--P); border-bottom:1px solid var(--br); flex-wrap:wrap; }
+.cmp-delta-strip b { font-weight:800; }
+.cmp-delta-strip .up { color:var(--pos); } .cmp-delta-strip .down { color:var(--neg); }
+.cmp-empty { padding:40px 20px; text-align:center; color:var(--t3); font-size:14px; background:var(--sf); border-radius:var(--r); border:1px dashed var(--br); }
+.cmp-empty .big { font-size:38px; margin-bottom:8px; }
+
+
+/* ── (2) TARGET ATTAINMENT GAUGE ── */
+.gauge-wrap { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:12px; }
+.gauge-card { background:var(--sf); border-radius:var(--r); box-shadow:var(--sh); border:1px solid var(--br); padding:14px 16px; text-align:center; position:relative; overflow:hidden; }
+.gauge-card .g-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--t3); margin-bottom:6px; }
+.gauge-card .g-pct { font-size:30px; font-weight:900; letter-spacing:-.5px; line-height:1; }
+.gauge-card .g-sub { font-size:12px; color:var(--t2); margin-top:5px; }
+.gauge-track { height:11px; background:var(--bg); border-radius:7px; overflow:hidden; margin:11px 0 6px; position:relative; }
+.gauge-fill { height:100%; border-radius:7px; width:0; transition:width 1.1s cubic-bezier(.22,.61,.36,1); }
+.gauge-100 { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--t1); opacity:.45; }
+
+/* ── (4) VERSION COMPARE ── */
+.vc-toggle { display:flex; align-items:center; gap:7px; margin-left:8px; }
+.vc-panel { background:var(--sf); border-radius:var(--r); box-shadow:var(--sh); border:1px solid var(--br); padding:14px 16px; margin-bottom:14px; }
+.vc-pickers { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+.vc-pickers select { padding:6px 10px; border-radius:8px; border:1px solid var(--br); background:var(--sf); color:var(--t1); font-family:var(--ff); font-weight:700; font-size:13px; }
+.vc-row { display:grid; grid-template-columns:240px 1fr 1fr 110px; gap:10px; align-items:center; padding:8px 12px; border-bottom:1px solid var(--br); font-size:12.5px; }
+.vc-row.head { font-weight:800; color:var(--t3); text-transform:uppercase; font-size:10.5px; letter-spacing:.4px; background:transparent; }
+.vc-row .vc-nm { font-weight:700; }
+.vc-num { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
+.vc-delta { text-align:right; font-weight:800; font-variant-numeric:tabular-nums; }
+.vc-delta.up { color:var(--pos); } .vc-delta.down { color:var(--neg); } .vc-delta.flat { color:var(--t3); }
+.vc-seg-hd { font-weight:800; color:var(--N); background:var(--L1); padding:5px 12px; border-radius:6px; margin:12px 0 4px; font-size:12px; }
+
+/* ── (12) MOBILE BOTTOM NAV ── */
+.btmnav { display:none; }
+@media (max-width: 640px) {
+  .nav { display:none; }
+  .btmnav { display:flex; position:fixed; bottom:0; left:0; right:0; z-index:200;
+    background:var(--N); box-shadow:0 -2px 16px rgba(14,47,95,.4); padding:4px 2px env(safe-area-inset-bottom,4px);
+    justify-content:space-around; }
+  .btmnav .bn { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:none; border:none; color:rgba(255,255,255,.55); font-family:var(--ff); cursor:pointer; padding:6px 2px; }
+  .btmnav .bn .bn-ic { font-size:18px; line-height:1; }
+  .btmnav .bn .bn-tx { font-size:9px; font-weight:700; }
+  .btmnav .bn.on { color:var(--Y); }
+  .btmnav .bn.on .bn-ic { transform:translateY(-1px); }
+  body { padding-bottom:62px; }
+  .toast-wrap { top:auto; bottom:74px; }
+  .gauge-wrap { grid-template-columns:1fr 1fr; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   (5) PRINT / PDF EXPORT — clean A4-landscape rendering of active tab
+   ════════════════════════════════════════════════════════════════════ */
+@media print {
+  @page { size: A4 landscape; margin: 10mm 9mm 12mm; }
+
+  html, body { background:#fff !important; color:#000 !important; font-size:11px !important; }
+  html[data-theme="dark"] { --bg:#fff; --sf:#fff; --t1:#000; --t2:#333; --t3:#666; --br:#bbb; }
+
+  /* hide UI chrome */
+  #LD, .hdr-mid, .hdr-r, .src, .gs-trigger, .cur-sw, .theme-btn, #btn-ppt, #btn-print, #btn-refresh,
+  .upd-banner, .ctx-banner, .btmnav, .toast-wrap, #drill, #tip, .gs-overlay, .flip-hint,
+  .dl-btn, .vc-toggle, .reveal { all: revert; }
+  #LD, .hdr-mid, .hdr-r, .src, .gs-trigger, .cur-sw, .theme-btn, #btn-ppt, #btn-print, #btn-refresh,
+  .upd-banner, .btmnav, .toast-wrap, #drill, #tip, .gs-overlay, .flip-hint,
+  .dl-btn, .vc-toggle { display: none !important; }
+
+  /* compact print header strip */
+  .hdr { position: static !important; background: #fff !important; box-shadow: none !important; border-bottom: 2px solid #0E2F5F; padding-bottom: 4px; }
+  .hdr-top { height:auto !important; padding: 0 0 4px !important; }
+  .logo-b { background:#0E2F5F !important; color:#FFE100 !important; }
+  .logo-t { color:#0E2F5F !important; font-size:12px !important; }
+  .logo-s { color:#5B6E8C !important; }
+  .nav { display:none !important; }
+
+  /* Only the active section prints; others fully removed */
+  .sec { display:none !important; }
+  .sec.on { display:block !important; page-break-inside: auto; }
+  .sec.on .reveal { opacity:1 !important; transform:none !important; }
+
+  /* keep gauges/KPI from splitting awkwardly */
+  .gauge-wrap, .kr, .sc-row, .g2 { page-break-inside: avoid; }
+  .card { page-break-inside: avoid; box-shadow: none !important; border: 1px solid #D9D9D9 !important; margin-bottom: 8px !important; }
+  .ch { padding: 6px 12px !important; }
+  .ct { font-size: 11px !important; color: #0E2F5F !important; }
+  .cb { padding: 8px 12px !important; }
+  .cw   { height: 170px !important; }
+  .cw.t { height: 200px !important; }
+
+  /* KPIs */
+  .kpi { box-shadow:none !important; border:1px solid #D9D9D9 !important; padding: 8px 10px !important; }
+  .flip-bk { display:none !important; }
+  .flip-in { min-height: 70px !important; }
+  .kv { font-size: 18px !important; }
+
+  /* Gauges */
+  .gauge-card { box-shadow:none !important; border:1px solid #D9D9D9 !important; padding:8px 10px !important; }
+  .gauge-fill { transition:none !important; }   /* no animation in print */
+  .g-pct { font-size: 20px !important; }
+
+  /* Tables */
+  table { font-size: 10px !important; }
+  thead th { background:#0E2F5F !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; padding:4px 7px !important; }
+  td { padding:3px 7px !important; }
+  tr.grand td { background:#0E2F5F !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  tr.sub td { background:#F0F7FF !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  tr.clickable:hover { background: inherit !important; box-shadow:none !important; }
+  td.spark-cell svg { width:80px !important; height:24px !important; }
+
+  /* Accuracy heat cells — preserve colors */
+  .acc-cell, .acc-grade, .badge, .pill, .ev-tag {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Single/Cumulative boxes */
+  .sc-box { box-shadow:none !important; }
+  .sc-ttl { background:#3A5CAA !important; color:#FFE100 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; padding:5px 10px !important; font-size:10.5px !important; }
+  .sc-body { padding:7px 9px !important; gap:6px !important; }
+  .sc-val  { font-size: 13px !important; }
+  .sc-item { padding:5px 7px !important; }
+
+  /* canvas: prevent stretching */
+  canvas { max-width: 100% !important; max-height: 100% !important; }
+
+  /* Print footer band injected by printReport() */
+  #print-foot { display:flex !important; justify-content:space-between; font-size:9px; color:#5B6E8C; border-top:1px solid #D9D9D9; padding-top:4px; margin-top:6px; }
+
+  /* Re-tint chart text — handled via JS before printing */
+}
+#print-foot { display:none; }
+
 </style>
 </head>
 <body>
@@ -526,7 +837,7 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
   <div class="hdr-top">
     <div class="logo">
       <div class="logo-b">MMH</div>
-      <div class="logo-t">Turnover Report<div class="logo-s">FY67 · Sep 2025 → Aug 2026 · v5</div></div>
+      <div class="logo-t">Turnover Report<div class="logo-s">FY67 · Sep 2025 → Aug 2026 · v6</div></div>
     </div>
     <div class="hdr-mid">
       <div class="pg">
@@ -544,7 +855,14 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
       <span class="src-upd" id="src-upd" style="display:none" title="Last updated"></span>
     </div>
     <div class="hdr-r" id="hdr-sel"></div>
+    <div class="gs-trigger" onclick="openSearch()" title="Quick jump (Ctrl/⌘ K)"><span>🔎</span><span>Search</span><kbd>⌘K</kbd></div>
+    <div class="cur-sw" title="Display currency">
+      <button id="cur-usd" class="on" onclick="setCurrency('USD')">USD</button>
+      <button id="cur-vnd" onclick="setCurrency('VND')">VND</button>
+    </div>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle dark / light">🌙</button>
     <button class="btn-r" onclick="exportPPT()" title="Export current period to PowerPoint" id="btn-ppt">📑 PPT</button>
+    <button class="btn-r" onclick="printReport()" title="Print / Save as PDF (Ctrl+P)" id="btn-print" style="background:#fff;color:var(--N)">🖨 Print</button>
     <button class="btn-r" onclick="manualRefresh()" title="Refresh now (Ctrl+R)" id="btn-refresh">↻</button>
   </div>
   <div class="nav">
@@ -553,12 +871,21 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
     <div class="nt"    id="nt-cty"  onclick="goTab('cty')">🌏 By Country</div>
     <div class="nt"    id="nt-dist" onclick="goTab('dist')">🏢 By Distributor</div>
     <div class="nt"    id="nt-gap"  onclick="goTab('gap')">🔍 GAP Analysis</div>
-    <div class="nt"    id="nt-live" onclick="goTab('live')">🔴 Live Feed</div>
+    <div class="nt"    id="nt-acc"  onclick="goTab('acc')">🎯 Accuracy</div>
+    <div class="nt"    id="nt-cmp"  onclick="goTab('cmp')">⚖️ Comparison</div>
     <div class="nt"    id="nt-exp"  onclick="goTab('exp')">📋 Explanations</div>
   </div>
 </div>
 
+<div class="upd-banner" id="upd-banner">
+  <div class="upd-tag">🔔 NEWEST UPDATES</div>
+  <div class="upd-viewport"><div class="upd-track" id="upd-track">
+    <span class="upd-item upd-empty">Loading recent edits…</span>
+  </div></div>
+</div>
+
 <div class="main">
+<div class="ctx-banner" id="ctx-banner"></div>
 <div class="sec on" id="sec-ov">
   <div class="sh"><div class="sl">Overview</div><div class="sp" id="sp-ov">FY67</div></div>
   <div class="kr" id="kr-ov"></div>
@@ -610,18 +937,31 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
     <div class="cb"><div class="tw" id="t-gap"></div></div></div>
 </div>
 
-<div class="sec" id="sec-live">
-  <div class="sh"><div class="sl">Live Feed</div><div class="sp"><span class="live-dot on" style="display:inline-block;vertical-align:middle;margin-right:5px"></span>Latest forecast versions</div></div>
-  <div class="g2">
-    <div class="card"><div class="ch"><div class="ct">📋 Latest forecast updates</div><div class="cs" id="feed-src">Newest explanation entries from the team</div></div>
-      <div class="cb"><div class="feed" id="feed"></div></div></div>
-    <div class="card reveal"><div class="ch"><div class="ct">Top Mover — Monthly Forecast</div><div class="cs">12 months FY67 with peak/bottom annotations</div></div>
-      <div class="cb"><div id="live-spark"></div></div></div>
-  </div>
+<div class="sec" id="sec-acc">
+  <div class="sh"><div class="sl">Forecast Accuracy</div><div class="sp" id="sp-acc">FY67</div></div>
+  <div id="acc-intro"></div>
+  <div id="acc-toolbar"></div>
+  <div class="kr" id="kr-acc"></div>
+  <div class="acc-legend" id="acc-legend"></div>
+  <div class="card reveal"><div class="ch"><div class="ct">Forecast Accuracy — Segment × Month</div><div class="cs">Click a row to open the drill detail for that segment</div><button class="dl-btn" onclick="exportTable('t-acc','forecast_accuracy')">⬇ Download CSV</button></div>
+    <div class="cb"><div class="tw" id="t-acc"></div></div></div>
+  <div class="card reveal"><div class="ch"><div class="ct">📈 Accuracy trend — 12 months FY67</div><div class="cs">Blue line = overall accuracy across all 4 segments. Dashed line = 90% target. Solid dots = months in current scope.</div></div>
+    <div class="cb"><div class="cw t"><canvas id="c-acc-trend"></canvas></div></div></div>
+  <div class="card reveal"><div class="ch"><div class="ct">🏢 Accuracy ranking by Distributor</div><div class="cs">Top 18 distributors with forecast closest to Budget Mani, within current scope</div></div>
+    <div class="cb"><div class="cw t"><canvas id="c-acc"></canvas></div></div></div>
+</div>
+
+<div class="sec" id="sec-cmp">
+  <div class="sh"><div class="sl">Comparison</div><div class="sp">So sánh side-by-side: Segment / Country / Distributor</div></div>
+  <div class="cmp-controls card reveal" id="cmp-controls"></div>
+  <div id="cmp-out"></div>
 </div>
 
 <div class="sec" id="sec-exp">
-  <div class="sh"><div class="sl">Forecast Explanations — Version History</div><div class="sp" id="sp-exp">All versions</div></div>
+  <div class="sh"><div class="sl">Forecast Explanations — Version History</div><div class="sp" id="sp-exp">All versions</div>
+    <button class="dl-btn vc-toggle" id="vc-btn" onclick="toggleCompare()">⇄ Compare versions</button>
+  </div>
+  <div class="vc-panel" id="vc-panel" style="display:none"></div>
   <div id="exp-toolbar"></div>
   <div id="exp-content"></div>
 </div>
@@ -641,6 +981,25 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 
 <div id="tip"></div>
 <div class="toast-wrap" id="toastWrap"></div>
+
+<!-- (9) GLOBAL SEARCH / QUICK JUMP -->
+<div class="gs-overlay" id="gs-overlay" onclick="if(event.target===this)closeSearch()">
+  <div class="gs-box">
+    <input type="text" class="gs-inp" id="gs-inp" placeholder="Jump to a distributor, segment, country or tab…" oninput="renderSearch()" onkeydown="searchKey(event)" autocomplete="off">
+    <div class="gs-results" id="gs-results"></div>
+    <div class="gs-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+
+<!-- (12) MOBILE BOTTOM NAV -->
+<nav class="btmnav" id="btmnav">
+  <button class="bn on" id="bn-ov"   onclick="goTab('ov')"><span class="bn-ic">📊</span><span class="bn-tx">Overview</span></button>
+  <button class="bn"    id="bn-seg"  onclick="goTab('seg')"><span class="bn-ic">📦</span><span class="bn-tx">Segment</span></button>
+  <button class="bn"    id="bn-gap"  onclick="goTab('gap')"><span class="bn-ic">🔍</span><span class="bn-tx">GAP</span></button>
+  <button class="bn"    id="bn-acc"  onclick="goTab('acc')"><span class="bn-ic">🎯</span><span class="bn-tx">Accuracy</span></button>
+  <button class="bn"    id="bn-exp"  onclick="goTab('exp')"><span class="bn-ic">📋</span><span class="bn-tx">Notes</span></button>
+</nav>
+
 <script>
 Chart.register(ChartDataLabels);
 var FF = "Aptos, Inter, system-ui, sans-serif";
@@ -688,7 +1047,30 @@ function jsonp(action, cb, errCb, timeoutMs) {
 }
 
 function applyLiveData(payload) {
-  if (!payload || !payload.ok || !Array.isArray(payload.rows)) return false;
+  if (!payload) return false;
+
+  // ── PASS 0: Versions are independent of turnover rows. Apply them even if
+  // turnover data is missing/invalid, so the Explanations tab works on its own.
+  try {
+    // Capture any backend-reported error (top-level "error", or "versionsError")
+    var topErr = (!payload.ok && payload.error) ? payload.error : "";
+    window.LAST_VERSIONS_ERROR = payload.versionsError ||
+      topErr ||
+      (payload.versions && !Array.isArray(payload.versions) && payload.versions.error) || "";
+    if (Array.isArray(payload.versions)) {
+      if (payload.versions.length > 0) {
+        window.VERSIONS_DATA = payload.versions;
+      }
+      try { if (typeof rEXP === "function") rEXP(); } catch(e) {}
+      try { if (typeof feedSeed === "function") { feedSeed(); if (S.tab === "live") renderFeed(); } } catch(e) {}
+    } else if (window.LAST_VERSIONS_ERROR) {
+      // No versions but backend told us why — re-render to surface diagnostic.
+      try { if (typeof rEXP === "function") rEXP(); } catch(e) {}
+    }
+  } catch(e){ console.warn("apply versions failed:", e); }
+
+  // ── PASS 1: Turnover rows (numeric data). May fail without affecting versions.
+  if (!payload.ok || !Array.isArray(payload.rows)) return true;
   try {
     var MI = {"202509":0,"202510":1,"202511":2,"202512":3,"202601":4,"202602":5,
               "202603":6,"202604":7,"202605":8,"202606":9,"202607":10,"202608":11};
@@ -713,7 +1095,7 @@ function applyLiveData(payload) {
         DIST_NAMES.indexOf(String(r.distributor||"").trim()), Math.round(bm), Math.round(fc)]);
     });
     var tot=0; nMG.forEach(function(m){tot+=m.fc;});
-    if (tot < 1000) return false;
+    if (tot < 1000) return true;   // versions already applied above; just skip rebuild of numbers
     CTYS.forEach(function(co){ SEGN.forEach(function(sg){
       nSC[co][sg].forEach(function(p){ p.bm=Math.round(p.bm); p.fc=Math.round(p.fc); });
     });});
@@ -749,13 +1131,6 @@ function applyLiveData(payload) {
     if (detail.length) DETAIL_ROWS = detail;
     rebuildDistFromDetail();
 
-    // ── Cập nhật VERSIONS_DATA từ payload (Forecast Explanation Input sheet) ──
-    if (Array.isArray(payload.versions) && payload.versions.length > 0) {
-      window.VERSIONS_DATA = payload.versions;
-      try { if (typeof rEXP === "function" && S.tab === "exp") rEXP(); } catch(e) {}
-      // Rebuild the Live Feed from the fresh explanation records
-      try { if (typeof feedSeed === "function") { feedSeed(); if (S.tab === "live") renderFeed(); } } catch(e) {}
-    }
     return true;
   } catch(e){ console.warn("applyLiveData failed:", e); return false; }
 }
@@ -838,6 +1213,21 @@ var SEGS = ["Dental","Surgical","Eyeless","MMG"];
 var SEGC = {Dental:"#3A5CAA", Surgical:"#16A34A", Eyeless:"#E67E22", MMG:"#8B5CF6"};
 var CTYS = ["Thailand","VietNam"];
 var CTYL = {Thailand:"🇹🇭 Thailand", VietNam:"🇻🇳 Viet Nam"};
+// Inline flag SVGs — Windows fallback (Win has no emoji-flag font, so 🇹🇭/🇻🇳 render as "TH"/"VN")
+var FLAG_SVG = {
+  th: '<svg viewBox="0 0 6 4" width="18" height="12" style="vertical-align:-2px;border-radius:2px;box-shadow:0 0 1px rgba(0,0,0,.3)"><rect width="6" height="4" fill="#ED1C24"/><rect y=".67" width="6" height="2.67" fill="#FFFFFF"/><rect y="1.33" width="6" height="1.33" fill="#241D4F"/></svg>',
+  vn: '<svg viewBox="0 0 30 20" width="18" height="12" style="vertical-align:-2px;border-radius:2px;box-shadow:0 0 1px rgba(0,0,0,.3)"><rect width="30" height="20" fill="#DA251D"/><polygon points="15,5 16.18,8.64 20,8.64 16.91,10.86 18.09,14.5 15,12.28 11.91,14.5 13.09,10.86 10,8.64 13.82,8.64" fill="#FFFF00"/></svg>'
+};
+function flag(co){
+  if (!co) return "";
+  var s = String(co).toLowerCase();
+  if (s.indexOf("thai")>=0 || s==="t" || s==="th") return FLAG_SVG.th;
+  if (s.indexOf("viet")>=0 || s==="v" || s==="vn") return FLAG_SVG.vn;
+  if (s==="g" || s.indexOf("grand")>=0) return '<span style="font-size:13px">🌐</span>';
+  return "";
+}
+// rebuild CTYL with SVG flags (post-init)
+CTYL = { Thailand: FLAG_SVG.th + ' Thailand', VietNam: FLAG_SVG.vn + ' Viet Nam' };
 var SEG_NAMES = ["Dental","Surgical","Eyeless","MMG"];
 
 // ══ STATE ══
@@ -1033,47 +1423,93 @@ function periodToExplFilter() {
 }
 
 // ══ UTILS ══
+// ── (13) CURRENCY LAYER ── all $ figures pass through CUR.conv()
+var CUR = {
+  code: "USD",
+  rate: 25500,          // 1 USD = 25,500 VND (editable)
+  sym:  { USD:"$", VND:"₫" },
+  conv: function(usd){ return CUR.code==="VND" ? usd*CUR.rate : usd; },
+  s:    function(){ return CUR.sym[CUR.code]; }
+};
+function setCurrency(code){
+  CUR.code = code;
+  document.getElementById("cur-usd").classList.toggle("on", code==="USD");
+  document.getElementById("cur-vnd").classList.toggle("on", code==="VND");
+  try { localStorage.setItem("mmh_currency", code); } catch(e){}
+  document.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
+  document.querySelectorAll("[data-animated]").forEach(function(el){ el.dataset.animated="0"; });
+  renderAll();
+  setTimeout(function(){
+    var active=document.querySelector(".sec.on");
+    if(active){ runCountUp(active); animateBars(active); }
+  },40);
+}
+
 function fmtN(n) {
   if (n==null||isNaN(n)) return "—";
-  return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(n);
+  return CUR.s()==="$" ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n))
+                       : new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n));
 }
 function fK(n) {
   if (!n && n!==0) return "—";
-  var a=Math.abs(n);
-  if (a>=1e6) return (n/1e6).toFixed(2)+"M";
-  return Math.round(n/1000)+"K";
+  var v=CUR.conv(n), a=Math.abs(v);
+  if (CUR.code==="VND") {
+    if (a>=1e9) return (v/1e9).toFixed(2)+"B";
+    if (a>=1e6) return Math.round(v/1e6)+"M";
+    return Math.round(v/1e3)+"K";
+  }
+  if (a>=1e6) return (v/1e6).toFixed(2)+"M";
+  return Math.round(v/1000)+"K";
 }
 function fKS(n) {
   if (!n && n!==0) return "";
-  var a=Math.abs(n);
-  if (a>=1e6) return (n/1e6).toFixed(1)+"M";
-  if (a>=1000) return Math.round(n/1000)+"K";
-  return n===0?"0":Math.round(n)+"";
+  var v=CUR.conv(n), a=Math.abs(v);
+  if (CUR.code==="VND") {
+    if (a>=1e9) return (v/1e9).toFixed(1)+"B";
+    if (a>=1e6) return Math.round(v/1e6)+"M";
+    if (a>=1e3) return Math.round(v/1e3)+"K";
+    return v===0?"0":Math.round(v)+"";
+  }
+  if (a>=1e6) return (v/1e6).toFixed(1)+"M";
+  if (a>=1000) return Math.round(v/1000)+"K";
+  return v===0?"0":Math.round(v)+"";
 }
 function fP(n) {
   if (isNaN(n)) return "—";
   return (n>=0?"+":"")+n.toFixed(1)+"%";
 }
 function pp(v) { return '<span class="pill '+(v>=0?"p":"n")+'">'+fP(v)+"</span>"; }
-function gv(v) { return '<span class="'+(v>=0?"vp":"vn")+'">'+(v>=0?"+$":"-$")+fK(Math.abs(v))+"</span>"; }
-// fmtK: value is ALREADY in KUSD (e.g. 12485 means 12,485 KUSD). Show with thousands
-// separator and a trailing "K". Used by the Explanations tab GAP column.
+function gv(v) { return '<span class="'+(v>=0?"vp":"vn")+'">'+(v>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(v))+"</span>"; }
+// fmtK: GAP value stored in KUSD. User wants COMPACT display rounded to nearest
+// thousand-of-K, displayed with "K" suffix. e.g. 41015 → "+41K", -317269 → "-317K".
+// In VND mode, convert the underlying USD amount and use VND-appropriate scale.
 function fmtK(n) {
   if (n==null||isNaN(n)) return "—";
   var sign = n<0 ? "-" : (n>0 ? "+" : "");
-  return sign + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n)) + "K";
+  if (CUR.code === "VND") {
+    // n is KUSD → USD = n*1000 → VND = *rate
+    var v = Math.abs(n) * 1000 * CUR.rate;
+    if (v >= 1e9) return sign + CUR.s() + (v/1e9).toFixed(1) + "B";
+    if (v >= 1e6) return sign + CUR.s() + Math.round(v/1e6) + "M";
+    return sign + CUR.s() + Math.round(v/1e3) + "K";
+  }
+  // USD: divide n (already in K) by 1000 = millions, label as "K" per request.
+  // For values < 1000 KUSD, show raw K to avoid losing precision.
+  var a = Math.abs(n);
+  if (a >= 1000) return sign + CUR.s() + Math.round(a/1000) + "K";
+  return sign + CUR.s() + Math.round(a) + "K";
 }
-// GAP for Explanations tab: "+$12,5K" / "-$263,4K" — sign + $ + (value/1000, 1 decimal).
-// Values are stored in KUSD; dividing by 1000 gives the $K figure. Decimal shown
-// with a comma (VN style) per request, e.g. -12485 → "-$12,5K".
+// fmtG: FULL detail GAP. Show raw value (no "K" suffix). Currency-aware.
+// e.g. -317269 KUSD → "-$317,269" ; VND mode → convert and full-format.
 function fmtG(n) {
   if (n==null||isNaN(n)) return "—";
   var sign = n<0 ? "-" : "+";
-  var k = Math.abs(n)/1000;
-  var str = (k>=100 ? Math.round(k).toString()
-                    : new Intl.NumberFormat("en-US",{minimumFractionDigits:1,maximumFractionDigits:1}).format(k));
-  str = str.replace(".", ",");   // VN decimal comma
-  return sign + "$" + str + "K";
+  if (CUR.code === "VND") {
+    var v = Math.abs(n) * 1000 * CUR.rate;
+    return sign + CUR.s() + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(v));
+  }
+  // USD: raw value is already in KUSD units; show with thousands sep, no "K"
+  return sign + CUR.s() + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n));
 }
 function kc(v) { return v>=0?"pos":"neg"; }
 function arrIcon(v) { return v>0?'<span class="arr-u">↑</span>':v<0?'<span class="arr-d">↓</span>':'<span class="arr-e">→</span>'; }
@@ -1246,7 +1682,7 @@ function scHTML(D) {
     var cells = SEGS.map(function(sg){
       var s = (segArr||[]).find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0,gp:0};
       return '<div class="sc-seg"><div class="sc-seg-nm" style="color:'+(SEGC[sg]||"#3A5CAA")+'">'+sg+"</div>"
-        +'<div class="sc-seg-val">$'+fK(s.fc)+"</div>"
+        +'<div class="sc-seg-val">'+CUR.s()+fK(s.fc)+"</div>"
         +'<div class="sc-seg-sub '+(s.gp>=0?"pos":"neg")+'">'+(s.gp>=0?"+":"")+s.gp.toFixed(1)+"% GAP</div></div>";
     }).join("");
     return '<div class="sc-seg-hd">📦 Sales by Segment</div>'+cells;
@@ -1256,16 +1692,16 @@ function scHTML(D) {
     return '<div class="sc-box'+(o.cum?" cum-box":"")+'">'
       +'<div class="sc-ttl">'+o.title+"</div>"
       +'<div class="sc-body">'
-      +'<div class="sc-item sc-span2"><div class="sc-lbl">'+o.lblBM+'</div><div class="sc-val">$'+fK(o.bm)+"</div></div>"
-      +'<div class="sc-item sc-span2"><div class="sc-lbl">'+o.lblAF+'</div><div class="sc-val">$'+fK(o.fc)+"</div></div>"
+      +'<div class="sc-item sc-span2"><div class="sc-lbl">'+o.lblBM+'</div><div class="sc-val">'+CUR.s()+fK(o.bm)+"</div></div>"
+      +'<div class="sc-item sc-span2"><div class="sc-lbl">'+o.lblAF+'</div><div class="sc-val">'+CUR.s()+fK(o.fc)+"</div></div>"
       +'<div class="sc-item"><div class="sc-lbl">GAP vs Budget</div>'
-      +'<div class="sc-val '+(o.gap>=0?"pos":"neg")+'">'+(o.gap>=0?"+$":"-$")+fK(Math.abs(o.gap))+"</div>"
+      +'<div class="sc-val '+(o.gap>=0?"pos":"neg")+'">'+(o.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(o.gap))+"</div>"
       +'<div class="sc-sub '+(o.gp>=0?"pos":"neg")+'">'+(o.gp>=0?"+":"")+o.gp.toFixed(1)+"%</div></div>"
       +'<div class="sc-item"><div class="sc-lbl">'+o.lblCG+'</div>'
-      +'<div class="sc-val '+(o.cgVal>=0?"pos":"neg")+'">'+(o.cgVal>=0?"+$":"-$")+fK(Math.abs(o.cgVal))+"</div></div>"
-      +'<div class="sc-item"><div class="sc-lbl">🇻🇳 '+o.lblVN+'</div><div class="sc-val" style="font-size:19px">$'+fK(o.vn.fc)+"</div>"
+      +'<div class="sc-val '+(o.cgVal>=0?"pos":"neg")+'">'+(o.cgVal>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(o.cgVal))+"</div></div>"
+      +'<div class="sc-item"><div class="sc-lbl">'+flag("vn")+' '+o.lblVN+'</div><div class="sc-val" style="font-size:19px">'+CUR.s()+fK(o.vn.fc)+"</div>"
       +'<div class="sc-sub '+(o.vn.gp>=0?"pos":"neg")+'">'+(o.vn.gp>=0?"+":"")+o.vn.gp.toFixed(1)+"%</div></div>"
-      +'<div class="sc-item"><div class="sc-lbl">🇹🇭 '+o.lblTH+'</div><div class="sc-val" style="font-size:19px">$'+fK(o.th.fc)+"</div>"
+      +'<div class="sc-item"><div class="sc-lbl">'+flag("th")+' '+o.lblTH+'</div><div class="sc-val" style="font-size:19px">'+CUR.s()+fK(o.th.fc)+"</div>"
       +'<div class="sc-sub '+(o.th.gp>=0?"pos":"neg")+'">'+(o.th.gp>=0?"+":"")+o.th.gp.toFixed(1)+"%</div></div>"
       +segGrid(o.segs)
       +"</div></div>";
@@ -1309,6 +1745,8 @@ function runCountUp(scope) {
     var prefix = el.dataset.prefix || "";
     var suffix = el.dataset.suffix || "";
     var mode = el.dataset.mode || "k";
+    // Set final value upfront so the UI never gets stuck at "0" if RAF is throttled.
+    el.textContent = prefix + fmtCount(target, mode) + suffix;
     var dur = 1100, t0 = null;
     function frame(ts){
       if (!t0) t0 = ts;
@@ -1325,6 +1763,7 @@ function fmtCount(v, mode){
   if (mode === "p") return (v>=0?"":"") + v.toFixed(1) + "%";
   if (mode === "n") return Math.round(v).toLocaleString("en-US");
   var a = Math.abs(v);
+  if (a >= 1e9) return (v/1e9).toFixed(2) + "B";
   if (a >= 1e6) return (v/1e6).toFixed(2) + "M";
   return Math.round(v/1000) + "K";
 }
@@ -1653,10 +2092,10 @@ function drillRender(opt) {
   rows.forEach(function(r){ byM[r[0]] += r[5]; });
 
   var html = '<div class="drill-kpi">'
-    + '<div class="drill-k"><div class="kl">Budget Mani</div><div class="kv">$'+fK(tbm)+'</div></div>'
-    + '<div class="drill-k"><div class="kl">Forecast / Actual</div><div class="kv">$'+fK(tfc)+'</div></div>'
+    + '<div class="drill-k"><div class="kl">Budget Mani</div><div class="kv">'+CUR.s()+fK(tbm)+'</div></div>'
+    + '<div class="drill-k"><div class="kl">Forecast / Actual</div><div class="kv">'+CUR.s()+fK(tfc)+'</div></div>'
     + '<div class="drill-k"><div class="kl">GAP ('+(tbm>0?(tgp>=0?"+":"")+tgp.toFixed(1)+"%":"—")+')</div><div class="kv '+(tgap>=0?"vp":"vn")+'">'
-       +(tgap>=0?"+$":"-$")+fK(Math.abs(tgap))+'</div></div></div>';
+       +(tgap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(tgap))+'</div></div></div>';
 
   // Per-period explanation picker — lets user view explanations for a different
   // (forecast time × type × single/cumulative) tuple without leaving the drill.
@@ -1744,7 +2183,7 @@ function drillRender(opt) {
     + '<th>Budget Mani</th><th>Forecast</th><th>GAP</th><th>%GAP</th></tr></thead>'
     + '<tbody>'+body
     + '<tr class="grand"><td>TOTAL</td><td></td><td></td><td></td><td>'+fmtN(tbm)+'</td><td>'+fmtN(tfc)
-       +'</td><td>'+(tgap>=0?"+$":"-$")+fK(Math.abs(tgap))+'</td><td>'+fP(tbm!==0?tgap/tbm*100:0)+'</td></tr>'
+       +'</td><td>'+(tgap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(tgap))+'</td><td>'+fP(tbm!==0?tgap/tbm*100:0)+'</td></tr>'
     + '</tbody></table></div></div></div>';
 
   document.getElementById("drill-body").innerHTML = html;
@@ -1898,7 +2337,7 @@ function feedSeed() {
     var periodTag = ftLabel(v.ft) + (v.tFct ? " "+v.tFct : "") + (v.sc==="Cumulative" ? " · YTD" : "");
     (v.countries || []).forEach(function(co){
       var coName = co.code === "g" ? "Grand Total" : (co.code === "t" ? "Thailand" : "Viet Nam");
-      var coShort = co.code === "t" ? "🇹🇭" : (co.code === "v" ? "🇻🇳" : "🌐");
+      var coShort = co.code === "t" ? flag("th") : (co.code === "v" ? flag("vn") : flag("g"));
       // Distributor-level explanations (most granular, most useful)
       (co.segments || []).forEach(function(sg){
         (sg.distributors || []).forEach(function(d){
@@ -1957,11 +2396,18 @@ function getDistPeriodAllFY() {
   var map = {};
   DETAIL_ROWS.forEach(function(r){
     var key = r[3]+"|"+r[1];
-    if (!map[key]) map[key] = {di:r[3], si:r[1], bm:0, fc:0};
+    if (!map[key]) map[key] = {di:r[3], si:r[1], ci:r[2], bm:0, fc:0};
     map[key].bm+=r[4]; map[key].fc+=r[5];
+    map[key].ci = r[2];
   });
   return Object.keys(map).map(function(k){
-    var m=map[k]; return {di:m.di, si:m.si, bm:m.bm, fc:m.fc, gap:m.fc-m.bm};
+    var m=map[k];
+    return {
+      di:m.di, si:m.si, bm:m.bm, fc:m.fc, gap:m.fc-m.bm,
+      sg: SEG_NAMES[m.si],
+      nm: DIST_NAMES[m.di] + " (" + SEG_NAMES[m.si] + ")",
+      co: CTYS[m.ci]==="VietNam" ? "Viet Nam" : "Thailand"
+    };
   }).filter(function(d){ return d.bm||d.fc; });
 }
 
@@ -2058,21 +2504,21 @@ function renderTopMover() {
     + '<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:7px 10px">'
       + '<div style="color:#92400E;font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.4px">📈 PEAK</div>'
       + '<div style="font-weight:800;font-size:13px;color:#92400E">'+MONTHLY_GRAND[maxIdx].mid+'</div>'
-      + '<div style="color:#92400E;font-weight:700">$'+fK(maxV)+'</div>'
+      + '<div style="color:#92400E;font-weight:700">'+CUR.s()+fK(maxV)+'</div>'
     + '</div>'
     + '<div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:7px 10px">'
       + '<div style="color:#B91C1C;font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.4px">📉 BOTTOM</div>'
       + '<div style="font-weight:800;font-size:13px;color:#B91C1C">'+MONTHLY_GRAND[minIdx].mid+'</div>'
-      + '<div style="color:#B91C1C;font-weight:700">$'+fK(minV)+'</div>'
+      + '<div style="color:#B91C1C;font-weight:700">'+CUR.s()+fK(minV)+'</div>'
     + '</div>'
     + '<div style="background:var(--P);border:1px solid var(--L1);border-radius:8px;padding:7px 10px">'
       + '<div style="color:var(--B);font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.4px">Σ FY Total</div>'
-      + '<div style="font-weight:800;font-size:13px;color:var(--N)">$'+fK(total)+'</div>'
+      + '<div style="font-weight:800;font-size:13px;color:var(--N)">'+CUR.s()+fK(total)+'</div>'
       + '<div style="color:var(--B);font-weight:700">12 months</div>'
     + '</div>'
     + '<div style="background:var(--P);border:1px solid var(--L1);border-radius:8px;padding:7px 10px">'
       + '<div style="color:var(--B);font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.4px">x̄ Average</div>'
-      + '<div style="font-weight:800;font-size:13px;color:var(--N)">$'+fK(avg)+'</div>'
+      + '<div style="font-weight:800;font-size:13px;color:var(--N)">'+CUR.s()+fK(avg)+'</div>'
       + '<div style="color:var(--B);font-weight:700">/ month</div>'
     + '</div></div>';
 
@@ -2092,7 +2538,7 @@ function renderTopMover() {
     html += '<div class="drill-expl" style="margin-top:12px;margin-bottom:0">'
       + '<div class="drill-expl-hd"><span class="badge-v">VER '+expl.ver+'</span><h4>💡 Official explanation</h4></div>'
       + '<div style="font-size:11.5px;color:#92400E;margin-bottom:6px;font-weight:700">'
-      +    'Budget: '+fmtN(expl.b)+' · Forecast: '+fmtN(expl.f)+' · GAP: '+fmtK(expl.vsb)+'</div>'
+      +    'Budget: '+fmtN(expl.b)+' · Forecast: '+fmtN(expl.f)+' · GAP: '+fmtG(expl.vsb)+'</div>'
       + '<div class="drill-expl-body">'+esc(expl.e)+'</div>'
       + '</div>';
   }
@@ -2344,13 +2790,16 @@ function _truncate(s, n) {
 var _flipId = 0;
 function flipKPI(o) {
   var id = "flip"+(_flipId++);
-  var dispVal = o.abs ? Math.abs(o.val) : o.val;
+  var rawVal = o.abs ? Math.abs(o.val) : o.val;
+  // currency-convert the count-up target; swap $ prefix to active symbol
+  var dispVal = (o.mode==="p") ? rawVal : CUR.conv(rawVal);
+  var prefix = (o.prefix||"").replace(/\$/g, CUR.s());
   var fs = o.fontSize ? ('font-size:'+o.fontSize+';') : '';
   var front =
     '<div class="kpi shine '+(o.cls||"")+'">'
     +'<div class="kl">'+o.lbl+'</div>'
     +'<div class="kv" style="'+fs+'"><span class="cup" data-count="'+dispVal+'" data-mode="'+(o.mode||"k")+'" '
-       +'data-prefix="'+(o.prefix||"")+'" data-suffix="'+(o.suffix||"")+'">'+(o.prefix||"")+'0'+(o.suffix||"")+'</span></div>'
+       +'data-prefix="'+prefix+'" data-suffix="'+(o.suffix||"")+'">'+prefix+'0'+(o.suffix||"")+'</span></div>'
     +(o.sub?'<div class="ks">'+o.sub+'</div>':'')
     +'<div class="flip-hint">↻ click for detail</div>'
     +'</div>';
@@ -2413,23 +2862,23 @@ function rOV(D) {
       cls:"", lbl:"Budget Mani",
       val:gt.bm, mode:"k", prefix:"$",
       sub:pLabel(),
-      bk:[["Thailand", "$"+fK(D.ctys[0].bm)], ["Viet Nam", "$"+fK(D.ctys[1].bm)]]
-        .concat(segs.map(function(s){return [s.sg,"$"+fK(s.bm)];}))
+      bk:[["Thailand", CUR.s()+fK(D.ctys[0].bm)], ["Viet Nam", CUR.s()+fK(D.ctys[1].bm)]]
+        .concat(segs.map(function(s){return [s.sg,CUR.s()+fK(s.bm)];}))
     })
    +flipKPI({
       cls:"", lbl:"Forecast / Actual",
       val:gt.fc, mode:"k", prefix:"$",
       sub:pp(gt.gp)+" vs Budget Mani",
-      bk:[["Thailand", "$"+fK(D.ctys[0].fc)], ["Viet Nam", "$"+fK(D.ctys[1].fc)]]
-        .concat(segs.map(function(s){return [s.sg,"$"+fK(s.fc)];}))
+      bk:[["Thailand", CUR.s()+fK(D.ctys[0].fc)], ["Viet Nam", CUR.s()+fK(D.ctys[1].fc)]]
+        .concat(segs.map(function(s){return [s.sg,CUR.s()+fK(s.fc)];}))
     })
    +flipKPI({
       cls:kc(gt.gap), lbl:"GAP vs Budget Mani",
       val:gt.gap, mode:"k", prefix:gt.gap>=0?"+$":"-$", abs:true,
       sub:fP(gt.gp),
-      bk:[["Thailand",(D.ctys[0].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
-          ["Viet Nam",(D.ctys[1].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
-        .concat(segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))
+      bk:[["Thailand",(D.ctys[0].gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
+          ["Viet Nam",(D.ctys[1].gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
+        .concat(segs.map(function(s){return [s.sg,(s.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))
     });
 
   document.getElementById("ov-sc").innerHTML = scHTML(D);
@@ -2439,8 +2888,8 @@ function rOV(D) {
   if (S.period === "month") {
     ovCh.innerHTML =
       '<div class="g2">'
-     +'<div class="card"><div class="ch"><div class="ct">🇹🇭 Thailand — By Segment</div></div><div class="cb"><div class="cw"><canvas id="c-ov-th"></canvas></div></div></div>'
-     +'<div class="card"><div class="ch"><div class="ct">🇻🇳 Vietnam — By Segment</div></div><div class="cb"><div class="cw"><canvas id="c-ov-vn"></canvas></div></div></div>'
+     +'<div class="card"><div class="ch"><div class="ct">'+flag("th")+' Thailand — By Segment</div></div><div class="cb"><div class="cw"><canvas id="c-ov-th"></canvas></div></div></div>'
+     +'<div class="card"><div class="ch"><div class="ct">'+flag("vn")+' Vietnam — By Segment</div></div><div class="cb"><div class="cw"><canvas id="c-ov-vn"></canvas></div></div></div>'
      +"</div>";
     var thS=D.ctys.find(function(c){return c.co==="Thailand";});
     var vnS=D.ctys.find(function(c){return c.co==="VietNam";});
@@ -2498,7 +2947,7 @@ function rOV(D) {
   var G=D.gt;
   document.getElementById("t-ov").innerHTML =
     "<table><thead><tr><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast/Actual</th><th>GAP</th><th>%GAP</th></tr></thead>"
-   +"<tbody>"+rows+'<tr class="grand"><td>GRAND TOTAL</td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+$":"-$")+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td></tr></tbody></table>";
+   +"<tbody>"+rows+'<tr class="grand"><td>GRAND TOTAL</td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td></tr></tbody></table>";
 }
 
 // ══ SEGMENT ══
@@ -2539,10 +2988,10 @@ function rSEG(D) {
       return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td>"+cleanNm(d.nm,d.sg)+"</td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td></tr>";
     }).join("");
 
-    var bkDist = sdists.map(function(d){ return [cleanNm(d.nm,d.sg), "$"+fK(d.fc)]; });
-    var bkBudget = sdists.map(function(d){ return [cleanNm(d.nm,d.sg), "$"+fK(d.bm)]; });
+    var bkDist = sdists.map(function(d){ return [cleanNm(d.nm,d.sg), CUR.s()+fK(d.fc)]; });
+    var bkBudget = sdists.map(function(d){ return [cleanNm(d.nm,d.sg), CUR.s()+fK(d.bm)]; });
     var bkGap = sdists.map(function(d){
-      return [cleanNm(d.nm,d.sg), (d.gap>=0?"+$":"-$")+fK(Math.abs(d.gap)), d.gap>=0?"#86EFAC":"#FCA5A5"];
+      return [cleanNm(d.nm,d.sg), (d.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(d.gap)), d.gap>=0?"#86EFAC":"#FCA5A5"];
     });
 
     var tblId = "t-seg-"+segIdx;
@@ -2559,14 +3008,14 @@ function rSEG(D) {
      +'<div class="cb">'
      +'<div class="kr" style="margin-bottom:12px">'
      + flipKPI({cls:"", lbl:"Budget Mani", val:seg.bm, mode:"k", prefix:"$",
-         bk:[["Thailand","$"+fK(thd.bm)],["Viet Nam","$"+fK(vnd.bm)]].concat(bkBudget)})
+         bk:[["Thailand",CUR.s()+fK(thd.bm)],["Viet Nam",CUR.s()+fK(vnd.bm)]].concat(bkBudget)})
      + flipKPI({cls:"", lbl:"Forecast / Actual", val:seg.fc, mode:"k", prefix:"$",
          sub:pp(seg.gp),
-         bk:[["Thailand","$"+fK(thd.fc)],["Viet Nam","$"+fK(vnd.fc)]].concat(bkDist)})
+         bk:[["Thailand",CUR.s()+fK(thd.fc)],["Viet Nam",CUR.s()+fK(vnd.fc)]].concat(bkDist)})
      + flipKPI({cls:kc(seg.gap), lbl:"GAP vs Budget Mani", val:seg.gap, mode:"k",
          prefix:seg.gap>=0?"+$":"-$", abs:true,
-         bk:[["Thailand",(thd.gap>=0?"+$":"-$")+fK(Math.abs(thd.gap)),thd.gap>=0?"#86EFAC":"#FCA5A5"],
-             ["Viet Nam",(vnd.gap>=0?"+$":"-$")+fK(Math.abs(vnd.gap)),vnd.gap>=0?"#86EFAC":"#FCA5A5"]].concat(bkGap)})
+         bk:[["Thailand",(thd.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(thd.gap)),thd.gap>=0?"#86EFAC":"#FCA5A5"],
+             ["Viet Nam",(vnd.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(vnd.gap)),vnd.gap>=0?"#86EFAC":"#FCA5A5"]].concat(bkGap)})
      +'</div>'
      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">'
      +'<div><div class="seg-hd" style="margin-top:0">🌏 Country</div>'+coRows+"</div>"
@@ -2612,7 +3061,7 @@ function rCTY(D) {
     });
   });
   var G=D.gt;
-  rows+='<tr class="grand"><td>GRAND TOTAL</td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+$":"-$")+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td></tr>";
+  rows+='<tr class="grand"><td>GRAND TOTAL</td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td></tr>";
   document.getElementById("t-cty").innerHTML =
     "<table><thead><tr><th>Country</th><th>Segment</th><th>Budget Mani</th><th>Forecast/Actual</th><th>GAP</th><th>%GAP</th></tr></thead><tbody>"+rows+"</tbody></table>";
 }
@@ -2688,9 +3137,14 @@ function rDIST(D) {
 
   var tot={bm:fd.reduce(function(a,b){return a+b.bm;},0), fc:fd.reduce(function(a,b){return a+b.fc;},0), gap:fd.reduce(function(a,b){return a+b.gap;},0)};
   document.getElementById("t-dist").innerHTML =
-    "<table><thead><tr><th>↑↓</th><th>Distributor</th><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast/Actual</th><th>GAP</th><th>%GAP</th></tr></thead><tbody>"
-    +srt.map(function(d){return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td><span class="badge" style="background:'+SEGC[d.sg]+'">'+d.sg+"</span></td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td></tr>";}).join("")
-    +'<tr class="grand"><td></td><td>TOTAL ('+S.distSeg+")</td><td></td><td></td><td>"+fmtN(tot.bm)+"</td><td>"+fmtN(tot.fc)+"</td><td>"+(tot.gap>=0?"+$":"-$")+fK(Math.abs(tot.gap))+"</td><td></td></tr>"
+    "<table><thead><tr><th>↑↓</th><th>Distributor</th><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast/Actual</th><th>GAP</th><th>%GAP</th><th>Trend (FY67)</th></tr></thead><tbody>"
+    +srt.map(function(d){
+        var series = distMonthlySeries(d.di, d.si);
+        var hasData = series.some(function(v){return v>0;});
+        var spark = hasData ? sparkline(series, {w:96,h:30,color:(d.gap>=0?"#16A34A":"#DC2626")}) : '<span style="color:var(--t3);font-size:11px">—</span>';
+        return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td><span class="badge" style="background:'+SEGC[d.sg]+'">'+d.sg+"</span></td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='spark-cell'>"+spark+"</td></tr>";
+      }).join("")
+    +'<tr class="grand"><td></td><td>TOTAL ('+S.distSeg+")</td><td></td><td></td><td>"+fmtN(tot.bm)+"</td><td>"+fmtN(tot.fc)+"</td><td>"+(tot.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(tot.gap))+"</td><td></td><td></td></tr>"
     +"</tbody></table>";
 }
 
@@ -2708,9 +3162,9 @@ function rGAP(D) {
   document.getElementById("kr-gap").innerHTML =
     flipKPI({cls:kc(G.gap), lbl:"Total GAP vs Budget Mani", val:G.gap, mode:"k",
        prefix:G.gap>=0?"+$":"-$", abs:true, sub:pp(G.gp),
-       bk:[["Thailand",(D.ctys[0].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
-           ["Viet Nam",(D.ctys[1].gap>=0?"+$":"-$")+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
-         .concat(D.segs.map(function(s){return [s.sg,(s.gap>=0?"+$":"-$")+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))})
+       bk:[["Thailand",(D.ctys[0].gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(D.ctys[0].gap)),D.ctys[0].gap>=0?"#86EFAC":"#FCA5A5"],
+           ["Viet Nam",(D.ctys[1].gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(D.ctys[1].gap)),D.ctys[1].gap>=0?"#86EFAC":"#FCA5A5"]]
+         .concat(D.segs.map(function(s){return [s.sg,(s.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(s.gap)),s.gap>=0?"#86EFAC":"#FCA5A5"];}))})
    +flipKPI({cls:"pos", lbl:"Total Positive GAP", val:tp, mode:"k", prefix:"+$",
        sub:pos.length+" distributors above",
        bk:pos.map(function(d){return [cleanNm(d.nm,d.sg),"+$"+fK(d.gap),"#86EFAC"];})})
@@ -2766,7 +3220,7 @@ function rGAP(D) {
   document.getElementById("t-gap").innerHTML =
     "<table><thead><tr><th>↑↓</th><th>Distributor</th><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast</th><th>GAP</th><th>%GAP</th><th>Contribution</th></tr></thead><tbody>"
     +all.map(function(d){var cb=G.gap?d.gap/Math.abs(G.gap)*100:0; return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td><span class="badge" style="background:'+SEGC[d.sg]+'">'+d.sg+"</span></td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='"+(cb>=0?"vp":"vn")+"'>"+(cb>=0?"+":"")+cb.toFixed(1)+"%</td></tr>";}).join("")
-    +'<tr class="grand"><td></td><td>GRAND TOTAL</td><td></td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+$":"-$")+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td><td>100%</td></tr>"
+    +'<tr class="grand"><td></td><td>GRAND TOTAL</td><td></td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td><td>100%</td></tr>"
     +"</tbody></table>";
 }
 
@@ -2779,7 +3233,17 @@ function rGAP(D) {
 
 function rEXP() {
   if (!window.VERSIONS_DATA || !VERSIONS_DATA.length) {
-    document.getElementById("exp-content").innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--t3);padding:40px">No explanation data yet.</div></div>';
+    var diag = "";
+    if (window.LAST_VERSIONS_ERROR) {
+      diag = '<div style="margin-top:14px;text-align:left;background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#78350F">'
+           + '<b>⚠️ Backend reported a problem loading explanations:</b><br><code style="font-size:11.5px;color:#7C2D12">'
+           + esc(window.LAST_VERSIONS_ERROR) + '</code><br>'
+           + '<span style="font-size:11.5px">Tip: open the source sheet and make sure the header row of "Forecast Explanation Input" has these columns: '
+           + '<b>Type · Country report · Segment · Distributor · Budget Mani · Forecast/Actual · Vs. Budget · % Vs. Budget · Single/Culmulative · '
+           + 'Type Forecast/Actual · Explaination time · FY · Ver · Lastest forecast/Actual · Vs. Lastest forecast · Explanation</b>. '
+           + 'A blank or symbol like "`" in any of these cells will break detection.</span></div>';
+    }
+    document.getElementById("exp-content").innerHTML = '<div class="card"><div class="cb" style="text-align:center;color:var(--t3);padding:40px">No explanation data yet.'+diag+'</div></div>';
     document.getElementById("exp-toolbar").innerHTML = "";
     return;
   }
@@ -2830,9 +3294,9 @@ function rEXP() {
     })).join("");
 
   var ctyOpts = ['<option value="ALL">All Countries</option>',
-                 '<option value="t">🇹🇭 Thailand</option>',
-                 '<option value="v">🇻🇳 Viet Nam</option>',
-                 '<option value="g">🌐 Grand Total</option>'].join("");
+                 '<option value="t">Thailand</option>',
+                 '<option value="v">Viet Nam</option>',
+                 '<option value="g">Grand Total</option>'].join("");
 
   var segOpts = ['<option value="ALL">All Segments</option>']
     .concat(["Dental","Eyeless","MMG","Surgical"].map(function(s){
@@ -2933,14 +3397,16 @@ function renderExpContent() {
     });
 
     countries.forEach(function(co){
-      var coFlag = co.code === "t" ? "🇹🇭" : (co.code === "v" ? "🇻🇳" : "🌐");
+      var coFlag = co.code === "t" ? flag("th") : (co.code === "v" ? flag("vn") : flag("g"));
       var coClass = co.code === "g" ? "exp-co-grand" : "exp-co";
       // Display name consistent with other tabs: "Viet Nam", "Thailand", "Grand Total"
       var coDisp = co.code === "t" ? "Thailand" : (co.code === "v" ? "Viet Nam" : "Grand Total");
 
-      // Country header
-      html += '<div class="'+coClass+'">'
-        + '<div class="exp-co-hd">'+coFlag+' <span>'+esc(coDisp)+'</span></div>';
+      // Country header (skip for Grand Total — its dark row below already acts as the header)
+      html += '<div class="'+coClass+'">';
+      if (co.code !== "g") {
+        html += '<div class="exp-co-hd">'+coFlag+' <span>'+esc(coDisp)+'</span></div>';
+      }
 
       // Segments (chỉ với Thailand/VN, không có với Grand Total)
       var segments = (co.segments || []).filter(function(sg){
@@ -3076,8 +3542,11 @@ function exportExplanations() {
 function renderAll() {
   var D = computeD();
   rOV(D); rSEG(D); rCTY(D); rDIST(D); rGAP(D); rEXP();
-  ["ov","seg","cty","dist","gap"].forEach(function(t) {
-    var el=document.getElementById("sp-"+t); if(el) el.textContent=pLabel();
+  try { rACC(); } catch(e){ console.warn("acc", e); }
+  try { renderCtxBanner(); } catch(e){}
+  if (VC_OPEN) { try { renderComparePanel(); } catch(e){} }
+  ["ov","seg","cty","dist","gap","acc"].forEach(function(t) {
+    var el=document.getElementById("sp-"+t); if(el && t!=="acc") el.textContent=pLabel();
   });
   setTimeout(function(){
     var active = document.querySelector(".sec.on");
@@ -3129,7 +3598,8 @@ function goTab(t) {
   document.querySelectorAll(".nt").forEach(function(n){n.classList.remove("on");});
   var sec=document.getElementById("sec-"+t); if(sec) sec.classList.add("on");
   var nt=document.getElementById("nt-"+t); if(nt) nt.classList.add("on");
-  if (t==="live") { startFeed(); }
+  syncBottomNav(t);
+  if (t==="cmp") { try { rCMP(); } catch(e){ console.warn("cmp",e); } }
   if (sec) {
     sec.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
     sec.querySelectorAll("[data-animated]").forEach(function(el){ el.dataset.animated="0"; });
@@ -3514,8 +3984,8 @@ function exportPPT() {
       var rx = 8.55, rw = 4.28;
       // 3 KPI boxes stacked
       var kpis = [
-        { lbl:"BUDGET MANI",     val:"$"+fmtNum(r.budget)+"K", col:B.navy,  top:"#3A5CAA" },
-        { lbl:"ACTUAL / FORECAST",val:"$"+fmtNum(r.actual)+"K", col:B.navy,  top:"#3A5CAA" },
+        { lbl:"BUDGET MANI",     val:CUR.s()+fmtNum(r.budget)+"K", col:B.navy,  top:"#3A5CAA" },
+        { lbl:"ACTUAL / FORECAST",val:CUR.s()+fmtNum(r.actual)+"K", col:B.navy,  top:"#3A5CAA" },
         { lbl:"GAP vs BUDGET",   val:fmtSign(r.gapVsB)+"K  ("+fmtP(r.pctVsB)+")", col:(gpos?B.pos:B.neg), top:(gpos?B.pos:B.neg) }
       ];
       var ky = 1.2, kh = 0.92, kgap = 0.14;
@@ -3600,8 +4070,8 @@ function exportPPT() {
       // RIGHT: YTD KPI boxes + by-segment chart
       var rx2 = 8.55, rw2 = 4.28;
       var ykp = [
-        { lbl:"YTD BUDGET",  val:"$"+fmtNum(ytd.bm/1000)+"K", col:B.navy, top:"#3A5CAA" },
-        { lbl:"YTD ACTUAL",  val:"$"+fmtNum(ytd.fc/1000)+"K", col:B.navy, top:"#3A5CAA" },
+        { lbl:"YTD BUDGET",  val:CUR.s()+fmtNum(ytd.bm/1000)+"K", col:B.navy, top:"#3A5CAA" },
+        { lbl:"YTD ACTUAL",  val:CUR.s()+fmtNum(ytd.fc/1000)+"K", col:B.navy, top:"#3A5CAA" },
         { lbl:"YTD GAP",     val:fmtSign(ytd.gap/1000)+"K  ("+fmtP(ytd.bm?ytd.gap/ytd.bm:0)+")", col:(tpos2?B.pos:B.neg), top:(tpos2?B.pos:B.neg) }
       ];
       var ky2=1.2, kh2=0.92, kg2=0.14;
@@ -3722,7 +4192,1118 @@ document.addEventListener("keydown", function(e){
 });
 
 // ══ INIT ══
+// ════════════════════════════════════════════════════════════════════
+// NEWEST UPDATES BANNER — pulls the latest edit-log entries from backend
+// (?action=getEditLog) and scrolls them as a marquee under the nav bar.
+// ════════════════════════════════════════════════════════════════════
+var UPD_ENTRIES = [];
+var UPD_HINT = "";
+var updTimer = null;
+
+function timeAgoMs(ts) {
+  if (!ts) return "";
+  var s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 0) return "just now";
+  if (s < 60) return s + "s ago";
+  if (s < 3600) return Math.floor(s/60) + "m ago";
+  if (s < 86400) return Math.floor(s/3600) + "h ago";
+  var d = Math.floor(s/86400);
+  if (d === 1) return "yesterday";
+  if (d < 30) return d + "d ago";
+  return Math.floor(d/30) + "mo ago";
+}
+
+function fetchEditLog() {
+  jsonp("getEditLog&n=10", function(data){
+    if (data && data.ok && Array.isArray(data.entries)) {
+      UPD_ENTRIES = data.entries;
+      UPD_HINT = (data.entries.length===0 && data.triggerInstalled===false)
+        ? "⚠ Edit-log trigger not installed — run installEditLogTrigger() once in Apps Script (Extensions → Apps Script → Run)."
+        : (data.note || "");
+      renderUpdBanner();
+    } else {
+      renderUpdBanner();
+    }
+  }, function(){ /* keep last good content on error */ }, 9000);
+}
+
+function renderUpdBanner() {
+  var track = document.getElementById("upd-track");
+  if (!track) return;
+
+  if (!UPD_ENTRIES.length) {
+    var msg = UPD_HINT || "No recent edits recorded yet — edits will appear here automatically.";
+    track.innerHTML = '<span class="upd-item upd-empty">' + esc(msg) + '</span>';
+    return;
+  }
+
+  // Build one item per entry; show the 3 newest prominently then the rest.
+  function itemHTML(e) {
+    var where = e.sheet + (e.colName ? " · " + e.colName : (e.col ? " · col " + e.col : "")) + (e.cell ? " (" + e.cell + ")" : "");
+    var valPart = e.value ? '<span class="upd-dotsep">→</span><span class="upd-val">' + esc(e.value) + '</span>' : "";
+    return '<span class="upd-item">'
+      + '<span class="upd-who">' + esc(e.user) + '</span>'
+      + '<span class="upd-meta">edited ' + esc(where) + '</span>'
+      + valPart
+      + '<span class="upd-time">' + timeAgoMs(e.ts) + '</span>'
+      + '</span>';
+  }
+
+  // Duplicate the sequence so the marquee loops seamlessly
+  var seq = UPD_ENTRIES.map(itemHTML).join("");
+  track.innerHTML = seq + seq;
+}
+
+function startUpdBanner() {
+  fetchEditLog();
+  if (updTimer) clearInterval(updTimer);
+  // Poll every 20s for near-realtime feel. The getEditLog endpoint is uncached
+  // on the GAS side so each call is fresh; the cost is roughly one Apps Script
+  // invocation every 20s (well within free quota for a single dashboard).
+  updTimer = setInterval(fetchEditLog, 20000);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// v6 FEATURE MODULES
+// ════════════════════════════════════════════════════════════════════
+
+// ── (10) DARK MODE ──────────────────────────────────────────────────
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  var b = document.getElementById("theme-btn");
+  if (b) b.textContent = theme==="dark" ? "☀️" : "🌙";
+  // re-tint chart gridlines/text by re-rendering current section charts
+  setTimeout(function(){ try { renderAll(); } catch(e){} }, 30);
+}
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "dark":"light";
+  var next = cur==="dark" ? "light":"dark";
+  try { localStorage.setItem("mmh_theme", next); } catch(e){}
+  applyTheme(next);
+}
+
+// ── (8) STICKY PERIOD CONTEXT BANNER ────────────────────────────────
+function renderCtxBanner(){
+  var el = document.getElementById("ctx-banner");
+  if (!el) return;
+  if (S.period === "fy") { el.classList.remove("on"); return; }
+  var periodTxt = (S.period==="qtr")
+      ? ("Q"+(S.qi+1)+" · "+["Sep–Nov 25","Dec–Feb 26","Mar–May 26","Jun–Aug 26"][S.qi])
+      : (function(){
+          var sel = Array.from(S.selM).sort(function(a,b){return a-b;});
+          if (sel.length===1) return MONTHLY_GRAND[sel[0]].lbl;
+          if (sel.length===12) return "All 12 months";
+          return sel.length+" months selected";
+        })();
+  var scTxt = (S.period==="month" && S.selM.size===1) || S.period==="qtr" ? "Single + Cumulative (YTD)" : "Single";
+  var curTxt = CUR.code==="VND" ? "VND (₫)" : "USD ($)";
+  el.innerHTML =
+    '<span class="ctx-lbl">📍 Viewing</span>'
+    + '<span class="ctx-chip">Period <b>'+esc(periodTxt)+'</b></span>'
+    + '<span class="ctx-chip">View <b>'+scTxt+'</b></span>'
+    + '<span class="ctx-chip">Currency <b>'+curTxt+'</b></span>'
+    + '<span class="ctx-chip">FY67 · Sep 2025 → Aug 2026</span>';
+  el.classList.add("on");
+}
+
+// ── (2) TARGET ATTAINMENT GAUGE (Overview) ──────────────────────────
+function gaugeColor(pct){
+  if (pct >= 100) return "#16A34A";
+  if (pct >= 90)  return "#65A30D";
+  if (pct >= 75)  return "#F59E0B";
+  return "#DC2626";
+}
+function renderGauges(D){
+  var wrap = document.getElementById("ov-gauge");
+  if (!wrap) return;
+  var gt = D.gt;
+  // 1. Period attainment: forecast/actual vs budget
+  var att = gt.bm>0 ? (gt.fc/gt.bm*100) : 0;
+  // 2. FY projection: YTD actual run-rate → projected year-end vs FY budget.
+  //    Use months that already have actuals (cg up to last non-future month).
+  //    Simple model: full-year forecast total vs full-year budget total.
+  var fyBm = GT_FY.bm, fyFc = GT_FY.fc;
+  var proj = fyBm>0 ? (fyFc/fyBm*100) : 0;
+  // 3. Cumulative pace to date (if period mode)
+  var cards = [];
+  cards.push({
+    lbl: (S.period==="fy"?"FY67":pLabel().split(" · ")[0])+" Attainment",
+    pct: att,
+    sub: CUR.s()+fK(gt.fc)+" of "+CUR.s()+fK(gt.bm)+" budget"
+  });
+  cards.push({
+    lbl: "Projected FY67 Year-End",
+    pct: proj,
+    sub: CUR.s()+fK(fyFc)+" forecast vs "+CUR.s()+fK(fyBm)+" target"
+  });
+  // gap-to-target card
+  var gapToT = fyFc - fyBm;
+  cards.push({
+    lbl: "FY67 Gap to Target",
+    pct: null,
+    raw: (gapToT>=0?"+":"−")+CUR.s()+fK(Math.abs(gapToT)),
+    rawColor: gapToT>=0 ? "var(--pos)":"var(--neg)",
+    sub: gapToT>=0 ? "Above full-year budget 🎉" : "Below full-year budget"
+  });
+
+  wrap.innerHTML = cards.map(function(c){
+    if (c.pct===null) {
+      return '<div class="gauge-card reveal">'
+        +'<div class="g-lbl">'+c.lbl+'</div>'
+        +'<div class="g-pct" style="color:'+c.rawColor+'">'+c.raw+'</div>'
+        +'<div class="g-sub">'+c.sub+'</div></div>';
+    }
+    var w = Math.max(0, Math.min(c.pct, 130)) / 130 * 100;
+    var col = gaugeColor(c.pct);
+    return '<div class="gauge-card reveal">'
+      +'<div class="g-lbl">'+c.lbl+'</div>'
+      +'<div class="g-pct" style="color:'+col+'">'+c.pct.toFixed(1)+'%</div>'
+      +'<div class="gauge-track"><div class="gauge-fill" data-w="'+w.toFixed(1)+'" style="background:'+col+'"></div>'
+        +'<div class="gauge-100" style="left:'+(100/130*100).toFixed(1)+'%"></div></div>'
+      +'<div class="g-sub">'+c.sub+'</div></div>';
+  }).join("");
+  // animate fills
+  setTimeout(function(){
+    wrap.querySelectorAll(".gauge-fill[data-w]").forEach(function(b,i){
+      b.style.width="0%"; void b.offsetWidth;
+      setTimeout(function(){ b.style.width=b.dataset.w+"%"; }, 80+i*90);
+    });
+  }, 60);
+}
+
+// ── (11) DISTRIBUTOR TREND SPARKLINE ────────────────────────────────
+// Monthly forecast series for a distributor+segment across FY67 (12 pts)
+function distMonthlySeries(di, si){
+  var arr = new Array(12).fill(0);
+  DETAIL_ROWS.forEach(function(r){
+    if (r[3]===di && r[1]===si) arr[r[0]] += r[5];   // forecast value
+  });
+  return arr;
+}
+
+// ── (1) FORECAST ACCURACY ───────────────────────────────────────────
+// accuracy% = 100 − |F−B|/B*100, clamped to [0,100]. Only months with B>0.
+function accPct(b, f){
+  if (!b || b<=0) return null;
+  var e = Math.abs(f-b)/b*100;
+  return Math.max(0, 100-e);
+}
+function accColor(a){
+  if (a==null) return "#CBD5E1";
+  if (a>=90) return "#16A34A";
+  if (a>=75) return "#65A30D";
+  if (a>=60) return "#F59E0B";
+  if (a>=40) return "#EA580C";
+  return "#DC2626";
+}
+function accGradeLabel(a){
+  if (a>=90) return "Excellent";
+  if (a>=75) return "Good";
+  if (a>=60) return "Fair";
+  if (a>=40) return "Weak";
+  return "Poor";
+}
+// Build per-segment monthly accuracy from SC_M (both countries combined)
+function buildSegMonthlyBF(){
+  var out = {};
+  SEGS.forEach(function(sg){
+    out[sg] = MONTHLY_GRAND.map(function(_,i){
+      var b=0,f=0;
+      CTYS.forEach(function(co){
+        var d = SC_M[co] && SC_M[co][sg] && SC_M[co][sg][i];
+        if(d){ b+=d.bm; f+=d.fc; }
+      });
+      return {b:b, f:f, a:accPct(b,f)};
+    });
+  });
+  return out;
+}
+// Accuracy scope state: 'fy' / 'qtr' / 'month'
+var ACC_SCOPE = "fy";
+var ACC_QI = 0;        // quarter index 0..3
+var ACC_MI = 0;        // month index 0..11
+var ACC_INTRO_OPEN = false;  // collapsed by default
+function setAccScope(scope){
+  ACC_SCOPE = scope;
+  rACC();
+  _accAnimateAfterRender();
+}
+function setAccQI(qi){ ACC_QI=+qi; rACC(); _accAnimateAfterRender(); }
+function setAccMI(mi){ ACC_MI=+mi; rACC(); _accAnimateAfterRender(); }
+function toggleAccIntro(){ ACC_INTRO_OPEN = !ACC_INTRO_OPEN; rACC(); }
+function _accAnimateAfterRender(){
+  // Force counter reset + immediate re-run so KPI flip cards never freeze on "0"
+  var s = document.getElementById("sec-acc"); if (!s) return;
+  s.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
+  s.querySelectorAll("[data-animated]").forEach(function(el){ el.dataset.animated="0"; });
+  setTimeout(function(){ runCountUp(s); animateBars(s); sizeFlips(s); }, 20);
+}
+
+// Convert ACC_SCOPE into list of month indices included
+function accMonthIdxs(){
+  if (ACC_SCOPE==="qtr") return [0,1,2].map(function(k){return ACC_QI*3+k;});
+  if (ACC_SCOPE==="month") return [ACC_MI];
+  return [0,1,2,3,4,5,6,7,8,9,10,11];
+}
+function accScopeLabel(){
+  if (ACC_SCOPE==="qtr") return "Q"+(ACC_QI+1)+" · "+["Sep–Nov 25","Dec–Feb 26","Mar–May 26","Jun–Aug 26"][ACC_QI];
+  if (ACC_SCOPE==="month") return MONTHLY_GRAND[ACC_MI].lbl;
+  return "FY67 · 12 months";
+}
+
+function rACC(){
+  document.getElementById("sp-acc").textContent = accScopeLabel();
+  var segBF_all = buildSegMonthlyBF();
+  var idxs = accMonthIdxs();
+
+  // Filtered per-segment data: only chosen month indices
+  var segBF = {};
+  SEGS.forEach(function(sg){ segBF[sg] = idxs.map(function(i){ return segBF_all[sg][i]; }); });
+
+  // Mean accuracy per segment (over visible months only, ignoring nulls)
+  var allA = [], segMean = {};
+  SEGS.forEach(function(sg){
+    var vals = segBF[sg].filter(function(x){return x && x.a!=null;});
+    var m = vals.length ? vals.reduce(function(s,x){return s+x.a;},0)/vals.length : null;
+    segMean[sg] = m;
+    if (m!=null) allA.push({sg:sg, m:m});
+  });
+  var overall = allA.length ? allA.reduce(function(s,x){return s+x.m;},0)/allA.length : 0;
+  var best  = allA.slice().sort(function(a,b){return b.m-a.m;})[0];
+  var worst = allA.slice().sort(function(a,b){return a.m-b.m;})[0];
+
+  // ── Intro / explainer panel (collapsible, English) ──
+  var intro = document.getElementById("acc-intro");
+  if (intro){
+    if (!ACC_INTRO_OPEN){
+      intro.innerHTML =
+        '<div class="acc-intro-bar" onclick="toggleAccIntro()">'
+        + '<span class="acc-intro-bar-l"><b>ℹ️ How accuracy is measured</b> · '
+        + '<i>Accuracy% = 100% − |Forecast − Budget| ÷ Budget × 100</i> · '
+        + 'closer to 100% = better forecast quality</span>'
+        + '<span class="acc-intro-bar-r">Show details ▾</span>'
+        + '</div>';
+    } else {
+      intro.innerHTML =
+        '<div class="acc-intro-bar acc-intro-bar-open" onclick="toggleAccIntro()">'
+          + '<span class="acc-intro-bar-l"><b>ℹ️ How to read this tab</b></span>'
+          + '<span class="acc-intro-bar-r">Hide details ▴</span>'
+        + '</div>'
+        + '<div class="acc-intro-grid">'
+        + '<div class="acc-intro-block">'
+          + '<div class="acc-intro-hd">📐 Formula</div>'
+          + '<div class="acc-intro-tx"><b>Accuracy% = 100% − |Forecast − Budget Mani| ÷ Budget Mani × 100</b>. '
+          + 'This compares how close the forecast is to the original Budget Mani. '
+          + 'Values closer to 100% mean better forecast quality. Going significantly above or below budget both lower the score.</div>'
+        + '</div>'
+        + '<div class="acc-intro-block">'
+          + '<div class="acc-intro-hd">🎯 Grades</div>'
+          + '<div class="acc-intro-tx">≥90% <b style="color:#16A34A">Excellent</b> · 75–90% <b style="color:#65A30D">Good</b> · '
+          + '60–75% <b style="color:#F59E0B">Fair</b> · 40–60% <b style="color:#EA580C">Weak</b> · '
+          + '&lt;40% <b style="color:#DC2626">Poor</b>. '
+          + 'This is a measure of <i>forecast quality</i>, not revenue performance.</div>'
+        + '</div>'
+        + '<div class="acc-intro-block">'
+          + '<div class="acc-intro-hd">📅 Current scope</div>'
+          + '<div class="acc-intro-tx"><b>'+esc(accScopeLabel())+'</b> · '+idxs.length+' month(s). '
+          + 'KPIs and the table below are computed only over the selected months. '
+          + 'Switch scope to view accuracy by Year / Quarter / Month.</div>'
+        + '</div>'
+        + '</div>';
+    }
+  }
+
+  // ── Scope selector toolbar ──
+  var tb = document.getElementById("acc-toolbar");
+  if (tb){
+    var qBtns = [0,1,2,3].map(function(q){
+      return '<button class="seg-btn '+(ACC_SCOPE==="qtr"&&ACC_QI===q?"on":"")+'" onclick="ACC_SCOPE=\'qtr\';setAccQI('+q+')">Q'+(q+1)+'</button>';
+    }).join("");
+    var mBtns = MONTHLY_GRAND.map(function(m,i){
+      return '<button class="seg-btn mc-small '+(ACC_SCOPE==="month"&&ACC_MI===i?"on":"")+'" onclick="ACC_SCOPE=\'month\';setAccMI('+i+')">'+m.lbl.slice(0,3)+'</button>';
+    }).join("");
+    tb.innerHTML =
+      '<div class="acc-scope-row">'
+      + '<div class="acc-scope-grp"><span class="acc-scope-lbl">Scope:</span>'
+        + '<button class="seg-btn '+(ACC_SCOPE==="fy"?"on":"")+'" onclick="setAccScope(\'fy\')">📅 Full Year</button>'
+        + '<button class="seg-btn '+(ACC_SCOPE==="qtr"?"on":"")+'" onclick="setAccScope(\'qtr\')">📊 Quarter</button>'
+        + '<button class="seg-btn '+(ACC_SCOPE==="month"?"on":"")+'" onclick="setAccScope(\'month\')">📆 Month</button>'
+      + '</div>'
+      + (ACC_SCOPE==="qtr" ? '<div class="acc-scope-grp"><span class="acc-scope-lbl">Quarter:</span>'+qBtns+'</div>' : '')
+      + (ACC_SCOPE==="month" ? '<div class="acc-scope-grp acc-scope-months"><span class="acc-scope-lbl">Month:</span>'+mBtns+'</div>' : '')
+      + '</div>';
+  }
+
+  // ── KPIs (English) ──
+  var noData = allA.length === 0;
+  if (noData){
+    document.getElementById("kr-acc").innerHTML =
+      '<div style="grid-column:1/-1;background:var(--sf);border:1px dashed var(--br);border-radius:var(--r);padding:24px;text-align:center;color:var(--t3)">'
+      + '<div style="font-size:28px;margin-bottom:6px">⚠️</div>'
+      + '<div style="font-size:14px;font-weight:700;color:var(--t2)">No accuracy data for this scope</div>'
+      + '<div style="font-size:12px;margin-top:4px">No segment has Budget Mani recorded for <b>'+esc(accScopeLabel())+'</b>. Try a wider scope (Quarter or Full Year).</div></div>';
+  } else {
+    document.getElementById("kr-acc").innerHTML =
+      flipKPI({ cls:"y", lbl:"Average Forecast Accuracy", val:overall, mode:"p",
+        sub:accGradeLabel(overall)+" · "+accScopeLabel(),
+        bk: SEGS.map(function(sg){ return [sg, segMean[sg]!=null?segMean[sg].toFixed(1)+"%":"— no data"]; }) })
+     +flipKPI({ cls:"pos", lbl:"Most Accurate Segment", val:best?best.m:0, mode:"p",
+        sub:best?best.sg+" (smallest deviation)":"—",
+        bk: allA.slice().sort(function(a,b){return b.m-a.m;}).map(function(x){return [x.sg, x.m.toFixed(1)+"%"];}) })
+     +flipKPI({ cls:"neg", lbl:"Least Accurate Segment", val:worst?worst.m:0, mode:"p",
+        sub:worst?worst.sg+" (forecast needs review)":"—",
+        bk: allA.slice().sort(function(a,b){return a.m-b.m;}).map(function(x){return [x.sg, x.m.toFixed(1)+"%"];}) });
+  }
+
+  document.getElementById("acc-legend").innerHTML =
+    '<span><span class="swatch" style="background:#16A34A"></span>≥90% Excellent</span>'
+   +'<span><span class="swatch" style="background:#65A30D"></span>75–90% Good</span>'
+   +'<span><span class="swatch" style="background:#F59E0B"></span>60–75% Fair</span>'
+   +'<span><span class="swatch" style="background:#EA580C"></span>40–60% Weak</span>'
+   +'<span><span class="swatch" style="background:#DC2626"></span>&lt;40% Poor</span>'
+   +'<span style="margin-left:auto;font-style:italic;color:var(--t3)">Each cell = (Forecast vs Budget Mani) for that month. Hover for raw numbers.</span>';
+
+  // ── Heat-map table: rows=segment, cols=selected months + mean ──
+  var thM = idxs.map(function(i){return "<th>"+MONTHLY_GRAND[i].lbl.slice(0,3)+"</th>";}).join("");
+  var body = SEGS.map(function(sg, si){
+    var cells = segBF[sg].map(function(x,mi){
+      if (!x || x.a==null) return '<td style="text-align:center;color:var(--t3)">—</td>';
+      return '<td style="padding:4px"><div class="acc-cell" style="background:'+accColor(x.a)+'" title="Budget: '+fmtN(x.b)+'\nForecast: '+fmtN(x.f)+'\nDeviation: '+(x.f-x.b>=0?"+":"")+fmtN(x.f-x.b)+'">'+Math.round(x.a)+'</div></td>';
+    }).join("");
+    var m = segMean[sg];
+    var mc = m!=null ? '<td><span class="acc-grade" style="background:'+accColor(m)+'">'+m.toFixed(1)+'%</span></td>' : '<td>—</td>';
+    return '<tr class="clickable" onclick="openDrillSegment('+si+')"><td>'+sg+'</td>'+cells+mc+'</tr>';
+  }).join("");
+
+  // Column overall (Budget-weighted accuracy per month, across all segments)
+  var colRow = '<tr class="tot"><td><b>All Segments</b></td>'
+    + idxs.map(function(mi){
+        var b=0,f=0; SEGS.forEach(function(sg){
+          var x = segBF_all[sg][mi]; if(x){ b+=x.b; f+=x.f; }
+        });
+        var a = accPct(b,f);
+        if (a==null) return '<td>—</td>';
+        return '<td style="padding:4px"><div class="acc-cell" style="background:'+accColor(a)+'" title="B='+fmtN(b)+' F='+fmtN(f)+'">'+Math.round(a)+'</div></td>';
+      }).join("")
+    + '<td><span class="acc-grade" style="background:'+accColor(overall)+'">'+overall.toFixed(1)+'%</span></td></tr>';
+
+  document.getElementById("t-acc").innerHTML =
+    '<table><thead><tr><th>Segment</th>'+thM+'<th>Mean</th></tr></thead><tbody>'+colRow+body+'</tbody></table>';
+
+  // ── Trend chart: overall accuracy across 12 months (always shows full year for tracking) ──
+  var trendChartEl = document.getElementById("c-acc-trend");
+  if (trendChartEl){
+    var trendData = MONTHLY_GRAND.map(function(_,i){
+      var b=0,f=0; SEGS.forEach(function(sg){
+        var x = segBF_all[sg][i]; if(x){ b+=x.b; f+=x.f; }
+      });
+      return accPct(b,f);
+    });
+    var inScope = MONTHLY_GRAND.map(function(_,i){ return idxs.indexOf(i)>=0; });
+    killC("c-acc-trend");
+    S.charts["c-acc-trend"] = new Chart(trendChartEl, {
+      type:"line",
+      data:{ labels: MONTHLY_GRAND.map(function(m){return m.lbl.slice(0,3);}),
+        datasets:[
+          {label:"Accuracy (%)", data:trendData,
+            borderColor:"#3A5CAA", backgroundColor:"rgba(58,92,170,.15)", borderWidth:2.5,
+            fill:true, tension:0.32,
+            pointRadius:trendData.map(function(v,i){ return inScope[i]?6:4; }),
+            pointBackgroundColor:trendData.map(function(v,i){ return v==null?"#CBD5E1":accColor(v); }),
+            pointBorderColor:trendData.map(function(v,i){ return inScope[i]?"#0E2F5F":"#fff"; }),
+            pointBorderWidth:trendData.map(function(v,i){ return inScope[i]?2.5:1.5; }),
+            datalabels:{display:true,align:"top",offset:6,
+              color:function(ctx){var v=ctx.dataset.data[ctx.dataIndex];return v==null?"#94A3B8":accColor(v);},
+              font:{family:FF,size:10,weight:"700"},
+              formatter:function(v){return v==null?"":Math.round(v)+"%";}}
+          },
+          {label:"Target 90%", data:MONTHLY_GRAND.map(function(){return 90;}),
+            borderColor:"rgba(22,163,74,.5)", borderWidth:1.5, borderDash:[5,4],
+            pointRadius:0, fill:false, datalabels:{display:false}}
+        ]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:900,easing:"easeOutQuart"},
+        interaction:{mode:"index",intersect:false},
+        plugins:{legend:{position:"bottom",labels:{font:{family:FF,size:12},boxWidth:13}},
+          tooltip:{callbacks:{label:function(it){return it.dataset.label+": "+(it.parsed.y==null?"—":it.parsed.y.toFixed(1)+"%");}}}},
+        scales:{x:{grid:{color:"#EEF2F9"},ticks:{font:{family:FF,size:11}}},
+                y:{min:0,max:105,ticks:{callback:function(v){return v+"%";},font:{family:FF,size:11}},grid:{color:"#EEF2F9"}}}}
+    });
+  }
+
+  // ── Distributor accuracy ranking chart (within current scope) ──
+  var dmap = {};
+  DETAIL_ROWS.forEach(function(r){
+    if (idxs.indexOf(r[0])<0) return;     // honor period scope
+    var key=r[3]+"|"+r[1];
+    if(!dmap[key]) dmap[key]={di:r[3],si:r[1],b:0,f:0};
+    dmap[key].b+=r[4]; dmap[key].f+=r[5];
+  });
+  var distAcc = Object.keys(dmap).map(function(k){
+    var d=dmap[k]; return {di:d.di, si:d.si, nm:DIST_NAMES[d.di], sg:SEG_NAMES[d.si], a:accPct(d.b,d.f), b:d.b, f:d.f};
+  }).filter(function(d){return d.a!=null;})
+    .sort(function(a,b){return b.a-a.a;}).slice(0,18);
+
+  killC("c-acc");
+  S.charts["c-acc"] = new Chart(document.getElementById("c-acc"), {
+    type:"bar", indexAxis:"y",
+    data:{ labels:distAcc.map(function(d){return d.nm+" · "+d.sg;}),
+      datasets:[{ label:"Accuracy %", data:distAcc.map(function(d){return +d.a.toFixed(1);}),
+        backgroundColor:distAcc.map(function(d){return accColor(d.a);}), borderRadius:3,
+        datalabels:{display:true,color:"#fff",anchor:"end",align:"start",font:{family:FF,size:10,weight:"700"},formatter:function(v){return Math.round(v)+"%";}} }]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:900,easing:"easeOutQuart"},
+      onClick:function(e,els){ if(els.length){ var d=distAcc[els[0].index]; openDrillDistributor(d.di,d.si); } },
+      onHover:function(e,els){ e.native.target.style.cursor=els.length?"pointer":"default"; },
+      plugins:{legend:{display:false},datalabels:{display:true},
+        tooltip:{callbacks:{label:function(it){var d=distAcc[it.dataIndex];return ["Accuracy: "+it.parsed.x+"%","Budget: "+fmtN(d.b),"Forecast: "+fmtN(d.f)];}}}},
+      scales:{x:{min:0,max:100,ticks:{callback:function(v){return v+"%";},font:{family:FF,size:11}},grid:{color:"#EEF2F9"}},
+              y:{grid:{display:false},ticks:{font:{family:FF,size:11}}}}}
+  });
+}
+
+// ── (4) VERSION COMPARISON (Explanations tab) ───────────────────────
+var VC_OPEN = false;
+function toggleCompare(){
+  VC_OPEN = !VC_OPEN;
+  var p = document.getElementById("vc-panel");
+  document.getElementById("vc-btn").textContent = VC_OPEN ? "✕ Close compare" : "⇄ Compare versions";
+  if (!VC_OPEN){ p.style.display="none"; return; }
+  p.style.display="block";
+  renderComparePanel();
+}
+function _vcVersionList(){
+  var u={};
+  (window.VERSIONS_DATA||[]).forEach(function(v){ if(v.v) u[v.v]=true; });
+  return Object.keys(u).sort().reverse();
+}
+// Aggregate one version's forecast totals per segment (across countries)
+function _vcAgg(ver){
+  var out = {}; SEGS.forEach(function(s){ out[s]={f:0,b:0}; });
+  (window.VERSIONS_DATA||[]).filter(function(v){return v.v===ver;}).forEach(function(v){
+    (v.countries||[]).forEach(function(co){
+      if (co.code==="g") return;
+      (co.segments||[]).forEach(function(sg){
+        if (out[sg.name] && sg.total){
+          out[sg.name].f += (sg.total.f||0);
+          out[sg.name].b += (sg.total.b||0);
+        }
+      });
+    });
+  });
+  return out;
+}
+function renderComparePanel(){
+  var p = document.getElementById("vc-panel");
+  var vers = _vcVersionList();
+  if (vers.length < 2){
+    p.innerHTML = '<div style="color:var(--t3);padding:8px">Need at least 2 forecast versions to compare. Currently '+vers.length+' available.</div>';
+    return;
+  }
+  if (!S.vcA) S.vcA = vers[1];   // older
+  if (!S.vcB) S.vcB = vers[0];   // newer
+  var opt = function(sel){ return vers.map(function(v){return '<option value="'+esc(v)+'"'+(v===sel?" selected":"")+">"+esc(v)+"</option>";}).join(""); };
+
+  var a = _vcAgg(S.vcA), b = _vcAgg(S.vcB);
+  var rows = SEGS.map(function(sg){
+    var fa=a[sg].f, fb=b[sg].f, d=fb-fa;
+    var cls = Math.abs(d)<1?"flat":(d>0?"up":"down");
+    var arr = d>0?"▲":(d<0?"▼":"–");
+    return '<div class="vc-row"><span class="vc-nm" style="color:'+(SEGC[sg]||"#3A5CAA")+'">'+sg+'</span>'
+      +'<span class="vc-num">'+CUR.s()+fK(fa)+'</span>'
+      +'<span class="vc-num">'+CUR.s()+fK(fb)+'</span>'
+      +'<span class="vc-delta '+cls+'">'+arr+(d>=0?"+":"−")+CUR.s()+fK(Math.abs(d))+'</span></div>';
+  }).join("");
+  var totA=SEGS.reduce(function(s,sg){return s+a[sg].f;},0);
+  var totB=SEGS.reduce(function(s,sg){return s+b[sg].f;},0);
+  var td=totB-totA, tcls=Math.abs(td)<1?"flat":(td>0?"up":"down");
+
+  p.innerHTML =
+    '<div class="vc-pickers">'
+    +'<label>Compare</label>'
+    +'<select onchange="S.vcA=this.value;renderComparePanel()">'+opt(S.vcA)+'</select>'
+    +'<span>→</span>'
+    +'<select onchange="S.vcB=this.value;renderComparePanel()">'+opt(S.vcB)+'</select>'
+    +'<span style="color:var(--t3);font-size:12px;margin-left:auto">Forecast totals by segment (both countries)</span>'
+    +'</div>'
+    +'<div class="vc-row head"><span>Segment</span><span class="vc-num">Ver '+esc(S.vcA)+'</span><span class="vc-num">Ver '+esc(S.vcB)+'</span><span class="vc-delta">Δ Change</span></div>'
+    +rows
+    +'<div class="vc-row" style="border-top:2px solid var(--br);font-weight:800">'
+      +'<span class="vc-nm">TOTAL</span>'
+      +'<span class="vc-num">'+CUR.s()+fK(totA)+'</span>'
+      +'<span class="vc-num">'+CUR.s()+fK(totB)+'</span>'
+      +'<span class="vc-delta '+tcls+'">'+(td>0?"▲+":(td<0?"▼−":"–"))+CUR.s()+fK(Math.abs(td))+'</span></div>';
+}
+
+// ── (9) GLOBAL SEARCH / QUICK JUMP ──────────────────────────────────
+var GS = { items:[], filtered:[], sel:0 };
+function buildSearchIndex(){
+  var items = [];
+  // tabs
+  [["ov","📊","Overview","Dashboard home"],["seg","📦","By Segment","Dental / Surgical / Eyeless / MMG"],
+   ["cty","🌏","By Country","Thailand · Viet Nam"],["dist","🏢","By Distributor","All distributors"],
+   ["gap","🔍","GAP Analysis","Above / below budget"],["acc","🎯","Forecast Accuracy","Accuracy heat-map"],
+   ["cmp","⚖️","Comparison","So sánh Segment / Country / Distributor"],
+   ["exp","📋","Explanations","Version history"]
+  ].forEach(function(t){ items.push({type:"tab",id:t[0],ic:t[1],nm:t[2],sub:t[3]}); });
+  // segments
+  SEGS.forEach(function(sg,si){ items.push({type:"seg",si:si,ic:"📦",nm:sg,sub:"Segment"}); });
+  // countries
+  items.push({type:"cty",ci:0,ic:flag("th"),nm:"Thailand",sub:"Country"});
+  items.push({type:"cty",ci:1,ic:flag("vn"),nm:"Viet Nam",sub:"Country"});
+  // distributors (from FY detail, aggregated)
+  var seen={};
+  getDistPeriodAllFY().forEach(function(d){
+    var key=d.di+"|"+d.si;
+    if(seen[key]) return; seen[key]=1;
+    items.push({type:"dist",di:d.di,si:d.si,ic:"🏢",nm:DIST_NAMES[d.di],
+      sub:SEG_NAMES[d.si]+" · "+CUR.s()+fK(d.fc), fc:d.fc});
+  });
+  GS.items = items;
+}
+function openSearch(){
+  buildSearchIndex();
+  var ov=document.getElementById("gs-overlay");
+  ov.classList.add("on");
+  var inp=document.getElementById("gs-inp");
+  inp.value=""; GS.sel=0;
+  renderSearch();
+  setTimeout(function(){ inp.focus(); }, 40);
+}
+function closeSearch(){ document.getElementById("gs-overlay").classList.remove("on"); }
+function renderSearch(){
+  var q=(document.getElementById("gs-inp").value||"").trim().toLowerCase();
+  var list = !q ? GS.items.slice(0,9)
+    : GS.items.filter(function(it){
+        return (it.nm+" "+(it.sub||"")).toLowerCase().indexOf(q)>=0;
+      }).sort(function(a,b){
+        // prioritize name-starts-with, then distributors by forecast size
+        var as=a.nm.toLowerCase().indexOf(q)===0?0:1, bs=b.nm.toLowerCase().indexOf(q)===0?0:1;
+        if(as!==bs) return as-bs;
+        return (b.fc||0)-(a.fc||0);
+      }).slice(0,30);
+  GS.filtered=list; if(GS.sel>=list.length) GS.sel=Math.max(0,list.length-1);
+  var box=document.getElementById("gs-results");
+  if(!list.length){ box.innerHTML='<div class="gs-empty">No matches for “'+esc(q)+'”</div>'; return; }
+  box.innerHTML=list.map(function(it,i){
+    var val = it.type==="dist" ? '<span class="gs-val" style="color:var(--B)">'+CUR.s()+fK(it.fc)+'</span>' : '';
+    return '<div class="gs-res'+(i===GS.sel?" sel":"")+'" onclick="pickSearch('+i+')" onmouseenter="GS.sel='+i+';highlightSearch()">'
+      +'<span class="gs-ic">'+it.ic+'</span>'
+      +'<span class="gs-main"><div class="gs-nm">'+esc(it.nm)+'</div><div class="gs-sub">'+esc(it.sub||"")+'</div></span>'
+      +val+'</div>';
+  }).join("");
+}
+function highlightSearch(){
+  document.querySelectorAll("#gs-results .gs-res").forEach(function(el,i){
+    el.classList.toggle("sel", i===GS.sel);
+  });
+}
+function searchKey(e){
+  if(e.key==="ArrowDown"){ e.preventDefault(); GS.sel=Math.min(GS.sel+1,GS.filtered.length-1); highlightSearch(); scrollSel(); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); GS.sel=Math.max(GS.sel-1,0); highlightSearch(); scrollSel(); }
+  else if(e.key==="Enter"){ e.preventDefault(); pickSearch(GS.sel); }
+  else if(e.key==="Escape"){ closeSearch(); }
+}
+function scrollSel(){
+  var el=document.querySelectorAll("#gs-results .gs-res")[GS.sel];
+  if(el) el.scrollIntoView({block:"nearest"});
+}
+function pickSearch(i){
+  var it=GS.filtered[i]; if(!it) return;
+  closeSearch();
+  if(it.type==="tab"){ goTab(it.id); }
+  else if(it.type==="seg"){ goTab("seg"); setTimeout(function(){ openDrillSegment(it.si); },120); }
+  else if(it.type==="cty"){ goTab("cty"); setTimeout(function(){ if(typeof openDrillCountry==="function") openDrillCountry(it.ci); },120); }
+  else if(it.type==="dist"){ goTab("dist"); setTimeout(function(){ openDrillDistributor(it.di,it.si); },120); }
+}
+
+// ── (5) PRINT / PDF REPORT ──────────────────────────────────────────
+// Snapshot active tab as clean A4-landscape print (browser print dialog
+// lets the user "Save as PDF"). Charts are re-rendered with print-safe
+// tick colors, then restored after the dialog closes.
+function _activeSecTitle(){
+  var sec = document.querySelector(".sec.on");
+  if (!sec) return "Report";
+  var lbl = sec.querySelector(".sl");
+  return lbl ? lbl.textContent.trim() : "Report";
+}
+function _injectPrintFoot(){
+  var old = document.getElementById("print-foot");
+  if (old) old.parentNode.removeChild(old);
+  var sec = document.querySelector(".sec.on");
+  if (!sec) return;
+  var now = new Date();
+  var ts = now.toLocaleString("en-GB",{year:"numeric",month:"short",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  var ccy = CUR.code==="VND" ? ("VND · rate "+CUR.rate.toLocaleString()+"/USD") : "USD";
+  var f = document.createElement("div");
+  f.id = "print-foot";
+  f.innerHTML =
+    '<span><b>MMH Turnover Dashboard</b> · FY67 · '+esc(_activeSecTitle())+' · '+esc(pLabel())+'</span>'
+    +'<span>Currency: '+ccy+' · Printed '+esc(ts)+'</span>';
+  sec.appendChild(f);
+}
+// Make Chart.js text dark for print (otherwise grey ticks become invisible on white)
+var _chartPrintBackup = [];
+function _printifyCharts(){
+  _chartPrintBackup = [];
+  Object.keys(S.charts).forEach(function(k){
+    var ch = S.charts[k]; if (!ch || !ch.options) return;
+    var snap = {};
+    try {
+      // x-axis ticks
+      if (ch.options.scales) {
+        Object.keys(ch.options.scales).forEach(function(ax){
+          var sc = ch.options.scales[ax]; if (!sc || !sc.ticks) return;
+          snap[ax] = { color: sc.ticks.color, gridColor: sc.grid && sc.grid.color };
+          sc.ticks.color = "#0E2F5F";
+          if (sc.grid) sc.grid.color = "#CCC";
+        });
+      }
+      snap.anim = ch.options.animation;
+      ch.options.animation = false;
+      _chartPrintBackup.push({ch:ch, snap:snap});
+      ch.update("none");
+    } catch(e){}
+  });
+}
+function _restoreCharts(){
+  _chartPrintBackup.forEach(function(rec){
+    try {
+      var ch = rec.ch, snap = rec.snap;
+      if (ch.options.scales) {
+        Object.keys(snap).forEach(function(ax){
+          if (ax==="anim") return;
+          var sc = ch.options.scales[ax]; if (!sc) return;
+          if (sc.ticks) sc.ticks.color = snap[ax].color;
+          if (sc.grid)  sc.grid.color  = snap[ax].gridColor;
+        });
+      }
+      ch.options.animation = snap.anim;
+      ch.update("none");
+    } catch(e){}
+  });
+  _chartPrintBackup = [];
+}
+function printReport(){
+  // Build a print-safe document title so PDF auto-names like "MMH FY67 …"
+  var prevTitle = document.title;
+  document.title = "MMH FY67 - " + _activeSecTitle() + " - " + pLabel();
+
+  _injectPrintFoot();
+  _printifyCharts();
+
+  // Run print on the next frame so layout reflows first
+  setTimeout(function(){
+    try { window.print(); } catch(e){ showToast("Print not available", "warn"); }
+    // Restore after dialog (a tiny delay covers most browsers)
+    setTimeout(function(){
+      _restoreCharts();
+      var f = document.getElementById("print-foot"); if (f && f.parentNode) f.parentNode.removeChild(f);
+      document.title = prevTitle;
+    }, 600);
+  }, 80);
+}
+// also catch native Ctrl/Cmd+P → route through our cleanup
+window.addEventListener("beforeprint", function(){
+  if (!document.getElementById("print-foot")) {
+    _injectPrintFoot();
+    _printifyCharts();
+  }
+});
+window.addEventListener("afterprint", function(){
+  _restoreCharts();
+  var f = document.getElementById("print-foot"); if (f && f.parentNode) f.parentNode.removeChild(f);
+});
+
+// ── COMPARISON TAB ──────────────────────────────────────────────────
+// Side-by-side comparison of 2–3 entities across three modes:
+//   segment  → cross-segment (Dental vs Surgical vs Eyeless vs MMG)
+//   country  → Thailand vs Viet Nam (2 fixed)
+//   dist     → distributors within one chosen segment
+var CMP = {
+  mode: "segment",          // segment | country | dist
+  distSeg: "Dental",        // active segment when mode==="dist"
+  scope: "fy",              // fy | qtr | month
+  qi: 0,                    // quarter index 0..3
+  mi: 0,                    // month index 0..11
+  picks: {
+    segment: ["Dental","Surgical"],
+    country: ["Thailand","VietNam"],
+    dist:    []
+  }
+};
+function cmpKey(){ return CMP.mode==="dist" ? "dist" : CMP.mode; }
+function cmpToggle(id){
+  var k = cmpKey();
+  var arr = CMP.picks[k];
+  var i = arr.indexOf(id);
+  if (i>=0) { arr.splice(i,1); }
+  else {
+    if (arr.length>=3) arr.shift();
+    arr.push(id);
+  }
+  rCMP();
+}
+function cmpSetMode(m){
+  CMP.mode = m;
+  if (m==="dist" && !CMP.picks.dist.length) {
+    var top = getDistPeriodAllFY().filter(function(d){return d.sg===CMP.distSeg;})
+      .sort(function(a,b){return b.fc-a.fc;}).slice(0,2)
+      .map(function(d){return d.di+"|"+d.si;});
+    CMP.picks.dist = top;
+  }
+  rCMP();
+}
+function cmpSetDistSeg(sg){
+  CMP.distSeg = sg;
+  CMP.picks.dist = [];
+  cmpSetMode("dist");
+}
+function cmpClear(){ CMP.picks[cmpKey()]=[]; rCMP(); }
+function cmpSetScope(sc){ CMP.scope = sc; rCMP(); }
+function cmpSetQI(qi){ CMP.qi=+qi; CMP.scope="qtr"; rCMP(); }
+function cmpSetMI(mi){ CMP.mi=+mi; CMP.scope="month"; rCMP(); }
+function cmpMonthIdxs(){
+  if (CMP.scope==="qtr") return [0,1,2].map(function(k){return CMP.qi*3+k;});
+  if (CMP.scope==="month") return [CMP.mi];
+  return [0,1,2,3,4,5,6,7,8,9,10,11];
+}
+function cmpScopeLabel(){
+  if (CMP.scope==="qtr") return "Q"+(CMP.qi+1)+" · "+["Sep–Nov 25","Dec–Feb 26","Mar–May 26","Jun–Aug 26"][CMP.qi];
+  if (CMP.scope==="month") return MONTHLY_GRAND[CMP.mi].lbl;
+  return "FY67 · Full Year";
+}
+
+// Aggregate B/F per entity, honoring scope. Always returns the FULL 12-month
+// series too so the trend chart can show context.
+function cmpEntityData(mode, id){
+  var idxs = cmpMonthIdxs();
+  var inScope = {}; idxs.forEach(function(i){ inScope[i]=1; });
+
+  if (mode==="segment"){
+    var sg = id;
+    var bm=0,fc=0; var mF=new Array(12).fill(0), mB=new Array(12).fill(0);
+    DETAIL_ROWS.forEach(function(r){
+      if (SEG_NAMES[r[1]]!==sg) return;
+      mB[r[0]]+=r[4]; mF[r[0]]+=r[5];
+      if (inScope[r[0]]) { bm+=r[4]; fc+=r[5]; }
+    });
+    var coBreak = [{co:"Thailand",bm:0,fc:0},{co:"VietNam",bm:0,fc:0}];
+    DETAIL_ROWS.forEach(function(r){
+      if (SEG_NAMES[r[1]]!==sg) return;
+      if (!inScope[r[0]]) return;
+      var ci = r[2]; if (ci===0||ci===1){ coBreak[ci].bm+=r[4]; coBreak[ci].fc+=r[5]; }
+    });
+    return { name:sg, tag:"Segment", color:SEGC[sg]||"#3A5CAA",
+      bm:bm, fc:fc, gap:fc-bm, gp:bm?(fc-bm)/bm*100:0,
+      mSeriesB:mB, mSeries:mF, segs:[], coBreak:coBreak };
+  }
+  if (mode==="country"){
+    var co = id;
+    var bm=0,fc=0; var mF=new Array(12).fill(0), mB=new Array(12).fill(0);
+    var segMap = {}; SEGS.forEach(function(sg){ segMap[sg]={sg:sg,bm:0,fc:0}; });
+    DETAIL_ROWS.forEach(function(r){
+      if (CTYS[r[2]]!==co) return;
+      mB[r[0]]+=r[4]; mF[r[0]]+=r[5];
+      if (inScope[r[0]]){
+        bm+=r[4]; fc+=r[5];
+        var sn=SEG_NAMES[r[1]]; if (segMap[sn]){ segMap[sn].bm+=r[4]; segMap[sn].fc+=r[5]; }
+      }
+    });
+    var segArr = SEGS.map(function(sg){var s=segMap[sg];return {sg:sg,bm:s.bm,fc:s.fc,gap:s.fc-s.bm};});
+    return { name:(co==="VietNam"?"Viet Nam":"Thailand"), tag:"Country",
+      flag: co==="VietNam"?flag("vn"):flag("th"),
+      color: co==="VietNam"?"#DA251D":"#ED1C24",
+      bm:bm, fc:fc, gap:fc-bm, gp:bm?(fc-bm)/bm*100:0,
+      mSeriesB:mB, mSeries:mF, segs:segArr };
+  }
+  // dist
+  var parts=id.split("|"), di=+parts[0], si=+parts[1];
+  var bm=0,fc=0; var mF=new Array(12).fill(0), mB=new Array(12).fill(0);
+  var coDet = null;
+  DETAIL_ROWS.forEach(function(r){
+    if (r[3]!==di || r[1]!==si) return;
+    mB[r[0]]+=r[4]; mF[r[0]]+=r[5];
+    if (inScope[r[0]]) { bm+=r[4]; fc+=r[5]; }
+    if (coDet===null) coDet=r[2];
+  });
+  var coStr = coDet===0 ? "Thailand" : (coDet===1 ? "Viet Nam" : "?");
+  return { name:DIST_NAMES[di], tag:SEG_NAMES[si]+" · "+coStr,
+    color:SEGC[SEG_NAMES[si]]||"#3A5CAA",
+    flag: coDet===0?flag("th"):flag("vn"),
+    di:di, si:si, sg:SEG_NAMES[si], co:coStr,
+    bm:bm, fc:fc, gap:fc-bm, gp:bm?(fc-bm)/bm*100:0,
+    mSeriesB:mB, mSeries:mF, segs:[] };
+}
+
+function cmpExplanation(mode, ent){
+  if (mode==="segment"){
+    return findExpl("Viet Nam", ent.name, null, null) || findExpl("Thailand", ent.name, null, null);
+  }
+  if (mode==="country"){
+    return findExplByCty(ent.name, null);
+  }
+  return findExpl(ent.co, ent.sg, ent.name, null);
+}
+
+function rCMP(){
+  var ctrl = document.getElementById("cmp-controls");
+  var out  = document.getElementById("cmp-out");
+  if (!ctrl || !out) return;
+
+  // ── Mode + entity pickers ──
+  var mode = CMP.mode;
+  var modeBtn = function(m, lbl, ic){
+    return '<button class="cmp-pill '+(mode===m?"on":"")+'" onclick="cmpSetMode(\''+m+'\')">'+ic+' '+lbl+'</button>';
+  };
+  var pickGrid = "";
+  if (mode==="segment"){
+    pickGrid = SEGS.map(function(sg){
+      var on = CMP.picks.segment.indexOf(sg)>=0;
+      return '<button class="cmp-pill'+(on?" on":"")+'" onclick="cmpToggle(\''+sg+'\')">'+sg+'</button>';
+    }).join("");
+  } else if (mode==="country"){
+    pickGrid = [["Thailand","Thailand"],["VietNam","Viet Nam"]].map(function(p){
+      var on = CMP.picks.country.indexOf(p[0])>=0;
+      return '<button class="cmp-pill'+(on?" on":"")+'" onclick="cmpToggle(\''+p[0]+'\')">'+flag(p[0]==="Thailand"?"th":"vn")+' '+p[1]+'</button>';
+    }).join("");
+  } else {
+    var segChooser = '<div class="cmp-pick-grid" style="margin-right:12px;border-right:1px dashed var(--br);padding-right:12px">'
+      + '<span class="cmp-lbl" style="align-self:center;margin-right:4px">Segment:</span>'
+      + SEGS.map(function(sg){
+          return '<button class="cmp-pill'+(CMP.distSeg===sg?" on":"")+'" onclick="cmpSetDistSeg(\''+sg+'\')">📦 '+sg+'</button>';
+        }).join("")
+      + '</div>';
+    var distList = getDistPeriodAllFY().filter(function(d){return d.sg===CMP.distSeg;})
+      .sort(function(a,b){return b.fc-a.fc;});
+    var distPills = distList.map(function(d){
+      var id = d.di+"|"+d.si;
+      var on = CMP.picks.dist.indexOf(id)>=0;
+      var coIcon = d.co.indexOf("Viet")>=0 ? flag("vn") : flag("th");
+      return '<button class="cmp-pill'+(on?" on":"")+'" onclick="cmpToggle(\''+id+'\')">'+coIcon+' '+esc(cleanNm(d.nm,d.sg))+'</button>';
+    }).join("");
+    pickGrid = segChooser + '<div class="cmp-pick-grid" style="align-items:center">'
+      + '<span class="cmp-lbl" style="align-self:center;margin-right:4px">Pick:</span>'
+      + (distPills||'<span class="cmp-hint">No distributors in this segment</span>')
+      + '</div>';
+  }
+
+  // ── Time scope row ──
+  var qBtns = [0,1,2,3].map(function(q){
+    return '<button class="seg-btn '+(CMP.scope==="qtr"&&CMP.qi===q?"on":"")+'" onclick="cmpSetQI('+q+')">Q'+(q+1)+'</button>';
+  }).join("");
+  var mBtns = MONTHLY_GRAND.map(function(m,i){
+    return '<button class="seg-btn mc-small '+(CMP.scope==="month"&&CMP.mi===i?"on":"")+'" onclick="cmpSetMI('+i+')">'+m.lbl.slice(0,3)+'</button>';
+  }).join("");
+
+  ctrl.innerHTML =
+    '<div class="cmp-mode-row">'
+    + '<span class="cmp-lbl">Compare by:</span>'
+    + modeBtn("segment","Segment","📦")
+    + modeBtn("country","Country","🌏")
+    + modeBtn("dist","Distributors in a Segment","🏢")
+    + '<span class="cmp-hint">Pick 2 or 3 entities to compare side-by-side</span>'
+    + '<button class="cmp-clear" onclick="cmpClear()">Clear all</button>'
+    + '</div>'
+    + '<div class="cmp-pick-row">'+pickGrid+'</div>'
+    + '<div class="cmp-mode-row" style="border-top:1px dashed var(--br);padding-top:10px;margin-top:10px;margin-bottom:0;border-bottom:none">'
+      + '<span class="cmp-lbl">Time scope:</span>'
+      + '<button class="cmp-pill '+(CMP.scope==="fy"?"on":"")+'" onclick="cmpSetScope(\'fy\')">📅 Full Year</button>'
+      + '<button class="cmp-pill '+(CMP.scope==="qtr"?"on":"")+'" onclick="cmpSetScope(\'qtr\')">📊 Quarter</button>'
+      + '<button class="cmp-pill '+(CMP.scope==="month"?"on":"")+'" onclick="cmpSetScope(\'month\')">📆 Month</button>'
+      + (CMP.scope==="qtr" ? '<span style="margin-left:8px;display:flex;gap:6px;flex-wrap:wrap">'+qBtns+'</span>' : '')
+      + (CMP.scope==="month" ? '<span style="margin-left:8px;display:flex;gap:4px;flex-wrap:wrap">'+mBtns+'</span>' : '')
+      + '<span class="cmp-hint" style="margin-left:auto"><b>Showing:</b> '+esc(cmpScopeLabel())+'</span>'
+    + '</div>';
+
+  // ── Output ──
+  var picks = CMP.picks[cmpKey()];
+  if (!picks.length){
+    out.innerHTML = '<div class="cmp-empty"><div class="big">⚖️</div>No entities selected. Tick 2–3 pills above to start comparing.</div>';
+    return;
+  }
+  if (picks.length<2){
+    out.innerHTML = '<div class="cmp-empty"><div class="big">➕</div>Select at least 1 more entity to compare.</div>';
+    return;
+  }
+
+  var ents = picks.map(function(id){ return cmpEntityData(mode, id); });
+  // Override each entity color with a distinct palette slot so columns are clearly
+  // distinguishable even when entities share a segment color.
+  var ENT_COLORS = ["#3A5CAA","#16A34A","#F59E0B"];
+  ents.forEach(function(e,i){ e.color = ENT_COLORS[i]; });
+  var refBm = ents[0].bm, refFc = ents[0].fc;
+  var scopeLbl = cmpScopeLabel();
+  var idxsArr = cmpMonthIdxs();
+  var visMonths = idxsArr.map(function(i){return MONTHLY_GRAND[i];});
+  // single-month picks have only 1 visible — show full 12 months in chart for context
+  var showFullYear = idxsArr.length<=3;
+
+  var colHtml = ents.map(function(e, i){
+    var deltaStrip = i===0 ? '' :
+      '<div class="cmp-delta-strip">'
+      +'<span>vs <b>'+esc(ents[0].name)+'</b> Budget: <b class="'+((e.bm-refBm)>=0?"up":"down")+'">'+((e.bm-refBm)>=0?"+":"")+CUR.s()+fK(Math.abs(e.bm-refBm))+'</b></span>'
+      +'<span>Forecast: <b class="'+((e.fc-refFc)>=0?"up":"down")+'">'+((e.fc-refFc)>=0?"+":"")+CUR.s()+fK(Math.abs(e.fc-refFc))+'</b></span>'
+      +'</div>';
+
+    var avgMonthly = e.fc/(idxsArr.length||1);
+    var segBreakHtml = "";
+    if (mode==="country" && e.segs && e.segs.length){
+      var maxFc = Math.max.apply(null, e.segs.map(function(s){return s.fc;}));
+      segBreakHtml =
+        '<div class="cmp-chart-wrap" style="padding-top:0"><div class="cmp-chart-ttl">Breakdown by Segment</div><div class="cmp-seg-list">'
+        + e.segs.map(function(s){
+            var w = maxFc>0 ? (s.fc/maxFc*100) : 0;
+            return '<div class="cmp-seg-row"><span class="cmp-seg-nm" style="color:'+(SEGC[s.sg]||"#3A5CAA")+'">'+s.sg+'</span>'
+              + '<span class="cmp-seg-bar"><span class="cmp-seg-fill" style="width:'+w.toFixed(1)+'%;background:'+(SEGC[s.sg]||"#3A5CAA")+'"></span></span>'
+              + '<span class="cmp-seg-val">'+CUR.s()+fK(s.fc)+'</span></div>';
+          }).join("")
+        + '</div></div>';
+    } else if (mode==="segment" && e.coBreak){
+      var totFc = e.coBreak[0].fc + e.coBreak[1].fc;
+      segBreakHtml =
+        '<div class="cmp-chart-wrap" style="padding-top:0"><div class="cmp-chart-ttl">Breakdown by Country</div><div class="cmp-seg-list">'
+        + e.coBreak.map(function(cx){
+            var nm = cx.co==="VietNam"?"Viet Nam":"Thailand";
+            var fl = cx.co==="VietNam"?flag("vn"):flag("th");
+            var ratio = totFc>0 ? (cx.fc/totFc*100) : 0;
+            return '<div class="cmp-seg-row"><span class="cmp-seg-nm">'+fl+' '+nm+'</span>'
+              + '<span class="cmp-seg-bar"><span class="cmp-seg-fill" style="width:'+ratio.toFixed(1)+'%;background:'+e.color+'"></span></span>'
+              + '<span class="cmp-seg-val">'+CUR.s()+fK(cx.fc)+'</span></div>';
+          }).join("")
+        + '</div></div>';
+    }
+
+    var ex = cmpExplanation(mode, e);
+    var explHtml;
+    if (!ex || (!ex.e && !(ex.entries && ex.entries.length))){
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 Explanation (latest)</div><div class="cmp-expl-tx cmp-expl-empty">— No explanation recorded yet —</div></div>';
+    } else if (ex.entries && ex.entries.length){
+      var first = ex.entries[0];
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+' · '+esc(first.segment||"")+'</div><div class="cmp-expl-tx">'+esc(first.e||"—")+'</div></div>';
+    } else {
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+'</div><div class="cmp-expl-tx">'+esc(ex.e||"—")+'</div></div>';
+    }
+
+    var gapCls = e.gap>=0?"pos":"neg";
+    var nameRow = (e.flag||"")+' '+esc(e.name);
+    var cls = "cmp-col col-"+i;
+    var colColor = e.color;
+    var headStyle = 'style="border-top:4px solid '+colColor+'"';
+
+    return '<div class="'+cls+'" '+headStyle+'>'
+      + '<div class="cmp-hd">'
+        + '<div class="cmp-hd-nm">'+nameRow+'</div>'
+        + '<div class="cmp-hd-sub">'+esc(e.tag)+' · '+esc(scopeLbl)+'</div>'
+      + '</div>'
+      + deltaStrip
+      + '<div class="cmp-kpi-grid">'
+        + '<div class="cmp-kpi"><div class="cmp-k-l">Budget Mani</div><div class="cmp-k-v">'+CUR.s()+fK(e.bm)+'</div></div>'
+        + '<div class="cmp-kpi"><div class="cmp-k-l">Forecast</div><div class="cmp-k-v">'+CUR.s()+fK(e.fc)+'</div></div>'
+        + '<div class="cmp-kpi"><div class="cmp-k-l">GAP</div><div class="cmp-k-v '+gapCls+'">'+(e.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(e.gap))+'</div><div class="cmp-k-s">'+(e.gp>=0?"+":"")+e.gp.toFixed(1)+'%</div></div>'
+        + '<div class="cmp-kpi"><div class="cmp-k-l">Avg / Month</div><div class="cmp-k-v">'+CUR.s()+fK(avgMonthly)+'</div></div>'
+      + '</div>'
+      + '<div class="cmp-chart-wrap"><div class="cmp-chart-ttl">📈 Monthly Forecast — FY67</div><div class="cmp-chart-box"><canvas id="cmp-ch-'+i+'"></canvas></div></div>'
+      + segBreakHtml
+      + explHtml
+      + '</div>';
+  }).join("");
+
+  var nCls = "n"+ents.length;
+  out.innerHTML = '<div class="cmp-cols '+nCls+'">'+colHtml+'</div>'
+    + '<div class="card reveal"><div class="ch"><div class="ct">📊 Side-by-side Overview — '+esc(scopeLbl)+'</div><div class="cs">Budget, Forecast and absolute GAP for each entity on a single chart</div></div>'
+      +'<div class="cb"><div class="cw t"><canvas id="cmp-overview"></canvas></div></div></div>';
+
+  // Compute global Y-max to suggested scale + headroom so labels never overflow
+  var maxV = 0;
+  ents.forEach(function(e){
+    e.mSeriesB.forEach(function(v){ var c=CUR.conv(v); if(c>maxV)maxV=c; });
+    e.mSeries.forEach(function(v){ var c=CUR.conv(v); if(c>maxV)maxV=c; });
+  });
+  var yMax = maxV * 1.18 || undefined;   // 18% headroom for top labels
+
+  ents.forEach(function(e, i){
+    var col = e.color || "#3A5CAA";
+    var idxsSet = {}; idxsArr.forEach(function(k){ idxsSet[k]=1; });
+    killC("cmp-ch-"+i);
+    S.charts["cmp-ch-"+i] = new Chart(document.getElementById("cmp-ch-"+i), {
+      type:"bar",
+      data:{ labels: MONTHLY_GRAND.map(function(m){return m.lbl.slice(0,3);}),
+        datasets:[
+          {label:"Budget",   data:e.mSeriesB.map(function(v){return CUR.conv(v);}),
+            backgroundColor:e.mSeriesB.map(function(_,k){return idxsSet[k]?"rgba(160,174,192,.7)":"rgba(160,174,192,.25)";}),
+            borderRadius:3, datalabels:{display:false}},
+          {label:"Forecast", data:e.mSeries.map(function(v){return CUR.conv(v);}),
+            backgroundColor:e.mSeries.map(function(_,k){return idxsSet[k]?col:hexA(col,.35);}),
+            borderRadius:3,
+            datalabels:{display:false}}
+        ]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:600,easing:"easeOutQuart"},
+        layout:{padding:{top:4,right:6,bottom:0,left:0}},
+        plugins:{legend:{position:"bottom",labels:{font:{family:FF,size:10},boxWidth:10,padding:5,color:"var(--t2)"}},
+          datalabels:{display:false},
+          tooltip:{callbacks:{label:function(it){return it.dataset.label+": "+CUR.s()+fmtN(Math.round(it.parsed.y/(CUR.code==="VND"?CUR.rate:1)));}}}},
+        scales:{x:{grid:{display:false},ticks:{font:{family:FF,size:9}}},
+                y:{ suggestedMax: yMax,
+                    ticks:{callback:function(v){return fKS(v/CUR.conv(1));},font:{family:FF,size:9}},grid:{color:"#EEF2F9"}}}}
+    });
+  });
+
+  // Overview side-by-side bar (3 metrics × N entities)
+  killC("cmp-overview");
+  S.charts["cmp-overview"] = new Chart(document.getElementById("cmp-overview"), {
+    type:"bar",
+    data:{ labels:["Budget Mani","Forecast","GAP (abs)"],
+      datasets: ents.map(function(e, i){
+        return {
+          label: e.name,
+          data: [CUR.conv(e.bm), CUR.conv(e.fc), CUR.conv(Math.abs(e.gap))],
+          backgroundColor: e.color, borderRadius:4,
+          datalabels:{display:true,anchor:"end",align:"end",color:e.color,font:{family:FF,size:11,weight:"800"},clamp:true,clip:false,offset:2,formatter:function(v){return fKS(v/CUR.conv(1));}}
+        };
+      }) },
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:900,easing:"easeOutQuart"},
+      layout:{padding:{top:24,right:10}},
+      plugins:{legend:{position:"bottom",labels:{font:{family:FF,size:12},boxWidth:13}},datalabels:{display:true}},
+      scales:{x:{grid:{display:false},ticks:{font:{family:FF,size:12,weight:"700"}}},
+              y:{beginAtZero:true,
+                 ticks:{callback:function(v){return fKS(v/CUR.conv(1));},font:{family:FF,size:11}},
+                 grid:{color:"#EEF2F9"}}}}
+  });
+}
+
+// helper: dim hex color with alpha
+function hexA(hex, a){
+  hex = String(hex||"").replace("#","");
+  if (hex.length===3) hex = hex.split("").map(function(c){return c+c;}).join("");
+  var r=parseInt(hex.substr(0,2),16), g=parseInt(hex.substr(2,2),16), b=parseInt(hex.substr(4,2),16);
+  return "rgba("+r+","+g+","+b+","+a+")";
+}
+
+// ── (12) BOTTOM-NAV active-state sync ───────────────────────────────
+function syncBottomNav(tab){
+  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",acc:"acc",cmp:"exp",exp:"exp"};
+  var active=map[tab]||"ov";
+  document.querySelectorAll(".btmnav .bn").forEach(function(b){
+    b.classList.toggle("on", b.id==="bn-"+active);
+  });
+}
+
+// global keyboard: Ctrl/Cmd+K opens search
+document.addEventListener("keydown", function(e){
+  if((e.ctrlKey||e.metaKey) && (e.key==="k"||e.key==="K")){
+    e.preventDefault(); openSearch();
+  }
+});
+
 window.onload = function() {
+  // restore saved theme + currency
+  try {
+    var th = localStorage.getItem("mmh_theme");
+    applyTheme(th==="dark" ? "dark" : "light");
+    var cu = localStorage.getItem("mmh_currency");
+    if (cu==="VND") { CUR.code="VND";
+      document.getElementById("cur-usd").classList.remove("on");
+      document.getElementById("cur-vnd").classList.add("on"); }
+  } catch(e){}
   renderAll();
   setSrc("off");
   startClock();
@@ -3732,6 +5313,7 @@ window.onload = function() {
     setTimeout(function(){ l.style.display="none"; }, 460);
     initReveal();
   }, 850);
+  setTimeout(function(){ startUpdBanner(); }, 1300);
   setTimeout(function(){
     tryFetchLive(function(ok){
       if (ok) {
@@ -3743,6 +5325,7 @@ window.onload = function() {
         // Sau lần fetch đầu tiên thành công → start auto-refresh
         startAutoRefresh();
         startMetaCheck();
+        startUpdBanner();
       }
     }, {silent:true});
   }, 1100);
