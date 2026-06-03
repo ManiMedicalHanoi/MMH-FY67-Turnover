@@ -558,6 +558,14 @@ html[data-theme] thead th, html[data-theme] table td { transition: background .3
 
 /* ── (13) CURRENCY TOGGLE pill ── */
 .cur-sw { display:flex; align-items:center; gap:4px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:3px 4px; }
+
+/* Data-mode switch (Turnover ↔ Jizai) */
+.dmode-switch { display:flex; gap:0; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); border-radius:10px; padding:3px; margin-left:12px; }
+.dmode-btn { background:transparent; border:none; color:rgba(255,255,255,.7); font-family:var(--ff); font-size:12.5px; font-weight:800; padding:6px 14px; border-radius:7px; cursor:pointer; transition:all .15s; letter-spacing:.2px; white-space:nowrap; }
+.dmode-btn.on { background:#fff; color:var(--N); box-shadow:0 1px 4px rgba(0,0,0,.15); }
+.dmode-btn:not(.on):hover { color:#fff; background:rgba(255,255,255,.08); }
+/* Visual cue when Jizai mode is active */
+body.mode-jizai .logo-t::after { content:" · ⚙️ Jizai view"; font-size:11px; color:var(--Y); font-weight:700; }
 .cur-sw button { background:transparent; border:none; color:rgba(255,255,255,.55); font-family:var(--ff); font-size:11px; font-weight:800; padding:4px 9px; border-radius:6px; cursor:pointer; transition:all .12s; }
 .cur-sw button.on { background:var(--Y); color:var(--N); }
 
@@ -845,6 +853,10 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
         <button class="pb"    id="pb-qtr"   onclick="setPeriod('qtr')">Quarter</button>
         <button class="pb"    id="pb-month" onclick="setPeriod('month')">Month</button>
       </div>
+      <div class="dmode-switch" title="Toggle between MMH overall turnover and Jizai-only view">
+        <button class="dmode-btn on" id="dmode-turnover" onclick="setDataMode('turnover')">📊 Turnover</button>
+        <button class="dmode-btn"    id="dmode-jizai"    onclick="setDataMode('jizai')">⚙️ Jizai</button>
+      </div>
     </div>
     <div class="src" title="Data source status">
       <span class="live-dot" id="src-dot"></span>
@@ -871,7 +883,6 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
     <div class="nt"    id="nt-cty"  onclick="goTab('cty')">🌏 By Country</div>
     <div class="nt"    id="nt-dist" onclick="goTab('dist')">🏢 By Distributor</div>
     <div class="nt"    id="nt-gap"  onclick="goTab('gap')">🔍 GAP Analysis</div>
-    <div class="nt"    id="nt-acc"  onclick="goTab('acc')">🎯 Accuracy</div>
     <div class="nt"    id="nt-cmp"  onclick="goTab('cmp')">⚖️ Comparison</div>
     <div class="nt"    id="nt-exp"  onclick="goTab('exp')">📋 Explanations</div>
   </div>
@@ -937,20 +948,6 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
     <div class="cb"><div class="tw" id="t-gap"></div></div></div>
 </div>
 
-<div class="sec" id="sec-acc">
-  <div class="sh"><div class="sl">Forecast Accuracy</div><div class="sp" id="sp-acc">FY67</div></div>
-  <div id="acc-intro"></div>
-  <div id="acc-toolbar"></div>
-  <div class="kr" id="kr-acc"></div>
-  <div class="acc-legend" id="acc-legend"></div>
-  <div class="card reveal"><div class="ch"><div class="ct">Forecast Accuracy — Segment × Month</div><div class="cs">Click a row to open the drill detail for that segment</div><button class="dl-btn" onclick="exportTable('t-acc','forecast_accuracy')">⬇ Download CSV</button></div>
-    <div class="cb"><div class="tw" id="t-acc"></div></div></div>
-  <div class="card reveal"><div class="ch"><div class="ct">📈 Accuracy trend — 12 months FY67</div><div class="cs">Blue line = overall accuracy across all 4 segments. Dashed line = 90% target. Solid dots = months in current scope.</div></div>
-    <div class="cb"><div class="cw t"><canvas id="c-acc-trend"></canvas></div></div></div>
-  <div class="card reveal"><div class="ch"><div class="ct">🏢 Accuracy ranking by Distributor</div><div class="cs">Top 18 distributors with forecast closest to Budget Mani, within current scope</div></div>
-    <div class="cb"><div class="cw t"><canvas id="c-acc"></canvas></div></div></div>
-</div>
-
 <div class="sec" id="sec-cmp">
   <div class="sh"><div class="sl">Comparison</div><div class="sp">So sánh side-by-side: Segment / Country / Distributor</div></div>
   <div class="cmp-controls card reveal" id="cmp-controls"></div>
@@ -996,7 +993,7 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
   <button class="bn on" id="bn-ov"   onclick="goTab('ov')"><span class="bn-ic">📊</span><span class="bn-tx">Overview</span></button>
   <button class="bn"    id="bn-seg"  onclick="goTab('seg')"><span class="bn-ic">📦</span><span class="bn-tx">Segment</span></button>
   <button class="bn"    id="bn-gap"  onclick="goTab('gap')"><span class="bn-ic">🔍</span><span class="bn-tx">GAP</span></button>
-  <button class="bn"    id="bn-acc"  onclick="goTab('acc')"><span class="bn-ic">🎯</span><span class="bn-tx">Accuracy</span></button>
+  <button class="bn"    id="bn-cmp"  onclick="goTab('cmp')"><span class="bn-ic">⚖️</span><span class="bn-tx">Compare</span></button>
   <button class="bn"    id="bn-exp"  onclick="goTab('exp')"><span class="bn-ic">📋</span><span class="bn-tx">Notes</span></button>
 </nav>
 
@@ -1046,13 +1043,101 @@ function jsonp(action, cb, errCb, timeoutMs) {
   document.body.appendChild(s);
 }
 
+// ── Build SC_M / SC_Q / SC_FY / MONTHLY_GRAND / QUARTERLY_GRAND / GT_FY / DETAIL_ROWS
+// from a list of raw rows ({month,country,segment,distributor,budget,forecast}).
+// Returns false if the resulting totals are too small (sheet not ready).
+function _rebuildNumbersFromRows(rows){
+  if (!Array.isArray(rows)) return false;
+  var MI = {"202509":0,"202510":1,"202511":2,"202512":3,"202601":4,"202602":5,
+            "202603":6,"202604":7,"202605":8,"202606":9,"202607":10,"202608":11};
+  var SEGN = ["Dental","Surgical","Eyeless","MMG"];
+  function ctyKey(c){ c=(c||"").toLowerCase(); return c.indexOf("thai")>=0 ? "Thailand" : "VietNam"; }
+  var nSC = {Thailand:{}, VietNam:{}};
+  CTYS.forEach(function(co){ SEGN.forEach(function(sg){
+    nSC[co][sg] = []; for (var i=0;i<12;i++) nSC[co][sg].push({bm:0,fc:0});
+  });});
+  var nMG = []; for (var i=0;i<12;i++) nMG.push({bm:0,fc:0});
+  var detail = [];
+  rows.forEach(function(r){
+    var mi = MI[String(r.month).trim()];
+    if (mi==null) return;
+    var sg = String(r.segment||"").trim();
+    if (SEGN.indexOf(sg)<0) return;
+    var co = ctyKey(r.country);
+    var bm = +r.budget||0, fc = +r.forecast||0;
+    nSC[co][sg][mi].bm += bm; nSC[co][sg][mi].fc += fc;
+    nMG[mi].bm += bm; nMG[mi].fc += fc;
+    detail.push([mi, SEGN.indexOf(sg), CTYS.indexOf(co),
+      DIST_NAMES.indexOf(String(r.distributor||"").trim()), Math.round(bm), Math.round(fc)]);
+  });
+  var tot=0; nMG.forEach(function(m){tot+=m.fc;});
+  if (tot < 1) return false;
+  CTYS.forEach(function(co){ SEGN.forEach(function(sg){
+    nSC[co][sg].forEach(function(p){ p.bm=Math.round(p.bm); p.fc=Math.round(p.fc); });
+  });});
+  SC_M = nSC;
+  var qm=[[0,1,2],[3,4,5],[6,7,8],[9,10,11]];
+  SC_Q = {}; SC_FY = {};
+  CTYS.forEach(function(co){
+    SC_Q[co]={}; SC_FY[co]={};
+    SEGN.forEach(function(sg){
+      SC_Q[co][sg]=qm.map(function(q){
+        var bm=0,fc=0; q.forEach(function(i){bm+=SC_M[co][sg][i].bm; fc+=SC_M[co][sg][i].fc;});
+        return {bm:bm,fc:fc};
+      });
+      var tb=0,tf=0; SC_M[co][sg].forEach(function(p){tb+=p.bm; tf+=p.fc;});
+      SC_FY[co][sg]={bm:tb,fc:tf,gap:tf-tb};
+    });
+  });
+  var cg=0;
+  for (var i=0;i<12;i++){
+    MONTHLY_GRAND[i].bm = Math.round(nMG[i].bm);
+    MONTHLY_GRAND[i].fc = Math.round(nMG[i].fc);
+    MONTHLY_GRAND[i].gap = MONTHLY_GRAND[i].fc - MONTHLY_GRAND[i].bm;
+    cg += MONTHLY_GRAND[i].gap; MONTHLY_GRAND[i].cg = cg;
+  }
+  cg=0;
+  for (var q=0;q<4;q++){
+    var b=0,f=0; qm[q].forEach(function(i){b+=MONTHLY_GRAND[i].bm; f+=MONTHLY_GRAND[i].fc;});
+    QUARTERLY_GRAND[q].bm=b; QUARTERLY_GRAND[q].fc=f; QUARTERLY_GRAND[q].gap=f-b;
+    cg+=f-b; QUARTERLY_GRAND[q].cg=cg;
+  }
+  var gb=0,gf=0; MONTHLY_GRAND.forEach(function(m){gb+=m.bm; gf+=m.fc;});
+  GT_FY = {bm:gb, fc:gf, gap:gf-gb};
+  if (detail.length) DETAIL_ROWS = detail;
+  rebuildDistFromDetail();
+  return true;
+}
+
+// Switch between "turnover" (default) and "jizai" data view.
+// Re-uses cached raw rows so no re-fetch is needed.
+function setDataMode(mode){
+  if (mode!=="turnover" && mode!=="jizai") return;
+  S.dataMode = mode;
+  // Switch active segments (Jizai mode shows only the Dental → renamed "Jizai" view)
+  SEGS = (mode==="jizai" ? SEGS_JIZAI : SEGS_TURNOVER).slice();
+  var rows = (mode==="jizai") ? (window.RAW_JIZAI||[]) : (window.RAW_TURNOVER||[]);
+  if (rows.length === 0) {
+    showToast(mode==="jizai" ? "No Jizai data available yet" : "No Turnover data available", "warn");
+    return;
+  }
+  _rebuildNumbersFromRows(rows);
+  try { localStorage.setItem("mmh_dataMode", mode); } catch(e){}
+  var bt = document.getElementById("dmode-turnover"), bj = document.getElementById("dmode-jizai");
+  if (bt) bt.classList.toggle("on", mode==="turnover");
+  if (bj) bj.classList.toggle("on", mode==="jizai");
+  document.body.classList.toggle("mode-jizai", mode==="jizai");
+  // Reset distributor filter to ALL when switching (in case old filter not in new SEGS list)
+  if (S.distSeg && SEGS.indexOf(S.distSeg) < 0 && S.distSeg !== "ALL") S.distSeg = "ALL";
+  renderAll();
+}
+
 function applyLiveData(payload) {
   if (!payload) return false;
 
   // ── PASS 0: Versions are independent of turnover rows. Apply them even if
   // turnover data is missing/invalid, so the Explanations tab works on its own.
   try {
-    // Capture any backend-reported error (top-level "error", or "versionsError")
     var topErr = (!payload.ok && payload.error) ? payload.error : "";
     window.LAST_VERSIONS_ERROR = payload.versionsError ||
       topErr ||
@@ -1064,74 +1149,27 @@ function applyLiveData(payload) {
       try { if (typeof rEXP === "function") rEXP(); } catch(e) {}
       try { if (typeof feedSeed === "function") { feedSeed(); if (S.tab === "live") renderFeed(); } } catch(e) {}
     } else if (window.LAST_VERSIONS_ERROR) {
-      // No versions but backend told us why — re-render to surface diagnostic.
       try { if (typeof rEXP === "function") rEXP(); } catch(e) {}
     }
   } catch(e){ console.warn("apply versions failed:", e); }
 
-  // ── PASS 1: Turnover rows (numeric data). May fail without affecting versions.
-  if (!payload.ok || !Array.isArray(payload.rows)) return true;
+  // ── PASS 1: Turnover + Jizai rows. Cache both raw datasets so the user
+  // can toggle without a re-fetch.
+  if (!payload.ok) return true;
   try {
-    var MI = {"202509":0,"202510":1,"202511":2,"202512":3,"202601":4,"202602":5,
-              "202603":6,"202604":7,"202605":8,"202606":9,"202607":10,"202608":11};
-    var SEGN = ["Dental","Surgical","Eyeless","MMG"];
-    function ctyKey(c){ c=(c||"").toLowerCase(); return c.indexOf("thai")>=0 ? "Thailand" : "VietNam"; }
-    var nSC = {Thailand:{}, VietNam:{}};
-    CTYS.forEach(function(co){ SEGN.forEach(function(sg){
-      nSC[co][sg] = []; for (var i=0;i<12;i++) nSC[co][sg].push({bm:0,fc:0});
-    });});
-    var nMG = []; for (var i=0;i<12;i++) nMG.push({bm:0,fc:0});
-    var detail = [];
-    payload.rows.forEach(function(r){
-      var mi = MI[String(r.month).trim()];
-      if (mi==null) return;
-      var sg = String(r.segment||"").trim();
-      if (SEGN.indexOf(sg)<0) return;
-      var co = ctyKey(r.country);
-      var bm = +r.budget||0, fc = +r.forecast||0;
-      nSC[co][sg][mi].bm += bm; nSC[co][sg][mi].fc += fc;
-      nMG[mi].bm += bm; nMG[mi].fc += fc;
-      detail.push([mi, SEGN.indexOf(sg), CTYS.indexOf(co),
-        DIST_NAMES.indexOf(String(r.distributor||"").trim()), Math.round(bm), Math.round(fc)]);
-    });
-    var tot=0; nMG.forEach(function(m){tot+=m.fc;});
-    if (tot < 1000) return true;   // versions already applied above; just skip rebuild of numbers
-    CTYS.forEach(function(co){ SEGN.forEach(function(sg){
-      nSC[co][sg].forEach(function(p){ p.bm=Math.round(p.bm); p.fc=Math.round(p.fc); });
-    });});
-    SC_M = nSC;
-    var qm=[[0,1,2],[3,4,5],[6,7,8],[9,10,11]];
-    SC_Q = {}; SC_FY = {};
-    CTYS.forEach(function(co){
-      SC_Q[co]={}; SC_FY[co]={};
-      SEGN.forEach(function(sg){
-        SC_Q[co][sg]=qm.map(function(q){
-          var bm=0,fc=0; q.forEach(function(i){bm+=SC_M[co][sg][i].bm; fc+=SC_M[co][sg][i].fc;});
-          return {bm:bm,fc:fc};
-        });
-        var tb=0,tf=0; SC_M[co][sg].forEach(function(p){tb+=p.bm; tf+=p.fc;});
-        SC_FY[co][sg]={bm:tb,fc:tf,gap:tf-tb};
-      });
-    });
-    var cg=0;
-    for (var i=0;i<12;i++){
-      MONTHLY_GRAND[i].bm = Math.round(nMG[i].bm);
-      MONTHLY_GRAND[i].fc = Math.round(nMG[i].fc);
-      MONTHLY_GRAND[i].gap = MONTHLY_GRAND[i].fc - MONTHLY_GRAND[i].bm;
-      cg += MONTHLY_GRAND[i].gap; MONTHLY_GRAND[i].cg = cg;
-    }
-    cg=0;
-    for (var q=0;q<4;q++){
-      var b=0,f=0; qm[q].forEach(function(i){b+=MONTHLY_GRAND[i].bm; f+=MONTHLY_GRAND[i].fc;});
-      QUARTERLY_GRAND[q].bm=b; QUARTERLY_GRAND[q].fc=f; QUARTERLY_GRAND[q].gap=f-b;
-      cg+=f-b; QUARTERLY_GRAND[q].cg=cg;
-    }
-    var gb=0,gf=0; MONTHLY_GRAND.forEach(function(m){gb+=m.bm; gf+=m.fc;});
-    GT_FY = {bm:gb, fc:gf, gap:gf-gb};
-    if (detail.length) DETAIL_ROWS = detail;
-    rebuildDistFromDetail();
+    if (Array.isArray(payload.rows))      window.RAW_TURNOVER = payload.rows;
+    if (Array.isArray(payload.rowsJizai)) window.RAW_JIZAI    = payload.rowsJizai;
 
-    return true;
+    // Rebuild from the active dataset
+    if (!S.dataMode) S.dataMode = "turnover";
+    var activeRows = (S.dataMode==="jizai") ? window.RAW_JIZAI : window.RAW_TURNOVER;
+    if (!activeRows || !activeRows.length) {
+      // Fallback to turnover if jizai is empty
+      activeRows = window.RAW_TURNOVER || [];
+    }
+    if (!activeRows.length) return true;
+    var ok = _rebuildNumbersFromRows(activeRows);
+    return ok;
   } catch(e){ console.warn("applyLiveData failed:", e); return false; }
 }
 
@@ -1209,8 +1247,16 @@ var SC_M = {
   }
 };
 
-var SEGS = ["Dental","Surgical","Eyeless","MMG"];
+var SEGS_TURNOVER = ["Dental","Surgical","Eyeless","MMG"];
+var SEGS_JIZAI    = ["Dental"];                    // only Dental holds Jizai data
+var SEGS = SEGS_TURNOVER.slice();                  // mutable: switched by setDataMode
 var SEGC = {Dental:"#3A5CAA", Surgical:"#16A34A", Eyeless:"#E67E22", MMG:"#8B5CF6"};
+// Display label: in Jizai mode, "Dental" reads as "Jizai" since the data is
+// purely Jizai units. Use segLabel() for chart axes / table headers / KPI subs.
+function segLabel(sg){
+  if ((window.S && S.dataMode==="jizai") && sg==="Dental") return "Jizai";
+  return sg;
+}
 var CTYS = ["Thailand","VietNam"];
 var CTYL = {Thailand:"🇹🇭 Thailand", VietNam:"🇻🇳 Viet Nam"};
 // Inline flag SVGs — Windows fallback (Win has no emoji-flag font, so 🇹🇭/🇻🇳 render as "TH"/"VN")
@@ -1232,6 +1278,7 @@ var SEG_NAMES = ["Dental","Surgical","Eyeless","MMG"];
 
 // ══ STATE ══
 var S = {period:"fy", qi:3, selM:new Set([0,1,2,3,4,5,6,7,8,9,10,11]), tab:"ov", distSeg:"ALL", charts:{},
+  dataMode:"turnover",   // turnover | jizai — switched via header dmode buttons
   drillData:null,    // {rows, kpi, title, sub, byM, expl, exFilter}
   expanded:false,
   selVer:"latest",
@@ -1510,6 +1557,37 @@ function fmtG(n) {
   }
   // USD: raw value is already in KUSD units; show with thousands sep, no "K"
   return sign + CUR.s() + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n));
+}
+// fmtKgap: COMPACT signed GAP used in the Explanations tab.
+//   USD examples: 33000 KUSD → "+33M$" → actually we keep KUSD: "+33K" (=33 KUSD)
+//                 -330 KUSD → "-330K", 1500 KUSD → "+1.5M"
+//   VND examples: 33 KUSD ≈ 841M VND → "+841M đ", -330 KUSD ≈ -8.4Bđ → "-8,4B đ"
+// User asked for "33k, -330K, -5,4B đ" formatting (Vietnamese comma decimal for B).
+function fmtKgap(n) {
+  if (n==null||isNaN(n)) return "—";
+  if (n===0) return "0";
+  var sign = n<0 ? "-" : "+";
+  if (CUR.code === "VND") {
+    var v = Math.abs(n) * 1000 * CUR.rate;     // VND absolute
+    if (v >= 1e9) {
+      var b = v/1e9;
+      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1).replace(".",","));
+      return sign + bStr + "B đ";
+    }
+    if (v >= 1e6) {
+      var m = v/1e6;
+      return sign + (m>=10 ? Math.round(m) : m.toFixed(1).replace(".",",")) + "M đ";
+    }
+    if (v >= 1e3) return sign + Math.round(v/1e3) + "K đ";
+    return sign + Math.round(v) + " đ";
+  }
+  // USD: n is in KUSD units.
+  var a = Math.abs(n);
+  if (a >= 1000) {                  // ≥ 1M USD
+    var mm = a/1000;
+    return sign + "$" + (mm>=10 ? Math.round(mm) : mm.toFixed(1)) + "M";
+  }
+  return sign + "$" + Math.round(a) + "K";
 }
 function kc(v) { return v>=0?"pos":"neg"; }
 function arrIcon(v) { return v>0?'<span class="arr-u">↑</span>':v<0?'<span class="arr-d">↓</span>':'<span class="arr-e">→</span>'; }
@@ -2923,7 +3001,7 @@ function rOV(D) {
       QUARTERLY_GRAND.map(function(q){return q.gap;}), QUARTERLY_GRAND.map(function(q){return q.cg;}),
       function(idx){ openDrillQuarter(idx); },
       {kind:"qtr", lookup:function(lbl){ return findExplGrand({ft: lbl}); }});
-    mkChart("c-ov-cty", CTYS.map(function(c){return CTYL[c];}),
+    mkChart("c-ov-cty", CTYS.map(function(c){return c==="VietNam"?"Viet Nam":c;}),
       D.ctys.map(function(c){return c.bm;}), D.ctys.map(function(c){return c.fc;}),
       D.ctys.map(function(c){return c.gap;}), null,
       function(idx){ openDrillCountry(idx); },
@@ -3433,7 +3511,7 @@ function renderExpContent() {
           + '</div>'
           + '<div class="ex-n b">'+fmtN(t.b)+'</div>'
           + '<div class="ex-n">'+fmtN(t.f)+'</div>'
-          + '<div class="ex-n g '+(t.vsb>=0?"p":"n")+'">'+fmtG(t.vsb)+'</div>'
+          + '<div class="ex-n g '+(t.vsb>=0?"p":"n")+'">'+fmtKgap(t.vsb)+'</div>'
           + '<div class="ex-n pct '+(t.vsb>=0?"p":"n")+'">'+esc(t.pct||"")+'</div>'
           + '<div class="ex-txt">'+(t.e?esc(t.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
           + '</div>';
@@ -3448,7 +3526,7 @@ function renderExpContent() {
               + '<div class="ex-id ex-id-sub">↳ '+esc(d.name)+'</div>'
               + '<div class="ex-n b">'+fmtN(d.b)+'</div>'
               + '<div class="ex-n">'+fmtN(d.f)+'</div>'
-              + '<div class="ex-n g '+(d.vsb>=0?"p":"n")+'">'+fmtG(d.vsb)+'</div>'
+              + '<div class="ex-n g '+(d.vsb>=0?"p":"n")+'">'+fmtKgap(d.vsb)+'</div>'
               + '<div class="ex-n pct '+(d.vsb>=0?"p":"n")+'">'+esc(d.pct||"")+'</div>'
               + '<div class="ex-txt">'+(d.e?esc(d.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
               + '</div>';
@@ -3466,7 +3544,7 @@ function renderExpContent() {
           + '<div class="ex-id" style="font-weight:900;color:var(--N)">'+coFlag+' '+esc(coDisp).toUpperCase()+' TOTAL</div>'
           + '<div class="ex-n b" style="font-weight:900">'+fmtN(ct.b)+'</div>'
           + '<div class="ex-n" style="font-weight:900">'+fmtN(ct.f)+'</div>'
-          + '<div class="ex-n g '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+fmtG(ct.vsb)+'</div>'
+          + '<div class="ex-n g '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+fmtKgap(ct.vsb)+'</div>'
           + '<div class="ex-n pct '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+esc(ct.pct||"")+'</div>'
           + '<div class="ex-txt">'+(ct.e?esc(ct.e):'')+'</div>'
           + '</div>';
@@ -3481,7 +3559,7 @@ function renderExpContent() {
           + '<div class="ex-id" style="font-weight:900;color:#fff;letter-spacing:.5px">🌐 GRAND TOTAL</div>'
           + '<div class="ex-n b" style="font-weight:900;color:#fff">'+fmtN(gt.b)+'</div>'
           + '<div class="ex-n" style="font-weight:900;color:#fff">'+fmtN(gt.f)+'</div>'
-          + '<div class="ex-n g '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+fmtG(gt.vsb)+'</div>'
+          + '<div class="ex-n g '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+fmtKgap(gt.vsb)+'</div>'
           + '<div class="ex-n pct '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+esc(gt.pct||"")+'</div>'
           + '<div class="ex-txt" style="color:rgba(255,255,255,.85)">'+(gt.e?esc(gt.e):'')+'</div>'
           + '</div>';
@@ -3542,11 +3620,10 @@ function exportExplanations() {
 function renderAll() {
   var D = computeD();
   rOV(D); rSEG(D); rCTY(D); rDIST(D); rGAP(D); rEXP();
-  try { rACC(); } catch(e){ console.warn("acc", e); }
   try { renderCtxBanner(); } catch(e){}
   if (VC_OPEN) { try { renderComparePanel(); } catch(e){} }
-  ["ov","seg","cty","dist","gap","acc"].forEach(function(t) {
-    var el=document.getElementById("sp-"+t); if(el && t!=="acc") el.textContent=pLabel();
+  ["ov","seg","cty","dist","gap"].forEach(function(t) {
+    var el=document.getElementById("sp-"+t); if(el) el.textContent=pLabel();
   });
   setTimeout(function(){
     var active = document.querySelector(".sec.on");
@@ -4740,7 +4817,7 @@ function buildSearchIndex(){
   // tabs
   [["ov","📊","Overview","Dashboard home"],["seg","📦","By Segment","Dental / Surgical / Eyeless / MMG"],
    ["cty","🌏","By Country","Thailand · Viet Nam"],["dist","🏢","By Distributor","All distributors"],
-   ["gap","🔍","GAP Analysis","Above / below budget"],["acc","🎯","Forecast Accuracy","Accuracy heat-map"],
+   ["gap","🔍","GAP Analysis","Above / below budget"],
    ["cmp","⚖️","Comparison","So sánh Segment / Country / Distributor"],
    ["exp","📋","Explanations","Version history"]
   ].forEach(function(t){ items.push({type:"tab",id:t[0],ic:t[1],nm:t[2],sub:t[3]}); });
@@ -5034,14 +5111,37 @@ function cmpEntityData(mode, id){
     mSeriesB:mB, mSeries:mF, segs:[] };
 }
 
+// Build an explanation-filter that mirrors CMP.scope (independent of S.period).
+// FY scope → no ft filter (latest version overall)
+// Quarter scope → ft = "Q1".."Q4"
+// Month scope → ft = "YYYYMM" of the chosen month
+function cmpExplFilter(){
+  var f = {};
+  if (CMP.scope === "qtr") {
+    f.ft = "Q" + (CMP.qi + 1);
+  } else if (CMP.scope === "month") {
+    var m = MONTHLY_GRAND[CMP.mi];
+    if (m) f.ft = m.mid;
+  }
+  // No ft filter on FY → findExpl* will pick the latest version available
+  return f;
+}
+
 function cmpExplanation(mode, ent){
+  var filter = cmpExplFilter();
   if (mode==="segment"){
-    return findExpl("Viet Nam", ent.name, null, null) || findExpl("Thailand", ent.name, null, null);
+    // Try VN first, then TH; pass the scope-aware filter
+    return findExpl("Viet Nam", ent.name, null, filter)
+        || findExpl("Thailand", ent.name, null, filter)
+        // Fallback to latest if nothing matches this scope
+        || findExpl("Viet Nam", ent.name, null, null)
+        || findExpl("Thailand", ent.name, null, null);
   }
   if (mode==="country"){
-    return findExplByCty(ent.name, null);
+    return findExplByCty(ent.name, filter) || findExplByCty(ent.name, null);
   }
-  return findExpl(ent.co, ent.sg, ent.name, null);
+  return findExpl(ent.co, ent.sg, ent.name, filter)
+      || findExpl(ent.co, ent.sg, ent.name, null);
 }
 
 function rCMP(){
@@ -5173,14 +5273,21 @@ function rCMP(){
     }
 
     var ex = cmpExplanation(mode, e);
+    var scopeFt = (CMP.scope==="qtr") ? ("Q"+(CMP.qi+1)) :
+                  (CMP.scope==="month" && MONTHLY_GRAND[CMP.mi]) ? MONTHLY_GRAND[CMP.mi].mid :
+                  "";
+    var isFallback = ex && scopeFt && (ex.ft||"") !== scopeFt;
+    var fallbackTag = isFallback ?
+      ' <span style="background:rgba(245,158,11,.22);border:1px solid rgba(245,158,11,.45);color:#92400E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;font-weight:700" title="No explanation recorded for the selected scope — showing latest available">↺ latest</span>' : '';
     var explHtml;
     if (!ex || (!ex.e && !(ex.entries && ex.entries.length))){
-      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 Explanation (latest)</div><div class="cmp-expl-tx cmp-expl-empty">— No explanation recorded yet —</div></div>';
+      var scopeMsg = scopeFt ? (' for <b>'+esc(scopeFt)+'</b>') : '';
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 Explanation — '+esc(cmpScopeLabel())+'</div><div class="cmp-expl-tx cmp-expl-empty">— No explanation recorded'+scopeMsg+' —</div></div>';
     } else if (ex.entries && ex.entries.length){
       var first = ex.entries[0];
-      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+' · '+esc(first.segment||"")+'</div><div class="cmp-expl-tx">'+esc(first.e||"—")+'</div></div>';
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+' · '+esc(first.segment||"")+fallbackTag+'</div><div class="cmp-expl-tx">'+esc(first.e||"—")+'</div></div>';
     } else {
-      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+'</div><div class="cmp-expl-tx">'+esc(ex.e||"—")+'</div></div>';
+      explHtml = '<div class="cmp-expl"><div class="cmp-expl-hd">💡 '+esc(ex.label||("ver "+ex.ver))+fallbackTag+'</div><div class="cmp-expl-tx">'+esc(ex.e||"—")+'</div></div>';
     }
 
     var gapCls = e.gap>=0?"pos":"neg";
@@ -5280,7 +5387,7 @@ function hexA(hex, a){
 
 // ── (12) BOTTOM-NAV active-state sync ───────────────────────────────
 function syncBottomNav(tab){
-  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",acc:"acc",cmp:"exp",exp:"exp"};
+  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",cmp:"cmp",exp:"exp"};
   var active=map[tab]||"ov";
   document.querySelectorAll(".btmnav .bn").forEach(function(b){
     b.classList.toggle("on", b.id==="bn-"+active);
@@ -5295,7 +5402,7 @@ document.addEventListener("keydown", function(e){
 });
 
 window.onload = function() {
-  // restore saved theme + currency
+  // restore saved theme + currency + dataMode
   try {
     var th = localStorage.getItem("mmh_theme");
     applyTheme(th==="dark" ? "dark" : "light");
@@ -5303,6 +5410,16 @@ window.onload = function() {
     if (cu==="VND") { CUR.code="VND";
       document.getElementById("cur-usd").classList.remove("on");
       document.getElementById("cur-vnd").classList.add("on"); }
+    var dm = localStorage.getItem("mmh_dataMode");
+    if (dm === "jizai") {
+      S.dataMode = "jizai";
+      SEGS = SEGS_JIZAI.slice();
+      var bt=document.getElementById("dmode-turnover"), bj=document.getElementById("dmode-jizai");
+      if (bt) bt.classList.remove("on"); if (bj) bj.classList.add("on");
+      document.body.classList.add("mode-jizai");
+    } else {
+      S.dataMode = "turnover";
+    }
   } catch(e){}
   renderAll();
   setSrc("off");
