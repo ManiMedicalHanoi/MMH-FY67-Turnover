@@ -468,7 +468,7 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 .upd-banner { display: flex; align-items: stretch; gap: 0; background: linear-gradient(90deg, var(--N), var(--B)); color: #fff; border-radius: 10px; margin: 0 0 14px; overflow: hidden; box-shadow: var(--sh); }
 .upd-tag { flex-shrink: 0; display: flex; align-items: center; padding: 8px 14px; font-size: 11.5px; font-weight: 800; letter-spacing: .5px; background: rgba(255,225,0,.18); color: var(--Y); border-right: 1px solid rgba(255,255,255,.15); white-space: nowrap; }
 .upd-viewport { position: relative; flex: 1; overflow: hidden; }
-.upd-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: updScroll 38s linear infinite; padding-left: 100%; }
+.upd-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: updScroll 80s linear infinite; padding-left: 100%; }
 .upd-banner:hover .upd-track { animation-play-state: paused; }
 @keyframes updScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .upd-item { display: inline-flex; align-items: center; gap: 7px; padding: 8px 26px; font-size: 12.5px; border-right: 1px dashed rgba(255,255,255,.22); }
@@ -1515,46 +1515,36 @@ function setCurrency(code){
 // In Jizai mode, raw values are integer SHEETS (not KUSD). All formatters
 // below must skip currency conversion + symbol and just print the count.
 function IS_JIZAI(){ return (window.S && S.dataMode==="jizai"); }
-function unitSuffix(){ return IS_JIZAI() ? " sh" : ""; }     // compact
-function unitSuffixFull(){ return IS_JIZAI() ? " sheets" : ""; }
-// Compact format for a raw count of sheets (no currency, no symbol)
+function unitSuffix(){ return IS_JIZAI() ? " Sheets" : ""; }
+function unitSuffixFull(){ return IS_JIZAI() ? " Sheets" : ""; }
+// Full count of sheets — no abbreviation, preserve fractions, " Sheets" suffix
 function fmtSh(n){
   if (n==null||isNaN(n)) return "—";
-  var a = Math.abs(n);
-  var s = n<0 ? "-" : "";
-  if (a >= 1e6) return s + (a/1e6).toFixed(2).replace(/\.?0+$/,"") + "M sh";
-  if (a >= 1e3) return s + (a/1e3).toFixed(1).replace(/\.?0+$/,"") + "K sh";
-  return s + Math.round(a) + " sh";
+  return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(n) + " Sheets";
 }
-// Signed compact GAP for sheets ("+1.2K sh", "-340 sh")
+// Signed full GAP for sheets — no abbreviation, preserve fractions
 function fmtShGap(n){
   if (n==null||isNaN(n)) return "—";
-  if (n===0) return "0 sh";
+  if (n===0) return "0 Sheets";
   var sign = n<0 ? "-" : "+";
-  var a = Math.abs(n);
-  if (a >= 1e6) return sign + (a/1e6).toFixed(1) + "M sh";
-  if (a >= 1e3) return sign + (a/1e3).toFixed(1).replace(/\.?0+$/,"") + "K sh";
-  return sign + Math.round(a) + " sh";
+  return sign + new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(Math.abs(n)) + " Sheets";
 }
-// Full count (no abbreviation), with " sheets" suffix
+// Alias kept for callers — same as fmtSh in this mode
 function fmtShFull(n){
   if (n==null||isNaN(n)) return "—";
-  return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(n)) + " sheets";
+  return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(n) + " Sheets";
 }
 
 function fmtN(n) {
   if (n==null||isNaN(n)) return "—";
-  if (IS_JIZAI()) return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(n));
+  if (IS_JIZAI()) return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(n);
   return CUR.s()==="$" ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n))
                        : new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n));
 }
 function fK(n) {
   if (!n && n!==0) return "—";
   if (IS_JIZAI()) {
-    var a=Math.abs(n);
-    if (a>=1e6) return (n/1e6).toFixed(2)+"M sh";
-    if (a>=1e3) return Math.round(n/1e3)+"K sh";
-    return Math.round(n)+" sh";
+    return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(n) + " Sheets";
   }
   var v=CUR.conv(n), a=Math.abs(v);
   if (CUR.code==="VND") {
@@ -1568,10 +1558,7 @@ function fK(n) {
 function fKS(n) {
   if (!n && n!==0) return "";
   if (IS_JIZAI()) {
-    var a=Math.abs(n);
-    if (a>=1e6) return (n/1e6).toFixed(1)+"M";
-    if (a>=1e3) return Math.round(n/1e3)+"K";
-    return n===0?"0":Math.round(n)+"";
+    return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(n);
   }
   var v=CUR.conv(n), a=Math.abs(v);
   if (CUR.code==="VND") {
@@ -1612,7 +1599,7 @@ function fmtG(n) {
   if (n==null||isNaN(n)) return "—";
   if (IS_JIZAI()){
     var sg = n<0 ? "-" : "+";
-    return sg + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(Math.round(n))) + " sh";
+    return sg + new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(Math.abs(n)) + " Sheets";
   }
   var sign = n<0 ? "-" : "+";
   if (CUR.code === "VND") {
@@ -4342,8 +4329,7 @@ var UPD_ENTRIES = [];
 var UPD_HINT = "";
 var updTimer = null;
 
-// Email prefix → PIC display name. Backend strips the "@..." part so we
-// match against the prefix only. Keys are lowercased for safety.
+// Email prefix → PIC display name. Backend strips "@..." so we match prefix only.
 var EMAIL_TO_PIC = {
   "manithailand":   "Dao",
   "manithailand2":  "Somchai",
@@ -4371,10 +4357,9 @@ var EMAIL_TO_PIC = {
 function lookupPIC(userField) {
   if (!userField) return "Someone";
   var s = String(userField).toLowerCase().trim();
-  // Strip "@..." if backend ever returns a full email
   var at = s.indexOf("@");
   if (at > 0) s = s.slice(0, at);
-  return EMAIL_TO_PIC[s] || userField;   // fall back to whatever backend sent
+  return EMAIL_TO_PIC[s] || userField;
 }
 
 function timeAgoMs(ts) {
@@ -4420,6 +4405,8 @@ function renderUpdBanner() {
   // Action = "added" if no prior value context (value present & non-empty),
   // otherwise "edited". The backend only sends the new value, so we default
   // to "edited" unless the value is blank (which signals a cleared cell).
+  // Build one item per entry. Format:
+  //   [PIC] edited/cleared content: "[value]" for [ColumnName] in [SheetName] (cell) [time ago]
   function itemHTML(e) {
     var pic     = lookupPIC(e.user);
     var hasVal  = e.value && String(e.value).trim() !== "";
@@ -5279,7 +5266,10 @@ function rCMP(){
       return '<button class="cmp-pill'+(on?" on":"")+'" onclick="cmpToggle(\''+p[0]+'\')">'+flag(p[0]==="Thailand"?"th":"vn")+' '+p[1]+'</button>';
     }).join("");
   } else {
-    var segChooser = '<div class="cmp-pick-grid" style="margin-right:12px;border-right:1px dashed var(--br);padding-right:12px">'
+    // In Jizai mode there's only one segment (Dental→Jizai), so the segment
+    // chooser is redundant — hide it entirely.
+    var segChooser = isJizai ? "" :
+      '<div class="cmp-pick-grid" style="margin-right:12px;border-right:1px dashed var(--br);padding-right:12px">'
       + '<span class="cmp-lbl" style="align-self:center;margin-right:4px">Segment:</span>'
       + SEGS.map(function(sg){
           return '<button class="cmp-pill'+(CMP.distSeg===sg?" on":"")+'" onclick="cmpSetDistSeg(\''+sg+'\')">📦 '+sg+'</button>';
@@ -5307,13 +5297,19 @@ function rCMP(){
     return '<button class="seg-btn mc-small '+(CMP.scope==="month"&&CMP.mi===i?"on":"")+'" onclick="cmpSetMI('+i+')">'+m.lbl.slice(0,3)+'</button>';
   }).join("");
 
+  // In Jizai mode the Segment dimension collapses (only Dental has data),
+  // so we hide the Segment compare option and force the user out of it.
+  var isJizai = IS_JIZAI();
+  if (isJizai && CMP.mode === "segment") { CMP.mode = "country"; mode = "country"; }
   ctrl.innerHTML =
     '<div class="cmp-mode-row">'
     + '<span class="cmp-lbl">Compare by:</span>'
-    + modeBtn("segment","Segment","📦")
+    + (isJizai ? "" : modeBtn("segment","Segment","📦"))
     + modeBtn("country","Country","🌏")
-    + modeBtn("dist","Distributors in a Segment","🏢")
-    + '<span class="cmp-hint">Pick 2 or 3 entities to compare side-by-side</span>'
+    + modeBtn("dist", isJizai ? "Distributors" : "Distributors in a Segment","🏢")
+    + '<span class="cmp-hint">Pick 2 or 3 entities to compare side-by-side'
+      + (isJizai ? ' <i style="opacity:.7">· Jizai mode: Segment view disabled</i>' : '')
+      + '</span>'
     + '<button class="cmp-clear" onclick="cmpClear()">Clear all</button>'
     + '</div>'
     + '<div class="cmp-pick-row">'+pickGrid+'</div>'
