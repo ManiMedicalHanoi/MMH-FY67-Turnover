@@ -468,7 +468,7 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 .upd-banner { display: flex; align-items: stretch; gap: 0; background: linear-gradient(90deg, var(--N), var(--B)); color: #fff; border-radius: 10px; margin: 0 0 14px; overflow: hidden; box-shadow: var(--sh); }
 .upd-tag { flex-shrink: 0; display: flex; align-items: center; padding: 8px 14px; font-size: 11.5px; font-weight: 800; letter-spacing: .5px; background: rgba(255,225,0,.18); color: var(--Y); border-right: 1px solid rgba(255,255,255,.15); white-space: nowrap; }
 .upd-viewport { position: relative; flex: 1; overflow: hidden; }
-.upd-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: updScroll 80s linear infinite; padding-left: 100%; }
+.upd-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: updScroll 160s linear infinite; padding-left: 100%; }
 .upd-banner:hover .upd-track { animation-play-state: paused; }
 @keyframes updScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .upd-item { display: inline-flex; align-items: center; gap: 7px; padding: 8px 26px; font-size: 12.5px; border-right: 1px dashed rgba(255,255,255,.22); }
@@ -1541,6 +1541,79 @@ function fmtN(n) {
   return CUR.s()==="$" ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n))
                        : new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n));
 }
+// ── USD-ONLY formatters for the Explanation blocks ─────────────────
+// Explanations (drill panel, comparison panel, Explanations tab, version
+// compare panel) describe the TURNOVER story — the team only ever writes
+// numbers in KUSD there. Even when the user is viewing Jizai mode, we keep
+// these blocks formatted as money so the original commentary still reads
+// correctly. These helpers force USD/VND formatting regardless of dataMode.
+function fmtN_usd(n) {
+  if (n==null||isNaN(n)) return "—";
+  var v = (CUR.code==="VND") ? n*CUR.rate : n;
+  return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(v);
+}
+function fK_usd(n) {
+  if (!n && n!==0) return "—";
+  var sym = CUR.sym[CUR.code] || "$";
+  var v = (CUR.code==="VND") ? n*CUR.rate : n, a=Math.abs(v);
+  if (CUR.code==="VND") {
+    if (a>=1e9) return (v/1e9).toFixed(2)+"B";
+    if (a>=1e6) return Math.round(v/1e6)+"M";
+    return Math.round(v/1e3)+"K";
+  }
+  if (a>=1e6) return (v/1e6).toFixed(2)+"M";
+  return Math.round(v/1000)+"K";
+}
+function curSym_usd(){ return CUR.sym[CUR.code] || "$"; }
+function fmtK_usd(n) {
+  if (n==null||isNaN(n)) return "—";
+  var sign = n<0 ? "-" : (n>0 ? "+" : "");
+  var s = curSym_usd();
+  if (CUR.code === "VND") {
+    var v = Math.abs(n) * 1000 * CUR.rate;
+    if (v >= 1e9) return sign + s + (v/1e9).toFixed(1) + "B";
+    if (v >= 1e6) return sign + s + Math.round(v/1e6) + "M";
+    return sign + s + Math.round(v/1e3) + "K";
+  }
+  var a = Math.abs(n);
+  if (a >= 1000) return sign + s + Math.round(a/1000) + "K";
+  return sign + s + Math.round(a) + "K";
+}
+function fmtG_usd(n) {
+  if (n==null||isNaN(n)) return "—";
+  var sign = n<0 ? "-" : "+";
+  var s = curSym_usd();
+  if (CUR.code === "VND") {
+    var v = Math.abs(n) * 1000 * CUR.rate;
+    return sign + s + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(v));
+  }
+  return sign + s + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(n));
+}
+function fmtKgap_usd(n) {
+  if (n==null||isNaN(n)) return "—";
+  if (n===0) return "0";
+  var sign = n<0 ? "-" : "+";
+  if (CUR.code === "VND") {
+    var v = Math.abs(n) * 1000 * CUR.rate;
+    if (v >= 1e9) {
+      var b = v/1e9;
+      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1).replace(".",","));
+      return sign + bStr + "B đ";
+    }
+    if (v >= 1e6) {
+      var m = v/1e6;
+      return sign + (m>=10 ? Math.round(m) : m.toFixed(1).replace(".",",")) + "M đ";
+    }
+    if (v >= 1e3) return sign + Math.round(v/1e3) + "K đ";
+    return sign + Math.round(v) + " đ";
+  }
+  var a = Math.abs(n);
+  if (a >= 1000) {
+    var mm = a/1000;
+    return sign + "$" + (mm>=10 ? Math.round(mm) : mm.toFixed(1)) + "M";
+  }
+  return sign + "$" + Math.round(a) + "K";
+}
 function fK(n) {
   if (!n && n!==0) return "—";
   if (IS_JIZAI()) {
@@ -1892,6 +1965,8 @@ function runCountUp(scope) {
 function fmtCount(v, mode){
   if (mode === "p") return (v>=0?"":"") + v.toFixed(1) + "%";
   if (mode === "n") return Math.round(v).toLocaleString("en-US");
+  // In Jizai mode every KPI must show the full sheet count (no K/M compaction).
+  if (IS_JIZAI()) return new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(v);
   var a = Math.abs(v);
   if (a >= 1e9) return (v/1e9).toFixed(2) + "B";
   if (a >= 1e6) return (v/1e6).toFixed(2) + "M";
@@ -2260,8 +2335,8 @@ function drillRender(opt) {
         return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed #FDE68A">'
           +'<div style="font-weight:800;font-size:12.5px;margin-bottom:4px;color:#92400E">'
           + tag + segTag
-          + 'B: '+fmtN(it.b)+' · F: '+fmtN(it.f)+' · '
-          + '<span style="color:'+col+'">GAP: '+fmtK(it.vsb)+'</span></div>'
+          + 'B: '+fmtN_usd(it.b)+' · F: '+fmtN_usd(it.f)+' · '
+          + '<span style="color:'+col+'">GAP: '+fmtK_usd(it.vsb)+'</span></div>'
           +'<div class="drill-expl-body">'+esc(it.e)+'</div></div>';
       }).join("");
       html += '<div class="drill-expl">'
@@ -2274,8 +2349,8 @@ function drillRender(opt) {
       html += '<div class="drill-expl">'
         + '<div class="drill-expl-hd"><span class="badge-v">VER '+esc(e.ver)+'</span><h4>💡 Official team explanation</h4></div>'
         + '<div style="font-size:12px;color:#92400E;margin-bottom:8px;font-weight:700">'
-        + 'Budget: '+fmtN(e.b)+' · Forecast: '+fmtN(e.f)+' · '
-        + '<span style="color:'+gapCol+'">GAP: '+fmtK(e.vsb)+'</span></div>'
+        + 'Budget: '+fmtN_usd(e.b)+' · Forecast: '+fmtN_usd(e.f)+' · '
+        + '<span style="color:'+gapCol+'">GAP: '+fmtK_usd(e.vsb)+'</span></div>'
         + '<div class="drill-expl-body">'+esc(e.e)+'</div>'
         + '<div class="drill-expl-meta">📂 Source: '+srcLine+'</div>'
         + '</div>';
@@ -2648,7 +2723,11 @@ function renderTopMover() {
     + '</div>'
     + '<div style="background:var(--P);border:1px solid var(--L1);border-radius:8px;padding:7px 10px">'
       + '<div style="color:var(--B);font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.4px">x̄ Average</div>'
-      + '<div style="font-weight:800;font-size:13px;color:var(--N)">'+CUR.s()+fK(avg)+'</div>'
+      + '<div style="font-weight:800;font-size:13px;color:var(--N)">'
+        + (IS_JIZAI()
+            ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(avg)) + " Sheets"
+            : CUR.s()+fK(avg))
+      + '</div>'
       + '<div style="color:var(--B);font-weight:700">/ month</div>'
     + '</div></div>';
 
@@ -2923,13 +3002,25 @@ function flipKPI(o) {
   var rawVal = o.abs ? Math.abs(o.val) : o.val;
   // currency-convert the count-up target; swap $ prefix to active symbol
   var dispVal = (o.mode==="p") ? rawVal : CUR.conv(rawVal);
-  var prefix = (o.prefix||"").replace(/\$/g, CUR.s());
+  // In Jizai mode the "$" prefix is meaningless and the suffix should read
+  // "Sheets". Strip the dollar sign from any prefix the caller passed in and
+  // append " Sheets" if no suffix was set (kept positive/negative sign intact).
+  var rawPrefix = (o.prefix||"");
+  var prefix, suffix;
+  if (IS_JIZAI()) {
+    // Keep the +/- sign but drop the "$"
+    prefix = rawPrefix.replace(/\$/g, "").replace(/\s+/g," ");
+    suffix = o.suffix || (o.mode==="p" ? "" : " Sheets");
+  } else {
+    prefix = rawPrefix.replace(/\$/g, CUR.s());
+    suffix = o.suffix || "";
+  }
   var fs = o.fontSize ? ('font-size:'+o.fontSize+';') : '';
   var front =
     '<div class="kpi shine '+(o.cls||"")+'">'
     +'<div class="kl">'+o.lbl+'</div>'
     +'<div class="kv" style="'+fs+'"><span class="cup" data-count="'+dispVal+'" data-mode="'+(o.mode||"k")+'" '
-       +'data-prefix="'+prefix+'" data-suffix="'+(o.suffix||"")+'">'+prefix+'0'+(o.suffix||"")+'</span></div>'
+       +'data-prefix="'+prefix+'" data-suffix="'+suffix+'">'+prefix+'0'+suffix+'</span></div>'
     +(o.sub?'<div class="ks">'+o.sub+'</div>':'')
     +'<div class="flip-hint">↻ click for detail</div>'
     +'</div>';
@@ -3561,9 +3652,9 @@ function renderExpContent() {
             + '<span class="badge" style="background:'+(SEGC[sg.name]||'#666')+';font-size:10px;padding:2px 7px">'+esc(sg.name)+'</span>'
             + (hasDists ? ' <span class="ex-dist-cnt">'+dists.length+' distributors</span>' : '')
           + '</div>'
-          + '<div class="ex-n b">'+fmtN(t.b)+'</div>'
-          + '<div class="ex-n">'+fmtN(t.f)+'</div>'
-          + '<div class="ex-n g '+(t.vsb>=0?"p":"n")+'">'+fmtKgap(t.vsb)+'</div>'
+          + '<div class="ex-n b">'+fmtN_usd(t.b)+'</div>'
+          + '<div class="ex-n">'+fmtN_usd(t.f)+'</div>'
+          + '<div class="ex-n g '+(t.vsb>=0?"p":"n")+'">'+fmtKgap_usd(t.vsb)+'</div>'
           + '<div class="ex-n pct '+(t.vsb>=0?"p":"n")+'">'+esc(t.pct||"")+'</div>'
           + '<div class="ex-txt">'+(t.e?esc(t.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
           + '</div>';
@@ -3576,9 +3667,9 @@ function renderExpContent() {
             var dGapCls = d.vsb >= 0 ? "pos" : (d.vsb < 0 ? "neg" : "");
             html += '<div class="exp-row exp-dist-row '+dGapCls+'">'
               + '<div class="ex-id ex-id-sub">↳ '+esc(d.name)+'</div>'
-              + '<div class="ex-n b">'+fmtN(d.b)+'</div>'
-              + '<div class="ex-n">'+fmtN(d.f)+'</div>'
-              + '<div class="ex-n g '+(d.vsb>=0?"p":"n")+'">'+fmtKgap(d.vsb)+'</div>'
+              + '<div class="ex-n b">'+fmtN_usd(d.b)+'</div>'
+              + '<div class="ex-n">'+fmtN_usd(d.f)+'</div>'
+              + '<div class="ex-n g '+(d.vsb>=0?"p":"n")+'">'+fmtKgap_usd(d.vsb)+'</div>'
               + '<div class="ex-n pct '+(d.vsb>=0?"p":"n")+'">'+esc(d.pct||"")+'</div>'
               + '<div class="ex-txt">'+(d.e?esc(d.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
               + '</div>';
@@ -3594,9 +3685,9 @@ function renderExpContent() {
         var ctCls = ct.vsb >= 0 ? "pos" : (ct.vsb < 0 ? "neg" : "");
         html += '<div class="exp-row exp-ct '+ctCls+'">'
           + '<div class="ex-id" style="font-weight:900;color:var(--N)">'+coFlag+' '+esc(coDisp).toUpperCase()+' TOTAL</div>'
-          + '<div class="ex-n b" style="font-weight:900">'+fmtN(ct.b)+'</div>'
-          + '<div class="ex-n" style="font-weight:900">'+fmtN(ct.f)+'</div>'
-          + '<div class="ex-n g '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+fmtKgap(ct.vsb)+'</div>'
+          + '<div class="ex-n b" style="font-weight:900">'+fmtN_usd(ct.b)+'</div>'
+          + '<div class="ex-n" style="font-weight:900">'+fmtN_usd(ct.f)+'</div>'
+          + '<div class="ex-n g '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+fmtKgap_usd(ct.vsb)+'</div>'
           + '<div class="ex-n pct '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+esc(ct.pct||"")+'</div>'
           + '<div class="ex-txt">'+(ct.e?esc(ct.e):'')+'</div>'
           + '</div>';
@@ -3609,9 +3700,9 @@ function renderExpContent() {
         var gtCls = gt.vsb >= 0 ? "pos" : (gt.vsb < 0 ? "neg" : "");
         html += '<div class="exp-row exp-gt '+gtCls+'">'
           + '<div class="ex-id" style="font-weight:900;color:#fff;letter-spacing:.5px">🌐 GRAND TOTAL</div>'
-          + '<div class="ex-n b" style="font-weight:900;color:#fff">'+fmtN(gt.b)+'</div>'
-          + '<div class="ex-n" style="font-weight:900;color:#fff">'+fmtN(gt.f)+'</div>'
-          + '<div class="ex-n g '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+fmtKgap(gt.vsb)+'</div>'
+          + '<div class="ex-n b" style="font-weight:900;color:#fff">'+fmtN_usd(gt.b)+'</div>'
+          + '<div class="ex-n" style="font-weight:900;color:#fff">'+fmtN_usd(gt.f)+'</div>'
+          + '<div class="ex-n g '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+fmtKgap_usd(gt.vsb)+'</div>'
           + '<div class="ex-n pct '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+esc(gt.pct||"")+'</div>'
           + '<div class="ex-txt" style="color:rgba(255,255,255,.85)">'+(gt.e?esc(gt.e):'')+'</div>'
           + '</div>';
@@ -4885,9 +4976,9 @@ function renderComparePanel(){
     var cls = Math.abs(d)<1?"flat":(d>0?"up":"down");
     var arr = d>0?"▲":(d<0?"▼":"–");
     return '<div class="vc-row"><span class="vc-nm" style="color:'+(SEGC[sg]||"#3A5CAA")+'">'+sg+'</span>'
-      +'<span class="vc-num">'+CUR.s()+fK(fa)+'</span>'
-      +'<span class="vc-num">'+CUR.s()+fK(fb)+'</span>'
-      +'<span class="vc-delta '+cls+'">'+arr+(d>=0?"+":"−")+CUR.s()+fK(Math.abs(d))+'</span></div>';
+      +'<span class="vc-num">'+curSym_usd()+fK_usd(fa)+'</span>'
+      +'<span class="vc-num">'+curSym_usd()+fK_usd(fb)+'</span>'
+      +'<span class="vc-delta '+cls+'">'+arr+(d>=0?"+":"−")+curSym_usd()+fK_usd(Math.abs(d))+'</span></div>';
   }).join("");
   var totA=SEGS.reduce(function(s,sg){return s+a[sg].f;},0);
   var totB=SEGS.reduce(function(s,sg){return s+b[sg].f;},0);
@@ -4899,15 +4990,15 @@ function renderComparePanel(){
     +'<select onchange="S.vcA=this.value;renderComparePanel()">'+opt(S.vcA)+'</select>'
     +'<span>→</span>'
     +'<select onchange="S.vcB=this.value;renderComparePanel()">'+opt(S.vcB)+'</select>'
-    +'<span style="color:var(--t3);font-size:12px;margin-left:auto">Forecast totals by segment (both countries)</span>'
+    +'<span style="color:var(--t3);font-size:12px;margin-left:auto">Forecast totals by segment (both countries · KUSD)</span>'
     +'</div>'
     +'<div class="vc-row head"><span>Segment</span><span class="vc-num">Ver '+esc(S.vcA)+'</span><span class="vc-num">Ver '+esc(S.vcB)+'</span><span class="vc-delta">Δ Change</span></div>'
     +rows
     +'<div class="vc-row" style="border-top:2px solid var(--br);font-weight:800">'
       +'<span class="vc-nm">TOTAL</span>'
-      +'<span class="vc-num">'+CUR.s()+fK(totA)+'</span>'
-      +'<span class="vc-num">'+CUR.s()+fK(totB)+'</span>'
-      +'<span class="vc-delta '+tcls+'">'+(td>0?"▲+":(td<0?"▼−":"–"))+CUR.s()+fK(Math.abs(td))+'</span></div>';
+      +'<span class="vc-num">'+curSym_usd()+fK_usd(totA)+'</span>'
+      +'<span class="vc-num">'+curSym_usd()+fK_usd(totB)+'</span>'
+      +'<span class="vc-delta '+tcls+'">'+(td>0?"▲+":(td<0?"▼−":"–"))+curSym_usd()+fK_usd(Math.abs(td))+'</span></div>';
 }
 
 // ── (9) GLOBAL SEARCH / QUICK JUMP ──────────────────────────────────
@@ -5415,7 +5506,11 @@ function rCMP(){
         + '<div class="cmp-kpi"><div class="cmp-k-l">Budget Mani</div><div class="cmp-k-v">'+CUR.s()+fK(e.bm)+'</div></div>'
         + '<div class="cmp-kpi"><div class="cmp-k-l">Forecast</div><div class="cmp-k-v">'+CUR.s()+fK(e.fc)+'</div></div>'
         + '<div class="cmp-kpi"><div class="cmp-k-l">GAP</div><div class="cmp-k-v '+gapCls+'">'+(e.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(e.gap))+'</div><div class="cmp-k-s">'+(e.gp>=0?"+":"")+e.gp.toFixed(1)+'%</div></div>'
-        + '<div class="cmp-kpi"><div class="cmp-k-l">Avg / Month</div><div class="cmp-k-v">'+CUR.s()+fK(avgMonthly)+'</div></div>'
+        + '<div class="cmp-kpi"><div class="cmp-k-l">Avg / Month</div><div class="cmp-k-v">'
+          + (IS_JIZAI()
+              ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(avgMonthly)) + " Sheets"
+              : CUR.s()+fK(avgMonthly))
+          + '</div></div>'
       + '</div>'
       + '<div class="cmp-chart-wrap"><div class="cmp-chart-ttl">📈 Monthly Forecast — FY67</div><div class="cmp-chart-box"><canvas id="cmp-ch-'+i+'"></canvas></div></div>'
       + segBreakHtml
