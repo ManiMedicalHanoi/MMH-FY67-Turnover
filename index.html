@@ -4342,6 +4342,41 @@ var UPD_ENTRIES = [];
 var UPD_HINT = "";
 var updTimer = null;
 
+// Email prefix → PIC display name. Backend strips the "@..." part so we
+// match against the prefix only. Keys are lowercased for safety.
+var EMAIL_TO_PIC = {
+  "manithailand":   "Dao",
+  "manithailand2":  "Somchai",
+  "manithailand1":  "Sui",
+  "manithailand3":  "Man",
+  "tt.tuyen":       "Tuyen",
+  "nt.ha":          "Nguyen Ha",
+  "marketing.mmh":  "Thuong",
+  "marketing.mmh2": "Trang",
+  "marketing.mmh1": "Duc Anh",
+  "mmh.product":    "Giang",
+  "mmh.admin":      "Quynh Anh",
+  "mmh.danang":     "Vinh",
+  "mmh.hanoi":      "Minh Viet",
+  "mmh.saigon":     "Phuong",
+  "mmh.hanoi2":     "Viet Ha",
+  "mmh.saigon2":    "Khang",
+  "vtt.hoa":        "Hoa",
+  "mmh.hanoi1":     "Ngoc",
+  "mmh.backoffice1":"Hau",
+  "mmh.order":      "Dam Viet",
+  "mmh.backoffice": "Dam Ha"
+};
+
+function lookupPIC(userField) {
+  if (!userField) return "Someone";
+  var s = String(userField).toLowerCase().trim();
+  // Strip "@..." if backend ever returns a full email
+  var at = s.indexOf("@");
+  if (at > 0) s = s.slice(0, at);
+  return EMAIL_TO_PIC[s] || userField;   // fall back to whatever backend sent
+}
+
 function timeAgoMs(ts) {
   if (!ts) return "";
   var s = Math.floor((Date.now() - ts) / 1000);
@@ -4379,14 +4414,27 @@ function renderUpdBanner() {
     return;
   }
 
-  // Build one item per entry; show the 3 newest prominently then the rest.
+  // Build one item per entry. Format:
+  //   [PIC] [added/edited] content: "[value]" for [ColumnName] in [SheetName] [time ago]
+  // PIC is resolved from the user's email prefix via EMAIL_TO_PIC.
+  // Action = "added" if no prior value context (value present & non-empty),
+  // otherwise "edited". The backend only sends the new value, so we default
+  // to "edited" unless the value is blank (which signals a cleared cell).
   function itemHTML(e) {
-    var where = e.sheet + (e.colName ? " · " + e.colName : (e.col ? " · col " + e.col : "")) + (e.cell ? " (" + e.cell + ")" : "");
-    var valPart = e.value ? '<span class="upd-dotsep">→</span><span class="upd-val">' + esc(e.value) + '</span>' : "";
+    var pic     = lookupPIC(e.user);
+    var hasVal  = e.value && String(e.value).trim() !== "";
+    var action  = hasVal ? "edited" : "cleared";
+    var colName = e.colName || (e.col ? "column " + e.col : "a cell");
+    var sheet   = e.sheet || "the sheet";
+    var cellTag = e.cell ? ' <span style="opacity:.55">('+esc(e.cell)+')</span>' : '';
+    var valPart = hasVal
+      ? '<span class="upd-dotsep">·</span><span>content:</span> <span class="upd-val">"' + esc(e.value) + '"</span>'
+      : '<span class="upd-dotsep">·</span><span style="font-style:italic;opacity:.75">(content cleared)</span>';
     return '<span class="upd-item">'
-      + '<span class="upd-who">' + esc(e.user) + '</span>'
-      + '<span class="upd-meta">edited ' + esc(where) + '</span>'
+      + '<span class="upd-who">' + esc(pic) + '</span>'
+      + '<span class="upd-meta">' + action + '</span>'
       + valPart
+      + '<span class="upd-meta">for <b style="color:#fff">' + esc(colName) + '</b> in <b style="color:#fff">' + esc(sheet) + '</b>' + cellTag + '</span>'
       + '<span class="upd-time">' + timeAgoMs(e.ts) + '</span>'
       + '</span>';
   }
