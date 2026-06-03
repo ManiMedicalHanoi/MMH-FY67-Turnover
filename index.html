@@ -2831,7 +2831,9 @@ function explHtmlTooltip(context, lookupFn) {
   var idx = (tt.dataPoints && tt.dataPoints.length) ? tt.dataPoints[0].dataIndex : -1;
   if (idx < 0) { tip.style.opacity = "0"; return; }
 
-  // Header: the x-axis label + the B/F/GAP numbers from the hovered point
+  // Header: the x-axis label + the B/F/GAP numbers from the hovered point.
+  // These numbers describe the chart point itself, so they follow the current
+  // data mode (Sheets in Jizai, USD/VND in Turnover).
   var label = (tt.dataPoints[0] && tt.dataPoints[0].label) || "";
   var dps = tt.dataPoints || [];
   var numRows = dps.map(function(dp){
@@ -2844,6 +2846,10 @@ function explHtmlTooltip(context, lookupFn) {
   var ex = null;
   try { ex = lookupFn(idx); } catch(e){ ex = null; }
 
+  // Explanation block ALWAYS reads from the Turnover commentary in KUSD,
+  // regardless of the active data mode — the team wrote those notes about
+  // money, never about sheet counts. Use *_usd helpers so Jizai mode keeps
+  // the original "$153K" / "−$370K" formatting.
   var body = "";
   if (!ex) {
     body = '<div class="cet-none">💬 No explanation recorded for this view.</div>';
@@ -2854,7 +2860,7 @@ function explHtmlTooltip(context, lookupFn) {
       var head = (it.countryName ? esc(it.countryName)+" · " : "") + esc(it.segment||"");
       body += '<div class="cet-entry">'
         + '<div class="cet-entry-hd">'+head
-        + ' <span style="color:'+col+'">GAP '+fmtK(it.vsb)+'</span></div>'
+        + ' <span style="color:'+col+'">GAP '+fmtK_usd(it.vsb)+'</span></div>'
         + (it.e ? '<div class="cet-entry-tx">'+esc(it.e)+'</div>'
                 : '<div class="cet-entry-tx cet-empty">— no explanation —</div>')
         + '</div>';
@@ -2862,7 +2868,7 @@ function explHtmlTooltip(context, lookupFn) {
   } else {
     var col2 = ex.vsb >= 0 ? "var(--pos)" : "var(--neg)";
     body = '<div class="cet-src">💡 '+esc(ex.label || ("ver "+ex.ver))+'</div>'
-      + '<div class="cet-gap" style="color:'+col2+'">GAP: '+fmtK(ex.vsb)+'</div>'
+      + '<div class="cet-gap" style="color:'+col2+'">GAP: '+fmtK_usd(ex.vsb)+'</div>'
       + (ex.e ? '<div class="cet-tx">'+esc(ex.e)+'</div>'
               : '<div class="cet-tx cet-empty">— no explanation —</div>');
   }
