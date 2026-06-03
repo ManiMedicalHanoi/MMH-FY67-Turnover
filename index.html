@@ -1039,7 +1039,13 @@ function jsonp(action, cb, errCb, timeoutMs) {
     if (done) return; done = true;
     cleanup(); if (errCb) errCb("network");
   };
-  s.src = GS_URL + "?action=" + encodeURIComponent(action) + "&callback=" + cbName + "&_t=" + Date.now();
+  // Support action with extra params, e.g. "getEditLog&n=10". Only encode the
+  // action name itself; pass the rest through so "&n=10" stays a separate
+  // query parameter instead of becoming "%26n%3D10".
+  var amp = action.indexOf("&");
+  var actName = amp >= 0 ? action.slice(0, amp) : action;
+  var extra   = amp >= 0 ? action.slice(amp) : "";
+  s.src = GS_URL + "?action=" + encodeURIComponent(actName) + extra + "&callback=" + cbName + "&_t=" + Date.now();
   document.body.appendChild(s);
 }
 
@@ -1114,7 +1120,6 @@ function _rebuildNumbersFromRows(rows){
 function setDataMode(mode){
   if (mode!=="turnover" && mode!=="jizai") return;
   S.dataMode = mode;
-  // Switch active segments (Jizai mode shows only the Dental → renamed "Jizai" view)
   SEGS = (mode==="jizai" ? SEGS_JIZAI : SEGS_TURNOVER).slice();
   var rows = (mode==="jizai") ? (window.RAW_JIZAI||[]) : (window.RAW_TURNOVER||[]);
   if (rows.length === 0) {
@@ -1127,7 +1132,13 @@ function setDataMode(mode){
   if (bt) bt.classList.toggle("on", mode==="turnover");
   if (bj) bj.classList.toggle("on", mode==="jizai");
   document.body.classList.toggle("mode-jizai", mode==="jizai");
-  // Reset distributor filter to ALL when switching (in case old filter not in new SEGS list)
+  // Currency switch is meaningless when data is sheet counts → disable it.
+  var curSw = document.querySelector(".cur-sw");
+  if (curSw) {
+    curSw.style.opacity = (mode==="jizai") ? ".4" : "";
+    curSw.style.pointerEvents = (mode==="jizai") ? "none" : "";
+    curSw.title = (mode==="jizai") ? "Currency disabled — Jizai data is measured in sheets (units)" : "Display currency";
+  }
   if (S.distSeg && SEGS.indexOf(S.distSeg) < 0 && S.distSeg !== "ALL") S.distSeg = "ALL";
   renderAll();
 }
@@ -1471,12 +1482,20 @@ function periodToExplFilter() {
 
 // ══ UTILS ══
 // ── (13) CURRENCY LAYER ── all $ figures pass through CUR.conv()
+// In Jizai mode (data is sheet counts, not money), conv() returns the raw value
+// and s() returns "" so any "$"-prefixed assembly degrades cleanly.
 var CUR = {
   code: "USD",
   rate: 25500,          // 1 USD = 25,500 VND (editable)
   sym:  { USD:"$", VND:"₫" },
-  conv: function(usd){ return CUR.code==="VND" ? usd*CUR.rate : usd; },
-  s:    function(){ return CUR.sym[CUR.code]; }
+  conv: function(usd){
+    if (IS_JIZAI()) return usd;                          // sheets, not money
+    return CUR.code==="VND" ? usd*CUR.rate : usd;
+  },
+  s:    function(){
+    if (IS_JIZAI()) return "";                           // no currency symbol
+    return CUR.sym[CUR.code];
+  }
 };
 function setCurrency(code){
   CUR.code = code;
@@ -1492,13 +1511,51 @@ function setCurrency(code){
   },40);
 }
 
+// ── Unit-aware formatting ────────────────────────────────────────────
+// In Jizai mode, raw values are integer SHEETS (not KUSD). All formatters
+// below must skip currency conversion + symbol and just print the count.
+function IS_JIZAI(){ return (window.S && S.dataMode==="jizai"); }
+function unitSuffix(){ return IS_JIZAI() ? " sh" : ""; }     // compact
+function unitSuffixFull(){ return IS_JIZAI() ? " sheets" : ""; }
+// Compact format for a raw count of sheets (no currency, no symbol)
+function fmtSh(n){
+  if (n==null||isNaN(n)) return "—";
+  var a = Math.abs(n);
+  var s = n<0 ? "-" : "";
+  if (a >= 1e6) return s + (a/1e6).toFixed(2).replace(/\.?0+$/,"") + "M sh";
+  if (a >= 1e3) return s + (a/1e3).toFixed(1).replace(/\.?0+$/,"") + "K sh";
+  return s + Math.round(a) + " sh";
+}
+// Signed compact GAP for sheets ("+1.2K sh", "-340 sh")
+function fmtShGap(n){
+  if (n==null||isNaN(n)) return "—";
+  if (n===0) return "0 sh";
+  var sign = n<0 ? "-" : "+";
+  var a = Math.abs(n);
+  if (a >= 1e6) return sign + (a/1e6).toFixed(1) + "M sh";
+  if (a >= 1e3) return sign + (a/1e3).toFixed(1).replace(/\.?0+$/,"") + "K sh";
+  return sign + Math.round(a) + " sh";
+}
+// Full count (no abbreviation), with " sheets" suffix
+function fmtShFull(n){
+  if (n==null||isNaN(n)) return "—";
+  return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(n)) + " sheets";
+}
+
 function fmtN(n) {
   if (n==null||isNaN(n)) return "—";
+  if (IS_JIZAI()) return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.round(n));
   return CUR.s()==="$" ? new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n))
                        : new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(CUR.conv(n));
 }
 function fK(n) {
   if (!n && n!==0) return "—";
+  if (IS_JIZAI()) {
+    var a=Math.abs(n);
+    if (a>=1e6) return (n/1e6).toFixed(2)+"M sh";
+    if (a>=1e3) return Math.round(n/1e3)+"K sh";
+    return Math.round(n)+" sh";
+  }
   var v=CUR.conv(n), a=Math.abs(v);
   if (CUR.code==="VND") {
     if (a>=1e9) return (v/1e9).toFixed(2)+"B";
@@ -1510,6 +1567,12 @@ function fK(n) {
 }
 function fKS(n) {
   if (!n && n!==0) return "";
+  if (IS_JIZAI()) {
+    var a=Math.abs(n);
+    if (a>=1e6) return (n/1e6).toFixed(1)+"M";
+    if (a>=1e3) return Math.round(n/1e3)+"K";
+    return n===0?"0":Math.round(n)+"";
+  }
   var v=CUR.conv(n), a=Math.abs(v);
   if (CUR.code==="VND") {
     if (a>=1e9) return (v/1e9).toFixed(1)+"B";
@@ -1526,30 +1589,31 @@ function fP(n) {
   return (n>=0?"+":"")+n.toFixed(1)+"%";
 }
 function pp(v) { return '<span class="pill '+(v>=0?"p":"n")+'">'+fP(v)+"</span>"; }
-function gv(v) { return '<span class="'+(v>=0?"vp":"vn")+'">'+(v>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(v))+"</span>"; }
-// fmtK: GAP value stored in KUSD. User wants COMPACT display rounded to nearest
-// thousand-of-K, displayed with "K" suffix. e.g. 41015 → "+41K", -317269 → "-317K".
-// In VND mode, convert the underlying USD amount and use VND-appropriate scale.
+function gv(v) {
+  if (IS_JIZAI()) return '<span class="'+(v>=0?"vp":"vn")+'">'+fmtShGap(v)+"</span>";
+  return '<span class="'+(v>=0?"vp":"vn")+'">'+(v>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(v))+"</span>";
+}
 function fmtK(n) {
   if (n==null||isNaN(n)) return "—";
+  if (IS_JIZAI()) return fmtShGap(n);
   var sign = n<0 ? "-" : (n>0 ? "+" : "");
   if (CUR.code === "VND") {
-    // n is KUSD → USD = n*1000 → VND = *rate
     var v = Math.abs(n) * 1000 * CUR.rate;
     if (v >= 1e9) return sign + CUR.s() + (v/1e9).toFixed(1) + "B";
     if (v >= 1e6) return sign + CUR.s() + Math.round(v/1e6) + "M";
     return sign + CUR.s() + Math.round(v/1e3) + "K";
   }
-  // USD: divide n (already in K) by 1000 = millions, label as "K" per request.
-  // For values < 1000 KUSD, show raw K to avoid losing precision.
   var a = Math.abs(n);
   if (a >= 1000) return sign + CUR.s() + Math.round(a/1000) + "K";
   return sign + CUR.s() + Math.round(a) + "K";
 }
 // fmtG: FULL detail GAP. Show raw value (no "K" suffix). Currency-aware.
-// e.g. -317269 KUSD → "-$317,269" ; VND mode → convert and full-format.
 function fmtG(n) {
   if (n==null||isNaN(n)) return "—";
+  if (IS_JIZAI()){
+    var sg = n<0 ? "-" : "+";
+    return sg + new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Math.abs(Math.round(n))) + " sh";
+  }
   var sign = n<0 ? "-" : "+";
   if (CUR.code === "VND") {
     var v = Math.abs(n) * 1000 * CUR.rate;
@@ -1565,7 +1629,8 @@ function fmtG(n) {
 // User asked for "33k, -330K, -5,4B đ" formatting (Vietnamese comma decimal for B).
 function fmtKgap(n) {
   if (n==null||isNaN(n)) return "—";
-  if (n===0) return "0";
+  if (n===0) return IS_JIZAI() ? "0 sh" : "0";
+  if (IS_JIZAI()) return fmtShGap(n);
   var sign = n<0 ? "-" : "+";
   if (CUR.code === "VND") {
     var v = Math.abs(n) * 1000 * CUR.rate;     // VND absolute
@@ -2574,7 +2639,7 @@ function renderTopMover() {
 
   var html = '<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:10px">'
     + '<div style="font-size:14px;font-weight:800">'+distName+' <span style="color:var(--t3);font-weight:600">('+segName+')</span></div>'
-    + '<div class="badge" style="background:'+(top.gap>=0?"var(--pos)":"var(--neg)")+'">GAP '+(top.gap>=0?"+":"")+'$'+fK(top.gap)+'</div>'
+    + '<div class="badge" style="background:'+(top.gap>=0?"var(--pos)":"var(--neg)")+'">GAP '+(top.gap>=0?"+":"")+CUR.s()+fK(top.gap)+'</div>'
     + '</div>';
 
   // Annotations grid
@@ -2609,7 +2674,7 @@ function renderTopMover() {
   var troughComment = minV>0 ? "Month "+MONTHLY_GRAND[minIdx].lbl+" lowest ($"+fK(minV)+")" : "";
   html += '<div style="background:var(--P);border-left:3px solid var(--Y);padding:10px 12px;border-radius:0 8px 8px 0;font-size:12.5px;color:var(--t1);line-height:1.55">'
     + '<b>📝 Note:</b> '+peakComment + (troughComment? ' · '+troughComment : '')
-    + '. Total GAP vs Budget Mani is '+(top.gap>=0?"+":"")+'$'+fK(top.gap)+'.'
+    + '. Total GAP vs Budget Mani is '+(top.gap>=0?"+":"")+CUR.s()+fK(top.gap)+'.'
     + '</div>';
 
   if (expl) {
@@ -5417,6 +5482,12 @@ window.onload = function() {
       var bt=document.getElementById("dmode-turnover"), bj=document.getElementById("dmode-jizai");
       if (bt) bt.classList.remove("on"); if (bj) bj.classList.add("on");
       document.body.classList.add("mode-jizai");
+      var curSwI = document.querySelector(".cur-sw");
+      if (curSwI) {
+        curSwI.style.opacity = ".4";
+        curSwI.style.pointerEvents = "none";
+        curSwI.title = "Currency disabled — Jizai data is measured in sheets (units)";
+      }
     } else {
       S.dataMode = "turnover";
     }
