@@ -4125,6 +4125,36 @@ function pptKusd(n){ if(n==null||isNaN(n)) return "—";
 function pptGap(n){ if(n==null||isNaN(n)) return "—";
   return (n>=0?"+":"-") + "$" + new Intl.NumberFormat("en-US").format(Math.round(Math.abs(n)/1000)) + "K"; }
 function pptPctv(n){ if(n==null||isNaN(n)) return "—"; return (n>=0?"+":"")+n.toFixed(1)+"%"; }
+// ════════════════════════════════════════════════════════════════════
+// EXPORT POWERPOINT — TAB-AWARE (v7)
+// Exports ONLY the currently active tab, fully in ENGLISH, with optimized
+// column widths. The deck title + filename follow the active tab name, e.g.
+//   Overview        → "Turnover Report — Overview"
+//   By Segment      → "Turnover by Segment"
+//   By Country      → "Turnover by Country"
+//   By Distributor  → "Turnover by Distributor"
+//   GAP Analysis    → "Turnover — GAP Analysis"
+//   Comparison      → "Turnover — Comparison"
+//   Explanations    → "Turnover — Explanations"
+// All numbers come from the live compute functions at the period currently
+// selected, so the deck always matches what the dashboard shows.
+// ════════════════════════════════════════════════════════════════════
+
+// Map tab id → { title (deck H1 / filename core), tag (title-slide eyebrow) }
+function pptTabMeta(tab){
+  var seg = IS_JIZAI() ? "Jizai" : "Turnover";
+  var M = {
+    ov:   { name:"Overview",       deck:seg+" Report — Overview",     file:seg+"_Overview" },
+    seg:  { name:"By Segment",     deck:seg+" by Segment",            file:seg+"_by_Segment" },
+    cty:  { name:"By Country",     deck:seg+" by Country",            file:seg+"_by_Country" },
+    dist: { name:"By Distributor", deck:seg+" by Distributor",        file:seg+"_by_Distributor" },
+    gap:  { name:"GAP Analysis",   deck:seg+" — GAP Analysis",        file:seg+"_GAP_Analysis" },
+    cmp:  { name:"Comparison",     deck:seg+" — Comparison",          file:seg+"_Comparison" },
+    exp:  { name:"Explanations",   deck:seg+" — Explanations",        file:seg+"_Explanations" }
+  };
+  return M[tab] || M.ov;
+}
+
 function exportPPT() {
   if (typeof PptxGenJS === "undefined") {
     showToast("PowerPoint library not loaded — check your connection", "warn");
@@ -4135,10 +4165,11 @@ function exportPPT() {
 
   try {
     var B = PPT_BRAND, FF = PPT_FONT;
-    var D = computeD();                       // số liệu đúng period đang chọn
-    var periodLabel = pLabel();               // "Apr-26 · FY67" / "FY67 (Full Year)"
-    var monLabel = periodLabel.split(" · ")[0];
-    var modeTag = IS_JIZAI() ? "Jizai (Sheets)" : "Turnover (KUSD)";
+    var D = computeD();                       // live data at the current period
+    var periodLabel = pLabelEN();             // English period label
+    var unitTag = IS_JIZAI() ? "Unit: Sheets" : "Unit: thousand USD (KUSD)";
+    var tab = (S && S.tab) || "ov";
+    var meta = pptTabMeta(tab);
     var page = 1;
 
     var pptx = new PptxGenJS();
@@ -4147,208 +4178,65 @@ function exportPPT() {
     pptx.author = "MMH Turnover Dashboard";
     pptx.company = "MANI Medical Hanoi";
 
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 1 — TITLE
-    // ─────────────────────────────────────────────────────────────
-    pptTitleSlide(pptx, {
-      tag: "MMH TURNOVER REPORT · FY67",
-      title: "Turnover Report",
-      subtitle: "Kỳ báo cáo: " + monLabel + "  ·  " + modeTag,
-      unit: IS_JIZAI() ? "Đơn vị / Unit: Sheets" : "Đơn vị / Unit: thousand USD (KUSD)"
-    });
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 2 — OVERVIEW: 3 KPI box + bảng Segment × Country (addTable)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var s = pptContentSlide(pptx, "Overview — Tổng quan", periodLabel, ++page);
-      var gt = D.gt;
-      var gapColor = gt.gap>=0 ? B.pos : B.neg;
-      // 3 KPI box
-      pptKpiBox(s, pptx, 0.595, 1.25, 3.9, 1.05, "BUDGET MANI", pptKusd(gt.bm), B.blue, B.navy);
-      pptKpiBox(s, pptx, 4.72, 1.25, 3.9, 1.05, "FORECAST / ACTUAL", pptKusd(gt.fc), B.blue, B.navy);
-      pptKpiBox(s, pptx, 8.84, 1.25, 3.9, 1.05, "GAP vs BUDGET ("+pptPctv(gt.gp)+")", pptGap(gt.gap), B.yellow, gapColor);
-
-      // Bảng Segment × (Thailand / Viet Nam / Total)
-      var head = [
-        cellH("Segment"), cellH("Country"),
-        cellH("Budget Mani"), cellH("Forecast/Actual"), cellH("GAP"), cellH("%GAP")
-      ];
-      var rows = [head];
-      SEGS.forEach(function(sg){
-        var th = D.ctys[0].segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0};
-        var vn = D.ctys[1].segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0};
-        var tbm=th.bm+vn.bm, tfc=th.fc+vn.fc, tg=th.gap+vn.gap;
-        rows.push([ cellL(segLabel(sg),true), cellL("All"),
-          cellR(pptKusd(tbm)), cellR(pptKusd(tfc),true),
-          cellGap(tg), cellR(pptPctv(tbm>0?tg/tbm*100:0)) ]);
-        rows.push([ cellSub("  Thailand"), cellSub(""),
-          cellSubR(pptKusd(th.bm)), cellSubR(pptKusd(th.fc)),
-          cellSubR(pptGap(th.gap)), cellSubR(pptPctv(th.bm>0?th.gap/th.bm*100:0)) ]);
-        rows.push([ cellSub("  Viet Nam"), cellSub(""),
-          cellSubR(pptKusd(vn.bm)), cellSubR(pptKusd(vn.fc)),
-          cellSubR(pptGap(vn.gap)), cellSubR(pptPctv(vn.bm>0?vn.gap/vn.bm*100:0)) ]);
-      });
-      rows.push([ cellGrand("GRAND TOTAL"), cellGrand(""),
-        cellGrand(pptKusd(gt.bm)), cellGrand(pptKusd(gt.fc)),
-        cellGrand(pptGap(gt.gap)), cellGrand(pptPctv(gt.gp)) ]);
-
-      s.addTable(rows, { x:0.595, y:2.55, w:12.14,
-        colW:[3.0, 1.9, 1.9, 2.14, 1.7, 1.5],
-        fontFace:FF, fontSize:10.5, border:{type:"solid", color:B.border, pt:0.5},
-        valign:"middle", rowH:0.34, autoPage:false });
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 3 — CHART: Budget vs Forecast theo Quý (addChart edit-được)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var s = pptContentSlide(pptx, "Budget vs Forecast — Theo Quý", periodLabel, ++page);
-      var labels = ["Q1","Q2","Q3","Q4"];
-      s.addChart(pptx.ChartType.bar, [
-        { name:"Budget Mani", labels:labels, values:QUARTERLY_GRAND.map(function(q){return Math.round(q.bm/1000);}) },
-        { name:"Forecast",    labels:labels, values:QUARTERLY_GRAND.map(function(q){return Math.round(q.fc/1000);}) }
-      ], {
-        x:0.6, y:1.3, w:8.2, h:5.3,
-        barDir:"col", barGrouping:"clustered", barGapWidthPct:55,
-        chartColors:[B.lb1, B.blue],
-        showLegend:true, legendPos:"b", legendFontFace:FF, legendFontSize:11,
-        showValue:true, dataLabelFontFace:FF, dataLabelFontSize:10, dataLabelColor:B.navy,
-        dataLabelPosition:"outEnd",
-        catAxisLabelFontFace:FF, catAxisLabelColor:B.navy, catAxisLabelFontSize:12,
-        valAxisLabelFontFace:FF, valAxisLabelFontSize:9,
-        showTitle:false
-      });
-      // GAP line phụ bên phải (chart riêng cho rõ)
-      s.addChart(pptx.ChartType.line, [
-        { name:"GAP (KUSD)", labels:labels, values:QUARTERLY_GRAND.map(function(q){return Math.round(q.gap/1000);}) }
-      ], {
-        x:9.0, y:1.3, w:3.75, h:5.3,
-        chartColors:[B.navy2], lineSize:2.5, lineDataSymbol:"circle",
-        showLegend:false, showValue:true, dataLabelFontFace:FF, dataLabelFontSize:10, dataLabelColor:B.navy,
-        catAxisLabelFontFace:FF, catAxisLabelFontSize:11, valAxisLabelFontSize:9, showTitle:true,
-        title:"GAP theo Quý", titleFontFace:FF, titleFontSize:12, titleColor:B.blue
-      });
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 4 — CHART: Budget vs Forecast theo Segment (addChart)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var s = pptContentSlide(pptx, "Budget vs Forecast — Theo Segment", periodLabel, ++page);
-      var labels = SEGS.map(segLabel);
-      s.addChart(pptx.ChartType.bar, [
-        { name:"Budget Mani", labels:labels, values:D.segs.map(function(x){return Math.round(x.bm/1000);}) },
-        { name:"Forecast",    labels:labels, values:D.segs.map(function(x){return Math.round(x.fc/1000);}) }
-      ], {
-        x:0.6, y:1.3, w:12.13, h:5.3,
-        barDir:"col", barGrouping:"clustered", barGapWidthPct:50,
-        chartColors:[B.lb1, B.blue],
-        showLegend:true, legendPos:"b", legendFontFace:FF, legendFontSize:11,
-        showValue:true, dataLabelFontFace:FF, dataLabelFontSize:11, dataLabelColor:B.navy, dataLabelPosition:"outEnd",
-        catAxisLabelFontFace:FF, catAxisLabelColor:B.navy, catAxisLabelFontSize:13,
-        valAxisLabelFontFace:FF, valAxisLabelFontSize:9, showTitle:false
-      });
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 5 — BẢNG Distributor Detail (addTable, edit được)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var s = pptContentSlide(pptx, "Chi tiết theo Nhà phân phối", periodLabel, ++page);
-      var dist = getDistPeriod().slice().sort(function(a,b){return b.fc-a.fc;}).slice(0,16); // top 16 cho vừa slide
-      var head = [cellH("Distributor"), cellH("Segment"), cellH("Country"),
-        cellH("Budget"), cellH("Forecast"), cellH("GAP"), cellH("%GAP")];
-      var rows = [head];
-      dist.forEach(function(d){
-        rows.push([ cellL(cleanNm(d.nm,d.sg)), cellL(segLabel(d.sg)), cellL(d.co),
-          cellR(pptKusd(d.bm)), cellR(pptKusd(d.fc),true),
-          cellGap(d.gap), cellR(pptPctv(d.bm>0?d.gap/d.bm*100:0)) ]);
-      });
-      var tot = { bm:dist.reduce(function(a,b){return a+b.bm;},0),
-                  fc:dist.reduce(function(a,b){return a+b.fc;},0),
-                  gap:dist.reduce(function(a,b){return a+b.gap;},0) };
-      rows.push([ cellGrand("TOP "+dist.length+" TOTAL"), cellGrand(""), cellGrand(""),
-        cellGrand(pptKusd(tot.bm)), cellGrand(pptKusd(tot.fc)),
-        cellGrand(pptGap(tot.gap)), cellGrand("") ]);
-      s.addTable(rows, { x:0.595, y:1.25, w:12.14,
-        colW:[3.4, 1.9, 1.7, 1.7, 1.74, 1.7, 0],  // cột cuối tự co
-        fontFace:FF, fontSize:10, border:{type:"solid", color:B.border, pt:0.5},
-        valign:"middle", rowH:0.3, autoPage:true });
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 6 — GAP Ranking chart (addChart, horizontal bar)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var s = pptContentSlide(pptx, "GAP Analysis — Xếp hạng GAP", periodLabel, ++page);
-      var all = getDistPeriod().slice().sort(function(a,b){return b.gap-a.gap;}).slice(0,14);
-      s.addChart(pptx.ChartType.bar, [
-        { name:"GAP (KUSD)", labels:all.map(function(d){return cleanNm(d.nm,d.sg);}),
-          values:all.map(function(d){return Math.round(d.gap/1000);}) }
-      ], {
-        x:0.6, y:1.25, w:12.13, h:5.4,
-        barDir:"bar",   // horizontal
-        chartColors:[B.blue],
-        showLegend:false, showValue:true, dataLabelFontFace:FF, dataLabelFontSize:10,
-        dataLabelColor:B.navy, dataLabelPosition:"outEnd",
-        catAxisLabelFontFace:FF, catAxisLabelFontSize:10, catAxisLabelColor:B.navy,
-        valAxisLabelFontFace:FF, valAxisLabelFontSize:9, showTitle:false
-      });
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // SLIDE 7 — EXPLANATIONS (Grand Total + theo segment, addTable)
-    // ─────────────────────────────────────────────────────────────
-    (function(){
-      var filter = periodToExplFilter();
-      var gex = findExplGrand(filter) || findExplGrand(null);
-      var s = pptContentSlide(pptx, "Forecast Explanations — Diễn giải", periodLabel, ++page);
-      if (gex && gex.e){
-        s.addShape(pptx.ShapeType.rect, { x:0.595, y:1.25, w:12.14, h:0.04, fill:{color:B.yellow}, line:{type:"none"} });
-        s.addText("🌐 Grand Total — " + (gex.label||("ver "+gex.ver)), { x:0.6, y:1.4, w:12.1, h:0.4,
-          fontFace:FF, fontSize:13, bold:true, color:B.blue });
-        s.addText(gex.e, { x:0.6, y:1.85, w:12.1, h:1.6, fontFace:FF, fontSize:12,
-          color:"333333", valign:"top" });
-      }
-      // Bảng diễn giải theo segment
-      var head=[cellH("Segment"), cellH("Country"), cellH("GAP"), cellH("Explanation")];
-      var rows=[head];
-      SEGS.forEach(function(sg){
-        var ex = findExplBySeg(sg, filter) || findExplBySeg(sg, null);
-        if (ex && ex.entries) ex.entries.forEach(function(it){
-          rows.push([ cellL(segLabel(sg)), cellL(it.countryName||""),
-            cellGap(it.vsb), { text: it.e||"—", options:{ fontFace:FF, fontSize:9.5, color:"333333", align:"left", valign:"top" } } ]);
-        });
-      });
-      if (rows.length>1){
-        s.addTable(rows, { x:0.595, y:3.6, w:12.14,
-          colW:[1.6, 1.5, 1.5, 7.54],
-          fontFace:FF, fontSize:9.5, border:{type:"solid", color:B.border, pt:0.5},
-          valign:"top", rowH:0.3, autoPage:true });
-      }
-    })();
-
-    // ─────────────────────────────────────────────────────────────
-    // Cell builder helpers (đặt cuối, hoisted nhờ function declaration)
-    // ─────────────────────────────────────────────────────────────
-    function cellH(t){ return { text:t, options:{ bold:true, color:B.white, fill:B.blue,
-      align:(t==="Segment"||t==="Country"||t==="Distributor"||t==="Explanation"?"left":"center"), valign:"middle", fontFace:FF, fontSize:10.5 } }; }
+    // ── Shared cell builders (hoisted) ──────────────────────────────
+    function cellH(t, al){ return { text:t, options:{ bold:true, color:B.white, fill:B.blue,
+      align:(al||"center"), valign:"middle", fontFace:FF, fontSize:10.5 } }; }
     function cellL(t,b){ return { text:t, options:{ align:"left", color:B.navy, bold:!!b, fontFace:FF, fill:B.white } }; }
     function cellR(t,b){ return { text:t, options:{ align:"right", color:B.navy, bold:!!b, fontFace:FF, fill:B.white } }; }
+    function cellC(t,b){ return { text:t, options:{ align:"center", color:B.navy, bold:!!b, fontFace:FF, fill:B.white } }; }
     function cellGap(n){ var pos=(n>=0); return { text:pptGap(n),
       options:{ align:"right", bold:true, color:(pos?B.pos:B.neg), fontFace:FF, fill:B.white } }; }
-    function cellSub(t){ return { text:t, options:{ align:"left", color:B.muted, fontFace:FF, fill:B.lb2, fontSize:9.5 } }; }
-    function cellSubR(t){ return { text:t, options:{ align:"right", color:B.muted, fontFace:FF, fill:B.lb2, fontSize:9.5 } }; }
-    function cellGrand(t){ return { text:t, options:{ bold:true, color:B.white, fill:B.navy, align:(/[0-9]|TOTAL/.test(t)?"right":"left"), fontFace:FF } }; }
+    function cellPct(n){ var pos=(n>=0); return { text:pptPctv(n),
+      options:{ align:"right", bold:true, color:(pos?B.pos:B.neg), fontFace:FF, fill:B.white } }; }
+    function cellSub(t){ return { text:t, options:{ align:"left", color:B.navy2, fontFace:FF, fill:B.lb2, fontSize:9.5 } }; }
+    function cellSubR(t){ return { text:t, options:{ align:"right", color:B.navy2, fontFace:FF, fill:B.lb2, fontSize:9.5 } }; }
+    function cellSubGap(n){ var pos=(n>=0); return { text:pptGap(n),
+      options:{ align:"right", color:(pos?B.pos:B.neg), fontFace:FF, fill:B.lb2, fontSize:9.5 } }; }
+    function cellGrand(t, al){ return { text:t, options:{ bold:true, color:B.white, fill:B.navy,
+      align:(al||(/[0-9]|TOTAL|%|—/.test(t)?"right":"left")), fontFace:FF, valign:"middle" } }; }
 
-    // ─────────────────────────────────────────────────────────────
-    // XUẤT FILE
-    // ─────────────────────────────────────────────────────────────
-    var fname = ymdToday() + "_MMH_Turnover_" + monLabel.replace(/[^A-Za-z0-9]/g,"") + ".pptx";
+    // Common table styling. Optimized: explicit colW per slide; %GAP given
+    // enough width to never wrap; right-aligned numeric columns.
+    function baseTableOpts(extra){
+      return Object.assign({
+        x:0.595, w:12.14, fontFace:FF, fontSize:10.5,
+        border:{type:"solid", color:B.border, pt:0.5},
+        valign:"middle", rowH:0.34, autoPage:true,
+        autoPageRepeatHeader:true, autoPageLineWeight:-0.5
+      }, extra||{});
+    }
+
+    // ── SLIDE 1: Title (always) ─────────────────────────────────────
+    pptTitleSlideEN(pptx, {
+      tag: "MMH " + (IS_JIZAI()?"JIZAI":"TURNOVER") + " REPORT · FY67",
+      title: meta.deck,
+      subtitle: "Reporting period: " + periodLabel,
+      unit: unitTag
+    });
+
+    // ── Dispatch to the active tab's slide builder ──────────────────
+    var ctx = { pptx:pptx, B:B, FF:FF, D:D, periodLabel:periodLabel,
+      cellH:cellH, cellL:cellL, cellR:cellR, cellC:cellC, cellGap:cellGap, cellPct:cellPct,
+      cellSub:cellSub, cellSubR:cellSubR, cellSubGap:cellSubGap, cellGrand:cellGrand,
+      baseTableOpts:baseTableOpts,
+      nextPage:function(){ return ++page; } };
+
+    switch (tab) {
+      case "seg":  pptBuildSegment(ctx);     break;
+      case "cty":  pptBuildCountry(ctx);     break;
+      case "dist": pptBuildDistributor(ctx); break;
+      case "gap":  pptBuildGap(ctx);         break;
+      case "cmp":  pptBuildComparison(ctx);  break;
+      case "exp":  pptBuildExplanations(ctx);break;
+      default:     pptBuildOverview(ctx);    break;
+    }
+
+    // ── Write file ──────────────────────────────────────────────────
+    var fname = ymdToday() + "_MMH_" + meta.file + "_" +
+      periodLabel.replace(/[^A-Za-z0-9]+/g,"") + ".pptx";
     pptx.writeFile({ fileName: fname }).then(function(){
       if (btn) btn.classList.remove("spinning");
-      showToast("Đã xuất PPT: " + fname, "success");
+      showToast("Exported: " + fname, "success");
     }).catch(function(e){
       if (btn) btn.classList.remove("spinning");
       showToast("Export failed: " + e.message, "warn");
@@ -4360,6 +4248,395 @@ function exportPPT() {
     showToast("Export error: " + e.message, "warn");
     console.error(e);
   }
+}
+
+// English period label (mirrors pLabel but always English)
+function pLabelEN() {
+  if (S.period==="fy") return "FY67 (Full Year)";
+  if (S.period==="qtr") return "Q"+(S.qi+1)+" · FY67";
+  var mi = Array.from(S.selM).sort(function(a,b){return a-b;});
+  if (!mi.length) return "—";
+  if (mi.length===1) return MONTHLY_GRAND[mi[0]].lbl+" · FY67";
+  if (mi.length===12) return "FY67 (Full Year)";
+  return MONTHLY_GRAND[mi[0]].lbl+" → "+MONTHLY_GRAND[mi[mi.length-1]].lbl+" · FY67";
+}
+
+// English title slide (yellow column on right per brand)
+function pptTitleSlideEN(pptx, opts){
+  var B = PPT_BRAND, FF = PPT_FONT;
+  var s = pptx.addSlide();
+  s.background = { color: B.white };
+  s.addShape(pptx.ShapeType.rect, { x:10.0, y:0.0, w:3.333, h:7.5, fill:{color:B.yellow}, line:{type:"none"} });
+  s.addText(opts.tag || "MMH TURNOVER REPORT", { x:1.056, y:1.001, w:8.4, h:0.5,
+    fontFace:FF, fontSize:14, color:B.navy, charSpacing:1 });
+  s.addText((opts.title||"").toUpperCase(), { x:1.056, y:2.001, w:8.6, h:1.9,
+    fontFace:FF, fontSize:40, bold:true, color:B.navy, lineSpacingMultiple:1.0 });
+  s.addText(opts.subtitle || "", { x:1.056, y:5.181, w:8.4, h:0.6,
+    fontFace:FF, fontSize:20, color:B.navy });
+  if (opts.unit) s.addText(opts.unit, { x:1.056, y:5.95, w:8.4, h:0.4,
+    fontFace:FF, fontSize:12, italic:true, color:B.muted });
+  s.addText("MANI", { x:10.66, y:6.056, w:1.9, h:0.6,
+    fontFace:FF, fontSize:28, bold:true, color:B.navy, align:"center" });
+  return s;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// PER-TAB SLIDE BUILDERS
+// ════════════════════════════════════════════════════════════════════
+
+// ── OVERVIEW ────────────────────────────────────────────────────────
+function pptBuildOverview(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF, D=c.D;
+
+  // Slide: KPI + Segment×Country table
+  (function(){
+    var s = pptContentSlide(pptx, "Overview", c.periodLabel, c.nextPage());
+    var gt = D.gt, gapColor = gt.gap>=0 ? B.pos : B.neg;
+    pptKpiBox(s, pptx, 0.595, 1.25, 3.9, 1.05, "BUDGET MANI", pptKusd(gt.bm), B.blue, B.navy);
+    pptKpiBox(s, pptx, 4.72, 1.25, 3.9, 1.05, "FORECAST / ACTUAL", pptKusd(gt.fc), B.blue, B.navy);
+    pptKpiBox(s, pptx, 8.84, 1.25, 3.9, 1.05, "GAP vs BUDGET ("+pptPctv(gt.gp)+")", pptGap(gt.gap), B.yellow, gapColor);
+
+    var rows = [[ c.cellH("Segment","left"), c.cellH("Country","left"),
+      c.cellH("Budget Mani"), c.cellH("Forecast/Actual"), c.cellH("GAP"), c.cellH("%GAP") ]];
+    SEGS.forEach(function(sg){
+      var th = D.ctys[0].segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0};
+      var vn = D.ctys[1].segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0};
+      var tbm=th.bm+vn.bm, tfc=th.fc+vn.fc, tg=th.gap+vn.gap;
+      rows.push([ c.cellL(segLabel(sg),true), c.cellL("All"),
+        c.cellR(pptKusd(tbm)), c.cellR(pptKusd(tfc),true), c.cellGap(tg), c.cellPct(tbm>0?tg/tbm*100:0) ]);
+      rows.push([ c.cellSub("   Thailand"), c.cellSub(""),
+        c.cellSubR(pptKusd(th.bm)), c.cellSubR(pptKusd(th.fc)), c.cellSubGap(th.gap), c.cellSubR(pptPctv(th.bm>0?th.gap/th.bm*100:0)) ]);
+      rows.push([ c.cellSub("   Viet Nam"), c.cellSub(""),
+        c.cellSubR(pptKusd(vn.bm)), c.cellSubR(pptKusd(vn.fc)), c.cellSubGap(vn.gap), c.cellSubR(pptPctv(vn.bm>0?vn.gap/vn.bm*100:0)) ]);
+    });
+    rows.push([ c.cellGrand("GRAND TOTAL","left"), c.cellGrand(""),
+      c.cellGrand(pptKusd(gt.bm)), c.cellGrand(pptKusd(gt.fc)), c.cellGrand(pptGap(gt.gap)), c.cellGrand(pptPctv(gt.gp)) ]);
+
+    s.addTable(rows, c.baseTableOpts({ y:2.55,
+      colW:[3.04, 1.7, 2.0, 2.3, 1.7, 1.4], autoPage:false }));
+  })();
+
+  // Slide: charts (Budget vs Forecast by Quarter + by Segment)
+  (function(){
+    var s = pptContentSlide(pptx, "Overview — Budget vs Forecast", c.periodLabel, c.nextPage());
+    var qLabels = ["Q1","Q2","Q3","Q4"];
+    s.addChart(pptx.ChartType.bar, [
+      { name:"Budget Mani", labels:qLabels, values:QUARTERLY_GRAND.map(function(q){return Math.round(q.bm/1000);}) },
+      { name:"Forecast",    labels:qLabels, values:QUARTERLY_GRAND.map(function(q){return Math.round(q.fc/1000);}) }
+    ], chartBarOpts(c, {x:0.6, y:1.3, w:6.05, h:5.3, title:"By Quarter"}));
+    var sLabels = SEGS.map(segLabel);
+    s.addChart(pptx.ChartType.bar, [
+      { name:"Budget Mani", labels:sLabels, values:D.segs.map(function(x){return Math.round(x.bm/1000);}) },
+      { name:"Forecast",    labels:sLabels, values:D.segs.map(function(x){return Math.round(x.fc/1000);}) }
+    ], chartBarOpts(c, {x:6.85, y:1.3, w:5.88, h:5.3, title:"By Segment"}));
+  })();
+}
+
+// ── BY SEGMENT ──────────────────────────────────────────────────────
+function pptBuildSegment(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF, D=c.D;
+
+  // Slide: chart Budget vs Forecast by Segment
+  (function(){
+    var s = pptContentSlide(pptx, "By Segment — Budget vs Forecast", c.periodLabel, c.nextPage());
+    var labels = SEGS.map(segLabel);
+    s.addChart(pptx.ChartType.bar, [
+      { name:"Budget Mani", labels:labels, values:D.segs.map(function(x){return Math.round(x.bm/1000);}) },
+      { name:"Forecast",    labels:labels, values:D.segs.map(function(x){return Math.round(x.fc/1000);}) }
+    ], chartBarOpts(c, {x:0.6, y:1.3, w:12.13, h:5.3}));
+  })();
+
+  // Slide: summary table per segment + distributor breakdown
+  (function(){
+    var s = pptContentSlide(pptx, "By Segment — Summary", c.periodLabel, c.nextPage());
+    var rows = [[ c.cellH("Segment","left"), c.cellH("Country","left"),
+      c.cellH("Budget Mani"), c.cellH("Forecast/Actual"), c.cellH("GAP"), c.cellH("%GAP") ]];
+    D.segs.forEach(function(seg){
+      var th = D.ctys[0].segs.find(function(x){return x.sg===seg.sg;})||{bm:0,fc:0,gap:0};
+      var vn = D.ctys[1].segs.find(function(x){return x.sg===seg.sg;})||{bm:0,fc:0,gap:0};
+      rows.push([ c.cellL(segLabel(seg.sg),true), c.cellL("All"),
+        c.cellR(pptKusd(seg.bm)), c.cellR(pptKusd(seg.fc),true), c.cellGap(seg.gap), c.cellPct(seg.gp) ]);
+      rows.push([ c.cellSub("   Thailand"), c.cellSub(""),
+        c.cellSubR(pptKusd(th.bm)), c.cellSubR(pptKusd(th.fc)), c.cellSubGap(th.gap), c.cellSubR(pptPctv(th.bm>0?th.gap/th.bm*100:0)) ]);
+      rows.push([ c.cellSub("   Viet Nam"), c.cellSub(""),
+        c.cellSubR(pptKusd(vn.bm)), c.cellSubR(pptKusd(vn.fc)), c.cellSubGap(vn.gap), c.cellSubR(pptPctv(vn.bm>0?vn.gap/vn.bm*100:0)) ]);
+    });
+    var gt=D.gt;
+    rows.push([ c.cellGrand("GRAND TOTAL","left"), c.cellGrand(""),
+      c.cellGrand(pptKusd(gt.bm)), c.cellGrand(pptKusd(gt.fc)), c.cellGrand(pptGap(gt.gap)), c.cellGrand(pptPctv(gt.gp)) ]);
+    s.addTable(rows, c.baseTableOpts({ y:1.3, colW:[3.04, 1.7, 2.0, 2.3, 1.7, 1.4], autoPage:false }));
+  })();
+
+  // Slide(s): distributor detail per segment (one table, autoPage)
+  (function(){
+    var s = pptContentSlide(pptx, "By Segment — Distributor Detail", c.periodLabel, c.nextPage());
+    var distP = getDistPeriod();
+    var rows = [[ c.cellH("Distributor","left"), c.cellH("Segment","left"), c.cellH("Country","left"),
+      c.cellH("Budget"), c.cellH("Forecast"), c.cellH("GAP"), c.cellH("%GAP") ]];
+    D.segs.forEach(function(seg){
+      var sdists = distP.filter(function(d){return d.sg===seg.sg;}).sort(function(a,b){return b.gap-a.gap;});
+      sdists.forEach(function(d){
+        rows.push([ c.cellL(cleanNm(d.nm,d.sg)), c.cellL(segLabel(d.sg)), c.cellL(d.co),
+          c.cellR(pptKusd(d.bm)), c.cellR(pptKusd(d.fc),true), c.cellGap(d.gap), c.cellPct(d.bm>0?d.gap/d.bm*100:0) ]);
+      });
+      rows.push([ { text:"TOTAL "+segLabel(seg.sg), options:{bold:true,color:B.navy,fill:B.lb1,align:"left",fontFace:FF} },
+        { text:"", options:{fill:B.lb1} }, { text:"", options:{fill:B.lb1} },
+        { text:pptKusd(seg.bm), options:{bold:true,color:B.navy,fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptKusd(seg.fc), options:{bold:true,color:B.navy,fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptGap(seg.gap), options:{bold:true,color:(seg.gap>=0?B.pos:B.neg),fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptPctv(seg.gp), options:{bold:true,color:(seg.gap>=0?B.pos:B.neg),fill:B.lb1,align:"right",fontFace:FF} } ]);
+    });
+    s.addTable(rows, c.baseTableOpts({ y:1.25, fontSize:9.5, rowH:0.3,
+      colW:[3.1, 1.5, 1.4, 1.7, 1.7, 1.5, 1.24] }));
+  })();
+}
+
+// ── BY COUNTRY ──────────────────────────────────────────────────────
+function pptBuildCountry(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF, D=c.D;
+
+  // Slide: two charts (each country by segment)
+  (function(){
+    var s = pptContentSlide(pptx, "By Country — Segment Mix", c.periodLabel, c.nextPage());
+    [["Thailand",0],["VietNam",1]].forEach(function(pair, i){
+      var co=pair[0];
+      var cdata = D.ctys.find(function(x){return x.co===co;});
+      var cSegs = SEGS.map(function(sg){return cdata.segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0};});
+      s.addChart(pptx.ChartType.bar, [
+        { name:"Budget Mani", labels:SEGS.map(segLabel), values:cSegs.map(function(x){return Math.round(x.bm/1000);}) },
+        { name:"Forecast",    labels:SEGS.map(segLabel), values:cSegs.map(function(x){return Math.round(x.fc/1000);}) }
+      ], chartBarOpts(c, {x: i===0?0.6:6.85, y:1.3, w:5.88, h:5.3,
+        title: (co==="VietNam"?"Viet Nam":"Thailand")}));
+    });
+  })();
+
+  // Slide: Country × Segment table
+  (function(){
+    var s = pptContentSlide(pptx, "By Country — Detail", c.periodLabel, c.nextPage());
+    var rows = [[ c.cellH("Country","left"), c.cellH("Segment","left"),
+      c.cellH("Budget Mani"), c.cellH("Forecast/Actual"), c.cellH("GAP"), c.cellH("%GAP") ]];
+    D.ctys.forEach(function(co){
+      rows.push([ { text:(co.co==="VietNam"?"Viet Nam":"Thailand"), options:{bold:true,color:B.navy,fill:B.lb1,align:"left",fontFace:FF} },
+        { text:"All", options:{color:B.navy,fill:B.lb1,align:"left",fontFace:FF} },
+        { text:pptKusd(co.bm), options:{bold:true,color:B.navy,fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptKusd(co.fc), options:{bold:true,color:B.navy,fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptGap(co.gap), options:{bold:true,color:(co.gap>=0?B.pos:B.neg),fill:B.lb1,align:"right",fontFace:FF} },
+        { text:pptPctv(co.gp), options:{bold:true,color:(co.gap>=0?B.pos:B.neg),fill:B.lb1,align:"right",fontFace:FF} } ]);
+      SEGS.forEach(function(sg){
+        var d=co.segs.find(function(x){return x.sg===sg;})||{bm:0,fc:0,gap:0,gp:0};
+        if(!d.bm && !d.fc) return;
+        rows.push([ c.cellSub("   "+segLabel(sg)), c.cellSub("—"),
+          c.cellSubR(pptKusd(d.bm)), c.cellSubR(pptKusd(d.fc)), c.cellSubGap(d.gap), c.cellSubR(pptPctv(d.gp)) ]);
+      });
+    });
+    var gt=D.gt;
+    rows.push([ c.cellGrand("GRAND TOTAL","left"), c.cellGrand(""),
+      c.cellGrand(pptKusd(gt.bm)), c.cellGrand(pptKusd(gt.fc)), c.cellGrand(pptGap(gt.gap)), c.cellGrand(pptPctv(gt.gp)) ]);
+    s.addTable(rows, c.baseTableOpts({ y:1.25, colW:[3.04, 1.7, 2.0, 2.3, 1.7, 1.4] }));
+  })();
+}
+
+// ── BY DISTRIBUTOR ──────────────────────────────────────────────────
+function pptBuildDistributor(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF;
+  var segFilter = (S.distSeg && S.distSeg!=="ALL") ? S.distSeg : null;
+  var distP = getDistPeriod();
+  var fd = segFilter ? distP.filter(function(d){return d.sg===segFilter;}) : distP;
+  var srt = fd.slice().sort(function(a,b){return b.fc-a.fc;});
+  var scopeNote = segFilter ? ("Segment: "+segLabel(segFilter)) : "All Segments";
+
+  // Slide: Forecast by Distributor chart (horizontal)
+  (function(){
+    var s = pptContentSlide(pptx, "By Distributor — Forecast", c.periodLabel + " · " + scopeNote, c.nextPage());
+    var top = srt.slice(0, 16);
+    s.addChart(pptx.ChartType.bar, [
+      { name:"Budget Mani", labels:top.map(function(d){return cleanNm(d.nm,d.sg);}), values:top.map(function(d){return Math.round(d.bm/1000);}) },
+      { name:"Forecast",    labels:top.map(function(d){return cleanNm(d.nm,d.sg);}), values:top.map(function(d){return Math.round(d.fc/1000);}) }
+    ], chartBarOpts(c, {x:0.6, y:1.3, w:12.13, h:5.4, horizontal:true}));
+  })();
+
+  // Slide: Distributor detail table (autoPage handles overflow)
+  (function(){
+    var s = pptContentSlide(pptx, "By Distributor — Detail", c.periodLabel + " · " + scopeNote, c.nextPage());
+    var rows = [[ c.cellH("Distributor","left"), c.cellH("Segment","left"), c.cellH("Country","left"),
+      c.cellH("Budget Mani"), c.cellH("Forecast/Actual"), c.cellH("GAP"), c.cellH("%GAP") ]];
+    srt.forEach(function(d){
+      rows.push([ c.cellL(cleanNm(d.nm,d.sg)), c.cellL(segLabel(d.sg)), c.cellL(d.co),
+        c.cellR(pptKusd(d.bm)), c.cellR(pptKusd(d.fc),true), c.cellGap(d.gap), c.cellPct(d.bm>0?d.gap/d.bm*100:0) ]);
+    });
+    var tot = { bm:fd.reduce(function(a,b){return a+b.bm;},0),
+                fc:fd.reduce(function(a,b){return a+b.fc;},0),
+                gap:fd.reduce(function(a,b){return a+b.gap;},0) };
+    rows.push([ c.cellGrand("TOTAL ("+(segFilter?segLabel(segFilter):"All")+")","left"),
+      c.cellGrand(""), c.cellGrand(""),
+      c.cellGrand(pptKusd(tot.bm)), c.cellGrand(pptKusd(tot.fc)), c.cellGrand(pptGap(tot.gap)),
+      c.cellGrand(pptPctv(tot.bm>0?tot.gap/tot.bm*100:0)) ]);
+    s.addTable(rows, c.baseTableOpts({ y:1.25, fontSize:9.5, rowH:0.3,
+      colW:[3.0, 1.5, 1.44, 1.7, 1.8, 1.4, 1.3] }));
+  })();
+}
+
+// ── GAP ANALYSIS ────────────────────────────────────────────────────
+function pptBuildGap(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF, D=c.D;
+  var all = getDistPeriod().slice().sort(function(a,b){return b.gap-a.gap;});
+  var pos = all.filter(function(d){return d.gap>0;});
+  var neg = all.filter(function(d){return d.gap<0;});
+  var gt = D.gt;
+
+  // Slide: KPI + GAP ranking chart
+  (function(){
+    var s = pptContentSlide(pptx, "GAP Analysis — Ranking", c.periodLabel, c.nextPage());
+    var tp = pos.reduce(function(a,b){return a+b.gap;},0);
+    var tn = neg.reduce(function(a,b){return a+b.gap;},0);
+    pptKpiBox(s, pptx, 0.595, 1.25, 3.9, 1.0, "TOTAL GAP ("+pptPctv(gt.gp)+")", pptGap(gt.gap), B.yellow, gt.gap>=0?B.pos:B.neg);
+    pptKpiBox(s, pptx, 4.72, 1.25, 3.9, 1.0, "ABOVE BUDGET ("+pos.length+")", pptGap(tp), B.blue, B.pos);
+    pptKpiBox(s, pptx, 8.84, 1.25, 3.9, 1.0, "BELOW BUDGET ("+neg.length+")", pptGap(tn), B.blue, B.neg);
+
+    var topN = all.slice(0, 14);
+    s.addChart(pptx.ChartType.bar, [
+      { name:"GAP (KUSD)", labels:topN.map(function(d){return cleanNm(d.nm,d.sg);}),
+        values:topN.map(function(d){return Math.round(d.gap/1000);}) }
+    ], chartGapBarOpts(c, {x:0.6, y:2.45, w:12.13, h:4.3}));
+  })();
+
+  // Slide: GAP contribution table
+  (function(){
+    var s = pptContentSlide(pptx, "GAP Analysis — Contribution", c.periodLabel, c.nextPage());
+    var rows = [[ c.cellH("Distributor","left"), c.cellH("Segment","left"), c.cellH("Country","left"),
+      c.cellH("Budget"), c.cellH("Forecast"), c.cellH("GAP"), c.cellH("Contribution") ]];
+    all.forEach(function(d){
+      var cb = gt.gap ? d.gap/Math.abs(gt.gap)*100 : 0;
+      rows.push([ c.cellL(cleanNm(d.nm,d.sg)), c.cellL(segLabel(d.sg)), c.cellL(d.co),
+        c.cellR(pptKusd(d.bm)), c.cellR(pptKusd(d.fc),true), c.cellGap(d.gap),
+        { text:(cb>=0?"+":"")+cb.toFixed(1)+"%", options:{align:"right",bold:true,color:(cb>=0?B.pos:B.neg),fontFace:FF,fill:B.white} } ]);
+    });
+    rows.push([ c.cellGrand("GRAND TOTAL","left"), c.cellGrand(""), c.cellGrand(""),
+      c.cellGrand(pptKusd(gt.bm)), c.cellGrand(pptKusd(gt.fc)), c.cellGrand(pptGap(gt.gap)), c.cellGrand("100%") ]);
+    s.addTable(rows, c.baseTableOpts({ y:1.25, fontSize:9.5, rowH:0.3,
+      colW:[3.0, 1.5, 1.4, 1.6, 1.6, 1.6, 1.44] }));
+  })();
+}
+
+// ── COMPARISON ──────────────────────────────────────────────────────
+function pptBuildComparison(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF;
+  var mode = (typeof CMP!=="undefined" && CMP.mode) ? CMP.mode : "segment";
+  var key = (mode==="dist") ? "dist" : mode;
+  var picks = (typeof CMP!=="undefined" && CMP.picks[key]) ? CMP.picks[key] : [];
+  var scopeLbl = (typeof cmpScopeLabel==="function") ? cmpScopeLabel() : c.periodLabel;
+  var modeLbl = mode==="segment"?"Segment":(mode==="country"?"Country":"Distributor");
+
+  if (!picks.length || picks.length<2){
+    var s0 = pptContentSlide(pptx, "Comparison", scopeLbl, c.nextPage());
+    s0.addText("Select at least 2 entities in the Comparison tab before exporting.",
+      { x:0.6, y:1.6, w:12.1, h:0.6, fontFace:FF, fontSize:14, color:B.muted, italic:true });
+    return;
+  }
+
+  var ents = picks.map(function(id){ return cmpEntityData(mode, id); });
+  var ENT_COLORS = [B.blue, "16A34A", "F59E0B"];
+
+  // Slide: side-by-side KPI table
+  (function(){
+    var s = pptContentSlide(pptx, "Comparison — "+modeLbl, scopeLbl, c.nextPage());
+    var head = [ c.cellH("Metric","left") ];
+    ents.forEach(function(e){ head.push(c.cellH(e.name)); });
+    var rows = [head];
+    function metricRow(lbl, fn, isGap){
+      var r = [ c.cellL(lbl,true) ];
+      ents.forEach(function(e){
+        var v = fn(e);
+        if (isGap) r.push({ text:v.txt, options:{align:"right",bold:true,color:(v.pos?B.pos:B.neg),fontFace:FF,fill:B.white} });
+        else r.push(c.cellR(v));
+      });
+      return r;
+    }
+    rows.push(metricRow("Budget Mani", function(e){return pptKusd(e.bm);}));
+    rows.push(metricRow("Forecast", function(e){return pptKusd(e.fc);}));
+    rows.push(metricRow("GAP", function(e){return {txt:pptGap(e.gap),pos:e.gap>=0};}, true));
+    rows.push(metricRow("%GAP", function(e){return {txt:pptPctv(e.gp),pos:e.gap>=0};}, true));
+    var colW=[2.6]; var ew=(12.14-2.6)/ents.length; ents.forEach(function(){colW.push(ew);});
+    s.addTable(rows, c.baseTableOpts({ y:1.4, colW:colW, rowH:0.42, autoPage:false }));
+
+    // Bar chart: Budget / Forecast / |GAP| per entity
+    s.addChart(pptx.ChartType.bar,
+      ents.map(function(e,i){
+        return { name:e.name, labels:["Budget","Forecast","GAP (abs)"],
+          values:[Math.round(e.bm/1000), Math.round(e.fc/1000), Math.round(Math.abs(e.gap)/1000)] };
+      }), {
+        x:0.6, y:3.7, w:12.13, h:3.1,
+        barDir:"col", barGrouping:"clustered", barGapWidthPct:50,
+        chartColors:ENT_COLORS.slice(0,ents.length),
+        showLegend:true, legendPos:"b", legendFontFace:FF, legendFontSize:11,
+        showValue:true, dataLabelFontFace:FF, dataLabelFontSize:9, dataLabelColor:B.navy, dataLabelPosition:"outEnd",
+        catAxisLabelFontFace:FF, catAxisLabelColor:B.navy, catAxisLabelFontSize:11,
+        valAxisLabelFontFace:FF, valAxisLabelFontSize:9, showTitle:false
+      });
+  })();
+}
+
+// ── EXPLANATIONS ────────────────────────────────────────────────────
+function pptBuildExplanations(c){
+  var pptx=c.pptx, B=c.B, FF=c.FF;
+  var filter = (typeof periodToExplFilter==="function") ? periodToExplFilter() : {};
+  var gex = findExplGrand(filter) || findExplGrand(null);
+
+  var s = pptContentSlide(pptx, "Forecast Explanations", c.periodLabel, c.nextPage());
+  var y = 1.25;
+  if (gex && gex.e){
+    s.addShape(pptx.ShapeType.rect, { x:0.595, y:y, w:12.14, h:0.04, fill:{color:B.yellow}, line:{type:"none"} });
+    s.addText("Grand Total — " + (gex.label||("ver "+gex.ver)), { x:0.6, y:y+0.12, w:12.1, h:0.4,
+      fontFace:FF, fontSize:13, bold:true, color:B.blue });
+    s.addText(gex.e, { x:0.6, y:y+0.55, w:12.1, h:1.45, fontFace:FF, fontSize:12, color:"333333", valign:"top" });
+    y = 2.4;
+  }
+  var rows=[[ c.cellH("Segment","left"), c.cellH("Country","left"), c.cellH("GAP"),
+    { text:"Explanation", options:{bold:true,color:B.white,fill:B.blue,align:"left",valign:"middle",fontFace:FF,fontSize:10.5} } ]];
+  SEGS.forEach(function(sg){
+    var ex = findExplBySeg(sg, filter) || findExplBySeg(sg, null);
+    if (ex && ex.entries) ex.entries.forEach(function(it){
+      rows.push([ c.cellL(segLabel(sg)), c.cellL(it.countryName||""), c.cellGap(it.vsb),
+        { text: it.e||"—", options:{ fontFace:FF, fontSize:9.5, color:"333333", align:"left", valign:"top" } } ]);
+    });
+  });
+  if (rows.length>1){
+    s.addTable(rows, c.baseTableOpts({ y:y+0.15, fontSize:9.5, rowH:0.3, valign:"top",
+      colW:[1.8, 1.6, 1.6, 7.14] }));
+  } else if (!gex){
+    s.addText("No explanation records for this period.", { x:0.6, y:1.6, w:12.1, h:0.5,
+      fontFace:FF, fontSize:14, color:B.muted, italic:true });
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// CHART OPTION HELPERS — consistent brand styling
+// ════════════════════════════════════════════════════════════════════
+function chartBarOpts(c, o){
+  var B=c.B, FF=c.FF;
+  var opt = {
+    x:o.x, y:o.y, w:o.w, h:o.h,
+    barDir: o.horizontal ? "bar" : "col",
+    barGrouping:"clustered", barGapWidthPct:55,
+    chartColors:[B.lb1, B.blue],
+    showLegend:true, legendPos:"b", legendFontFace:FF, legendFontSize:11,
+    showValue:true, dataLabelFontFace:FF, dataLabelFontSize:9, dataLabelColor:B.navy, dataLabelPosition:"outEnd",
+    catAxisLabelFontFace:FF, catAxisLabelColor:B.navy, catAxisLabelFontSize:o.horizontal?9:12,
+    valAxisLabelFontFace:FF, valAxisLabelFontSize:9, showTitle:false
+  };
+  if (o.title){ opt.showTitle=true; opt.title=o.title; opt.titleFontFace=FF; opt.titleFontSize=13; opt.titleColor=B.blue; }
+  return opt;
+}
+function chartGapBarOpts(c, o){
+  var B=c.B, FF=c.FF;
+  return {
+    x:o.x, y:o.y, w:o.w, h:o.h,
+    barDir:"col", chartColors:[B.blue],
+    showLegend:false, showValue:true, dataLabelFontFace:FF, dataLabelFontSize:9,
+    dataLabelColor:B.navy, dataLabelPosition:"outEnd",
+    catAxisLabelFontFace:FF, catAxisLabelFontSize:9, catAxisLabelColor:B.navy,
+    valAxisLabelFontFace:FF, valAxisLabelFontSize:9, showTitle:false
+  };
 }
 
 function ymdToday() {
