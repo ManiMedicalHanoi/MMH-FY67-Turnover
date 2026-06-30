@@ -478,8 +478,8 @@ tr.sub td:first-child { padding-left: 18px !important; font-size: 12px !importan
 .upd-item .upd-time { color: rgba(255,255,255,.6); font-size: 11px; font-style: italic; }
 .upd-item.upd-empty { color: rgba(255,255,255,.7); font-style: italic; border: none; }
 .upd-dotsep { color: rgba(255,255,255,.4); margin: 0 2px; }
-/* Layout chung exp-row — grid 6 cột (ID, B, F, GAP, %, Text) */
-.exp-row { display: grid; grid-template-columns: 280px 95px 95px 90px 75px 1fr; gap: 10px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--br); font-size: 12.5px; transition: background .12s; }
+/* Layout chung exp-row — grid 7 cột (ID, B, F, GAP, vsLF, %, Text) */
+.exp-row { display: grid; grid-template-columns: 260px 90px 90px 88px 88px 70px 1fr; gap: 8px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--br); font-size: 12.5px; transition: background .12s; }
 .exp-row:hover { background: rgba(58,92,170,.04); }
 .exp-row .ex-id { font-weight: 700; color: var(--t1); display: flex; align-items: center; gap: 6px; }
 .exp-row .ex-id-sub { padding-left: 28px; font-weight: 600; color: var(--t2); font-size: 12px; }
@@ -843,10 +843,10 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 
 <div class="hdr">
   <div class="hdr-top">
-    <div class="logo">
+    <a class="logo" href="https://docs.google.com/spreadsheets/d/1bujnLrxerjUM1gR3aOoy3r4gvTp4pNyPwJM-ra5iFe8/edit?gid=488446085#gid=488446085" target="_blank" rel="noopener" title="Open backend Google Sheet" style="text-decoration:none;cursor:pointer">
       <div class="logo-b">MMH</div>
-      <div class="logo-t">Turnover Report<div class="logo-s">FY67 · Sep 2025 → Aug 2026 · v6</div></div>
-    </div>
+      <div class="logo-t">Turnover Report<div class="logo-s">FY67 · Sep 2025 → Aug 2026 · v6 · 🔗 Open Sheet</div></div>
+    </a>
     <div class="hdr-mid">
       <div class="pg">
         <button class="pb on" id="pb-fy"    onclick="setPeriod('fy')">Full Year</button>
@@ -1360,14 +1360,14 @@ function findExpl(country, segment, distributor, filter) {
       if (d && d.e) {
         return {ver:v.v, title:v.t, label:v.l, ft:v.ft, tFct:v.tFct, sc:v.sc,
                 country:coCode, segment:segment, distributor:distributor,
-                b:d.b, f:d.f, vsb:d.vsb, pct:d.pct, e:d.e};
+                b:d.b, f:d.f, vsb:d.vsb, pct:d.pct, lf:d.lf, vlf:d.vlf, e:d.e};
       }
     } else {
       var t = sg.total;
       if (t && t.e) {
         return {ver:v.v, title:v.t, label:v.l, ft:v.ft, tFct:v.tFct, sc:v.sc,
                 country:coCode, segment:segment,
-                b:t.b, f:t.f, vsb:t.vsb, pct:t.pct, e:t.e};
+                b:t.b, f:t.f, vsb:t.vsb, pct:t.pct, lf:t.lf, vlf:t.vlf, e:t.e};
       }
     }
   }
@@ -1385,7 +1385,8 @@ function findExplBySeg(segment, filter) {
       var sg = (co.segments || []).find(function(s){ return s.name === segment; });
       if (sg && sg.total && sg.total.e) {
         entries.push({country:co.code, countryName:co.name,
-                      segment:segment, b:sg.total.b, f:sg.total.f, vsb:sg.total.vsb, pct:sg.total.pct, e:sg.total.e});
+                      segment:segment, b:sg.total.b, f:sg.total.f, vsb:sg.total.vsb, pct:sg.total.pct,
+                      lf:sg.total.lf, vlf:sg.total.vlf, e:sg.total.e});
       }
     });
     if (entries.length) {
@@ -1409,11 +1410,13 @@ function findExplByCty(country, filter) {
     var entries = [];
     // Prefer the country total row if it has explanation
     if (co.total && co.total.e) {
-      entries.push({segment:"(Country total)", b:co.total.b, f:co.total.f, vsb:co.total.vsb, pct:co.total.pct, e:co.total.e});
+      entries.push({segment:"(Country total)", b:co.total.b, f:co.total.f, vsb:co.total.vsb, pct:co.total.pct,
+                    lf:co.total.lf, vlf:co.total.vlf, e:co.total.e});
     }
     (co.segments || []).forEach(function(sg){
       if (sg.total && sg.total.e) {
-        entries.push({segment:sg.name, b:sg.total.b, f:sg.total.f, vsb:sg.total.vsb, pct:sg.total.pct, e:sg.total.e});
+        entries.push({segment:sg.name, b:sg.total.b, f:sg.total.f, vsb:sg.total.vsb, pct:sg.total.pct,
+                      lf:sg.total.lf, vlf:sg.total.vlf, e:sg.total.e});
       }
     });
     if (entries.length) {
@@ -1433,7 +1436,8 @@ function findExplGrand(filter) {
     if (co && co.total && co.total.e) {
       return {ver:v.v, title:v.t, label:v.l, ft:v.ft, tFct:v.tFct, sc:v.sc,
               country:"g",
-              b:co.total.b, f:co.total.f, vsb:co.total.vsb, pct:co.total.pct, e:co.total.e};
+              b:co.total.b, f:co.total.f, vsb:co.total.vsb, pct:co.total.pct,
+              lf:co.total.lf, vlf:co.total.vlf, e:co.total.e};
     }
   }
   return null;
@@ -1554,30 +1558,35 @@ function fmtN_usd(n) {
 }
 function fK_usd(n) {
   if (!n && n!==0) return "—";
-  var sym = CUR.sym[CUR.code] || "$";
+  // n is USD raw (not KUSD) — explanation sheet stores absolute USD values.
   var v = (CUR.code==="VND") ? n*CUR.rate : n, a=Math.abs(v);
   if (CUR.code==="VND") {
     if (a>=1e9) return (v/1e9).toFixed(2)+"B";
     if (a>=1e6) return Math.round(v/1e6)+"M";
-    return Math.round(v/1e3)+"K";
+    if (a>=1e3) return Math.round(v/1e3)+"K";
+    return Math.round(v)+"";
   }
   if (a>=1e6) return (v/1e6).toFixed(2)+"M";
-  return Math.round(v/1000)+"K";
+  if (a>=1e3) return Math.round(v/1e3)+"K";
+  return Math.round(v)+"";
 }
 function curSym_usd(){ return CUR.sym[CUR.code] || "$"; }
 function fmtK_usd(n) {
   if (n==null||isNaN(n)) return "—";
   var sign = n<0 ? "-" : (n>0 ? "+" : "");
   var s = curSym_usd();
+  // n is USD raw (not KUSD)
   if (CUR.code === "VND") {
-    var v = Math.abs(n) * 1000 * CUR.rate;
+    var v = Math.abs(n) * CUR.rate;
     if (v >= 1e9) return sign + s + (v/1e9).toFixed(1) + "B";
     if (v >= 1e6) return sign + s + Math.round(v/1e6) + "M";
-    return sign + s + Math.round(v/1e3) + "K";
+    if (v >= 1e3) return sign + s + Math.round(v/1e3) + "K";
+    return sign + s + Math.round(v);
   }
   var a = Math.abs(n);
-  if (a >= 1000) return sign + s + Math.round(a/1000) + "K";
-  return sign + s + Math.round(a) + "K";
+  if (a >= 1e6) return sign + s + (a/1e6).toFixed(1) + "M";
+  if (a >= 1e3) return sign + s + Math.round(a/1e3) + "K";
+  return sign + s + Math.round(a);
 }
 function fmtG_usd(n) {
   if (n==null||isNaN(n)) return "—";
@@ -1593,8 +1602,9 @@ function fmtKgap_usd(n) {
   if (n==null||isNaN(n)) return "—";
   if (n===0) return "0";
   var sign = n<0 ? "-" : "+";
+  // n is USD raw (not KUSD). Explanation sheet stores absolute USD values.
   if (CUR.code === "VND") {
-    var v = Math.abs(n) * 1000 * CUR.rate;
+    var v = Math.abs(n) * CUR.rate;
     if (v >= 1e9) {
       var b = v/1e9;
       var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1).replace(".",","));
@@ -1608,11 +1618,14 @@ function fmtKgap_usd(n) {
     return sign + Math.round(v) + " đ";
   }
   var a = Math.abs(n);
-  if (a >= 1000) {
-    var mm = a/1000;
+  if (a >= 1e6) {
+    var mm = a/1e6;
     return sign + "$" + (mm>=10 ? Math.round(mm) : mm.toFixed(1)) + "M";
   }
-  return sign + "$" + Math.round(a) + "K";
+  if (a >= 1e3) {
+    return sign + "$" + Math.round(a/1e3) + "K";
+  }
+  return sign + "$" + Math.round(a);
 }
 function fK(n) {
   if (!n && n!==0) return "—";
@@ -2332,11 +2345,18 @@ function drillRender(opt) {
         var segTag = it.segment && it.segment !== "(Country total)"
             ? '<span class="badge" style="background:'+(SEGC[it.segment]||'#666')+';margin-right:6px">'+esc(it.segment)+'</span>'
             : '<span class="badge" style="background:#94A3B8;margin-right:6px">'+esc(it.segment)+'</span>';
+        var vlfHtml2 = "";
+        if (it.vlf != null && it.vlf !== undefined) {
+          var vlfCol2 = it.vlf >= 0 ? "var(--pos)" : "var(--neg)";
+          vlfHtml2 = ' · <span style="color:'+vlfCol2+'" title="Latest forecast: '+fmtN_usd(it.lf||0)+'">Vs Latest: '+fmtK_usd(it.vlf)+'</span>';
+        }
         return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed #FDE68A">'
           +'<div style="font-weight:800;font-size:12.5px;margin-bottom:4px;color:#92400E">'
           + tag + segTag
           + 'B: '+fmtN_usd(it.b)+' · F: '+fmtN_usd(it.f)+' · '
-          + '<span style="color:'+col+'">GAP: '+fmtK_usd(it.vsb)+'</span></div>'
+          + '<span style="color:'+col+'">GAP: '+fmtK_usd(it.vsb)+'</span>'
+          + vlfHtml2
+          + '</div>'
           +'<div class="drill-expl-body">'+esc(it.e)+'</div></div>';
       }).join("");
       html += '<div class="drill-expl">'
@@ -2346,11 +2366,18 @@ function drillRender(opt) {
         + '</div>';
     } else {
       var gapCol = e.vsb >= 0 ? "var(--pos)" : "var(--neg)";
+      var vlfHtml = "";
+      if (e.vlf != null && e.vlf !== undefined) {
+        var vlfCol = e.vlf >= 0 ? "var(--pos)" : "var(--neg)";
+        vlfHtml = ' · <span style="color:'+vlfCol+'" title="Latest forecast: '+fmtN_usd(e.lf||0)+'">Vs Latest fcst: '+fmtK_usd(e.vlf)+'</span>';
+      }
       html += '<div class="drill-expl">'
         + '<div class="drill-expl-hd"><span class="badge-v">VER '+esc(e.ver)+'</span><h4>💡 Official team explanation</h4></div>'
         + '<div style="font-size:12px;color:#92400E;margin-bottom:8px;font-weight:700">'
         + 'Budget: '+fmtN_usd(e.b)+' · Forecast: '+fmtN_usd(e.f)+' · '
-        + '<span style="color:'+gapCol+'">GAP: '+fmtK_usd(e.vsb)+'</span></div>'
+        + '<span style="color:'+gapCol+'">GAP: '+fmtK_usd(e.vsb)+'</span>'
+        + vlfHtml
+        + '</div>'
         + '<div class="drill-expl-body">'+esc(e.e)+'</div>'
         + '<div class="drill-expl-meta">📂 Source: '+srcLine+'</div>'
         + '</div>';
@@ -2858,17 +2885,30 @@ function explHtmlTooltip(context, lookupFn) {
     ex.entries.forEach(function(it){
       var col = it.vsb >= 0 ? "var(--pos)" : "var(--neg)";
       var head = (it.countryName ? esc(it.countryName)+" · " : "") + esc(it.segment||"");
+      var vlfTag = "";
+      if (it.vlf != null && it.vlf !== undefined) {
+        var vc = it.vlf >= 0 ? "var(--pos)" : "var(--neg)";
+        vlfTag = ' · <span style="color:'+vc+'" title="Latest forecast: '+fmtN_usd(it.lf||0)+'">Vs Latest '+fmtK_usd(it.vlf)+'</span>';
+      }
       body += '<div class="cet-entry">'
         + '<div class="cet-entry-hd">'+head
-        + ' <span style="color:'+col+'">GAP '+fmtK_usd(it.vsb)+'</span></div>'
+        + ' <span style="color:'+col+'">GAP '+fmtK_usd(it.vsb)+'</span>'
+        + vlfTag
+        + '</div>'
         + (it.e ? '<div class="cet-entry-tx">'+esc(it.e)+'</div>'
                 : '<div class="cet-entry-tx cet-empty">— no explanation —</div>')
         + '</div>';
     });
   } else {
     var col2 = ex.vsb >= 0 ? "var(--pos)" : "var(--neg)";
+    var vlfLine = "";
+    if (ex.vlf != null && ex.vlf !== undefined) {
+      var vlfCol3 = ex.vlf >= 0 ? "var(--pos)" : "var(--neg)";
+      vlfLine = '<div class="cet-gap" style="color:'+vlfCol3+';font-size:11.5px;font-weight:700" title="Latest forecast: '+fmtN_usd(ex.lf||0)+'">Vs Latest forecast: '+fmtK_usd(ex.vlf)+'</div>';
+    }
     body = '<div class="cet-src">💡 '+esc(ex.label || ("ver "+ex.ver))+'</div>'
       + '<div class="cet-gap" style="color:'+col2+'">GAP: '+fmtK_usd(ex.vsb)+'</div>'
+      + vlfLine
       + (ex.e ? '<div class="cet-tx">'+esc(ex.e)+'</div>'
               : '<div class="cet-tx cet-empty">— no explanation —</div>');
   }
@@ -3613,6 +3653,7 @@ function renderExpContent() {
         + '<div class="ex-n">Budget</div>'
         + '<div class="ex-n">Forecast</div>'
         + '<div class="ex-n">GAP</div>'
+        + '<div class="ex-n">Vs Latest forecast</div>'
         + '<div class="ex-n">%</div>'
         + '<div class="ex-txt">Explanation</div>'
       + '</div>';
@@ -3661,6 +3702,7 @@ function renderExpContent() {
           + '<div class="ex-n b">'+fmtN_usd(t.b)+'</div>'
           + '<div class="ex-n">'+fmtN_usd(t.f)+'</div>'
           + '<div class="ex-n g '+(t.vsb>=0?"p":"n")+'">'+fmtKgap_usd(t.vsb)+'</div>'
+          + '<div class="ex-n g '+((t.vlf||0)>=0?"p":"n")+'" title="Vs Latest forecast: '+fmtN_usd(t.lf||0)+'">'+(t.vlf!=null?fmtKgap_usd(t.vlf):'<span class="ex-empty">—</span>')+'</div>'
           + '<div class="ex-n pct '+(t.vsb>=0?"p":"n")+'">'+esc(t.pct||"")+'</div>'
           + '<div class="ex-txt">'+(t.e?esc(t.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
           + '</div>';
@@ -3676,6 +3718,7 @@ function renderExpContent() {
               + '<div class="ex-n b">'+fmtN_usd(d.b)+'</div>'
               + '<div class="ex-n">'+fmtN_usd(d.f)+'</div>'
               + '<div class="ex-n g '+(d.vsb>=0?"p":"n")+'">'+fmtKgap_usd(d.vsb)+'</div>'
+              + '<div class="ex-n g '+((d.vlf||0)>=0?"p":"n")+'" title="Vs Latest forecast: '+fmtN_usd(d.lf||0)+'">'+(d.vlf!=null?fmtKgap_usd(d.vlf):'<span class="ex-empty">—</span>')+'</div>'
               + '<div class="ex-n pct '+(d.vsb>=0?"p":"n")+'">'+esc(d.pct||"")+'</div>'
               + '<div class="ex-txt">'+(d.e?esc(d.e):'<span class="ex-empty">— no explanation —</span>')+'</div>'
               + '</div>';
@@ -3694,6 +3737,7 @@ function renderExpContent() {
           + '<div class="ex-n b" style="font-weight:900">'+fmtN_usd(ct.b)+'</div>'
           + '<div class="ex-n" style="font-weight:900">'+fmtN_usd(ct.f)+'</div>'
           + '<div class="ex-n g '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+fmtKgap_usd(ct.vsb)+'</div>'
+          + '<div class="ex-n g '+((ct.vlf||0)>=0?"p":"n")+'" style="font-weight:900" title="Vs Latest forecast: '+fmtN_usd(ct.lf||0)+'">'+(ct.vlf!=null?fmtKgap_usd(ct.vlf):'—')+'</div>'
           + '<div class="ex-n pct '+(ct.vsb>=0?"p":"n")+'" style="font-weight:900">'+esc(ct.pct||"")+'</div>'
           + '<div class="ex-txt">'+(ct.e?esc(ct.e):'')+'</div>'
           + '</div>';
@@ -3709,6 +3753,7 @@ function renderExpContent() {
           + '<div class="ex-n b" style="font-weight:900;color:#fff">'+fmtN_usd(gt.b)+'</div>'
           + '<div class="ex-n" style="font-weight:900;color:#fff">'+fmtN_usd(gt.f)+'</div>'
           + '<div class="ex-n g '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+fmtKgap_usd(gt.vsb)+'</div>'
+          + '<div class="ex-n g '+((gt.vlf||0)>=0?"p":"n")+'" style="font-weight:900;color:#fff" title="Vs Latest forecast: '+fmtN_usd(gt.lf||0)+'">'+(gt.vlf!=null?fmtKgap_usd(gt.vlf):'—')+'</div>'
           + '<div class="ex-n pct '+(gt.vsb>=0?"p":"n")+'" style="font-weight:900;color:#fff">'+esc(gt.pct||"")+'</div>'
           + '<div class="ex-txt" style="color:rgba(255,255,255,.85)">'+(gt.e?esc(gt.e):'')+'</div>'
           + '</div>';
