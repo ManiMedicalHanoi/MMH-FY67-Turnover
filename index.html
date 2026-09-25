@@ -3750,10 +3750,22 @@ function rOV(D) {
 
 // ⭐ v7 — Overview table open/close state
 var OV_OPEN = new Set();
-function toggleOvRow(si){ if (OV_OPEN.has(si)) OV_OPEN.delete(si); else OV_OPEN.add(si); rOV(computeD()); }
+// ⭐ v7.1 — open/close rows in place (no redraw → KPI cards and charts stay untouched)
+function _ovApplyOpen(){
+  var tb = document.getElementById("t-ov"); if (!tb) return;
+  SEGS.forEach(function(_, si){
+    var open = OV_OPEN.has(si);
+    tb.querySelectorAll("tr.ovg-" + si).forEach(function(tr){ tr.style.display = open ? "" : "none"; });
+    var g = tb.querySelectorAll("tr.ov-grp")[si];
+    var t = g && g.querySelector(".tgl"); if (t) t.textContent = open ? "▾" : "▸";
+  });
+  var eb = document.getElementById("ov-exp-all");
+  if (eb) eb.textContent = OV_OPEN.size >= SEGS.length ? "⊟ Collapse all" : "⊞ Expand all";
+}
+function toggleOvRow(si){ if (OV_OPEN.has(si)) OV_OPEN.delete(si); else OV_OPEN.add(si); _ovApplyOpen(); }
 function toggleOvAll(){
   if (OV_OPEN.size >= SEGS.length) OV_OPEN.clear(); else SEGS.forEach(function(_,i){ OV_OPEN.add(i); });
-  rOV(computeD());
+  _ovApplyOpen();
 }
 // %GAP cell: "new" when there is no budget but there are sales
 function pctCell(bm, gap){
