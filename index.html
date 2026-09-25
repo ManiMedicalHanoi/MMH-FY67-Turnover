@@ -616,6 +616,22 @@ body.mode-jizai .logo-t::after { content:" · ⚙️ Jizai view"; font-size:11px
 .exp-row.exp-gt { background: linear-gradient(90deg, #3A5CAA, #5B7CC9) !important; }
 .toast, #tip { background:#2F4E96; }
 .btmnav { background:#3A5CAA !important; }
+/* ⭐ v7.1 */
+.vw-sep { width:1px; height:22px; background:var(--br); margin:0 6px; }
+.vw-lbl { font-size:12px; font-weight:700; color:var(--t3); margin-right:2px; }
+.fy-load { position:fixed; top:112px; left:50%; transform:translateX(-50%); z-index:8500; display:none; align-items:center; gap:10px;
+  background:#2F4E96; color:#fff; font:700 14px var(--ff); padding:10px 18px; border-radius:999px; box-shadow:0 8px 24px rgba(47,78,150,.35); }
+.fy-load.on { display:flex; }
+body.fy-busy .sec.on { opacity:.45; pointer-events:none; transition:opacity .2s; }
+.fy-spin { width:16px; height:16px; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; display:inline-block; animation:fyspin .8s linear infinite; }
+.fy-spin.dark { border-color:rgba(58,92,170,.25); border-top-color:#3A5CAA; vertical-align:-3px; margin-right:6px; }
+@keyframes fyspin { to { transform:rotate(360deg); } }
+.yoy-msg { background:var(--sf); border:1px solid var(--br); border-left:4px solid #93C5FD; border-radius:10px; padding:9px 14px; margin-bottom:10px; font-size:13.5px; color:var(--t1); }
+.yoy-msg.info { border-left-color:#3A5CAA; } .yoy-msg.warn { border-left-color:#F59E0B; background:#FFFBEB; }
+.yoy-mini { margin-top:6px; font-size:12.5px; font-weight:800; cursor:pointer; }
+.yoy-mini.up { color:var(--pos); } .yoy-mini.dn { color:var(--neg); }
+.yoy-bar { height:8px; background:#EEF2F9; border-radius:99px; overflow:hidden; }
+.yoy-bar .p { height:100%; background:#16A34A; border-radius:99px; } .yoy-bar .n { height:100%; background:#DC2626; border-radius:99px; }
 .br-ch { flex-wrap:wrap; row-gap:4px; }
 .br-sub { flex-basis:100%; display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; color:var(--t2); }
 .br-sub .br-hl { font-size:14px; color:var(--t1); }
@@ -926,6 +942,7 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
     <div class="nt"    id="nt-cty"  onclick="goTab('cty')">🌏 By Country</div>
     <div class="nt"    id="nt-dist" onclick="goTab('dist')">🏢 By Distributor</div>
     <div class="nt"    id="nt-gap"  onclick="goTab('gap')">🔍 GAP Analysis</div>
+    <div class="nt"    id="nt-yoy"  onclick="goTab('yoy')">📈 vs Last Year</div>
     <div class="nt"    id="nt-cmp"  onclick="goTab('cmp')">⚖️ Comparison</div>
     <div class="nt"    id="nt-exp"  onclick="goTab('exp')">📋 Explanations</div>
   </div>
@@ -981,6 +998,7 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 <div class="sec" id="sec-gap">
   <div class="sh"><div class="sl">GAP Analysis</div><div class="sp" id="sp-gap"></div></div>
   <div id="gap-sc"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;align-items:center" id="gap-f"></div>
   <div class="kr" id="kr-gap"></div>
   <div class="card reveal"><div class="ch br-ch"><div class="ct">What moved the total vs budget</div><div class="br-sub" id="gap-br-sub"></div></div>
     <div class="cb"><div class="cw t"><canvas id="c-gap-br"></canvas></div></div></div>
@@ -992,6 +1010,22 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
     <div class="cb"><div class="cw t"><canvas id="c-wf"></canvas></div></div></div>
   <div class="card reveal"><div class="ch"><div class="ct">GAP Contribution Table</div><button class="dl-btn" onclick="exportTable('t-gap','gap_contribution')">⬇ Download CSV</button></div>
     <div class="cb"><div class="tw" id="t-gap"></div></div></div>
+</div>
+
+<div class="sec" id="sec-yoy">
+  <div class="sh"><div class="sl">vs Same Period Last Year</div><div class="sp" id="sp-yoy"></div></div>
+  <div id="yoy-note"></div>
+  <div id="yoy-body">
+    <div class="kr" id="kr-yoy"></div>
+    <div class="card"><div class="ch"><div class="ct" id="yoy-ct-m">By month</div><div class="cs" id="yoy-cs-m"></div></div>
+      <div class="cb"><div class="cw t"><canvas id="c-yoy-m"></canvas></div></div></div>
+    <div class="g2">
+      <div class="card"><div class="ch"><div class="ct">By segment</div></div><div class="cb"><div class="cw t"><canvas id="c-yoy-seg"></canvas></div></div></div>
+      <div class="card"><div class="ch"><div class="ct">By country</div></div><div class="cb"><div class="cw t"><canvas id="c-yoy-cty"></canvas></div></div></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct" id="yoy-ct-t">By distributor — biggest increases first</div><button class="dl-btn" onclick="exportTable('t-yoy','vs_last_year')">⬇ Download CSV</button></div>
+      <div class="cb"><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center" id="yoy-f"></div><div class="tw" id="t-yoy"></div></div></div>
+  </div>
 </div>
 
 <div class="sec" id="sec-cmp">
@@ -1203,6 +1237,7 @@ function applyLiveData(payload) {
     MONTH_STATUS = payload.monthStatus || null;
     CTY_LABELS   = payload.ctyLabels || null;
     RULE_TEXT    = payload.rule || "";
+    CTY_TH       = Array.isArray(payload.ctyTh) ? payload.ctyTh : null;
     applyCtyLabels();
   }
 
@@ -1407,8 +1442,79 @@ function applyCtyLabels(){
   CTYL = { Thailand: FLAG_SVG.th + " " + esc(th), VietNam: FLAG_SVG.vn + " " + esc(vn) };
 }
 // Switch fiscal year (header selector)
+// ⭐ v7.1 — every FY loaded is kept in memory → switching back is instant.
+var FY_CACHE = {}, PREFETCHING = {};
+var CTY_TH = null;                 // countries in the "Thailand" group (from the backend)
+function cacheFy(p){ if (p && p.ok && p.fy) { p._at = Date.now(); FY_CACHE[p.fy] = p; } }
+function paySig(p){
+  if (!p || !p.ok) return "";
+  var s = 0, b = 0; (p.rows||[]).forEach(function(r){ s += +r.forecast||0; b += +r.budget||0; });
+  return (p.rows||[]).length + "|" + Math.round(s) + "|" + Math.round(b) + "|" + (p.rowsJizai||[]).length + "|" + (p.versions||[]).length;
+}
+function fetchFy(fy, cb, fresh){
+  jsonp("getTurnoverData&fy=" + encodeURIComponent(fy) + (fresh ? "&fresh=1" : ""),
+        function(p){ cacheFy(p); if (cb) cb(p); }, function(){ if (cb) cb(null); }, 25000);
+}
+// Load last year first (for the YoY view), then the other years, one by one in the background
+function prefetchFys(){
+  var prev = yoyPrevFy(), cur = FYN();
+  var order = [prev].concat(FY_LIST.filter(function(f){ return f !== cur && f !== prev; }));
+  var i = 0;
+  (function next(){
+    if (i >= order.length) return;
+    var fy = order[i++];
+    if (FY_LIST.indexOf(fy) < 0 || FY_CACHE[fy] || PREFETCHING[fy]) return next();
+    PREFETCHING[fy] = 1;
+    fetchFy(fy, function(p){
+      PREFETCHING[fy] = 0;
+      if (fy === yoyPrevFy()) onPrevFyReady();
+      setTimeout(next, 250);
+    });
+  })();
+}
+function showFyLoading(fy){
+  var el = document.getElementById("fy-load");
+  if (!el) { el = document.createElement("div"); el.id = "fy-load"; el.className = "fy-load"; document.body.appendChild(el); }
+  el.innerHTML = '<span class="fy-spin"></span> Loading ' + esc(fy) + '…';
+  el.classList.add("on"); document.body.classList.add("fy-busy");
+}
+function hideFyLoading(){
+  var el = document.getElementById("fy-load"); if (el) el.classList.remove("on");
+  document.body.classList.remove("fy-busy");
+}
+function afterFySwitch(){
+  document.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
+  document.querySelectorAll("[data-animated]").forEach(function(el){ el.dataset.animated="0"; });
+  setPeriod(S.period);                       // rebuilds quarter / month selectors + renders
+  setTimeout(fetchHealth, 300);
+  setTimeout(prefetchFys, 600);
+}
 function setFY(fy){
   if (!fy) return;
+  var cached = FY_CACHE[fy];
+  if (cached && fy !== FYN()) {
+    S.fy = fy;
+    try { localStorage.setItem("mmh_fy", fy); } catch(e){}
+    S.selM = new Set([0,1,2,3,4,5,6,7,8,9,10,11]);
+    S.selFt = "ALL"; S.selVer = "latest"; S.drillFt = null;
+    HEALTH = null; FY_REQ_SEQ++;                // cancel anything still loading
+    if (applyLiveData(cached)) {
+      DATA_IS_SNAPSHOT = false; setSrc("live");
+      afterFySwitch();
+      // quietly check for newer numbers; redraw only if something changed
+      if (Date.now() - (cached._at || 0) > 60000) {
+        var sig = paySig(cached);
+        fetchFy(fy, function(p){
+          if (p && p.ok && FYN() === fy && paySig(p) !== sig) { applyLiveData(p); renderAll(); showToast(fy + " updated with the latest numbers", "success"); }
+        });
+      }
+      return;
+    }
+  }
+  showFyLoading(fy);
+  setFYLoad(fy);
+}
+function setFYLoad(fy){
   var prev = FYN();
   S.fy = fy;
   try { localStorage.setItem("mmh_fy", fy); } catch(e){}
@@ -1416,11 +1522,9 @@ function setFY(fy){
   S.selFt = "ALL"; S.selVer = "latest"; S.drillFt = null;   // explanation filters belong to the old FY
   HEALTH = null;
   tryFetchLive(function(ok){
+    hideFyLoading();
     if (ok) {
-      document.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
-      document.querySelectorAll("[data-animated]").forEach(function(el){ el.dataset.animated="0"; });
-      setPeriod(S.period);                 // rebuild quarter / month selectors with the new months
-      showToast("Now viewing " + FYN(), "success");
+      afterFySwitch();
     } else {
       S.fy = prev; renderFySelect();
       showToast("Could not load " + fy + " — still showing " + prev, "warn");
@@ -1430,7 +1534,9 @@ function setFY(fy){
 // Data-health check (backend ?action=getHealth)
 function fetchHealth(){
   var fy = FYN();
+  if (HEALTH_BY_FY[fy]) { HEALTH = HEALTH_BY_FY[fy]; try { renderCtxBanner(); } catch(e){} return; }
   jsonp("getHealth&fy=" + encodeURIComponent(fy), function(p){
+    if (p && p.ok) HEALTH_BY_FY[p.fy] = p;
     if (p && p.ok && p.fy === FYN()) { HEALTH = p; try { renderCtxBanner(); } catch(e){} }
   }, function(){}, 25000);
 }
@@ -1457,7 +1563,7 @@ function openHealth(){
 }
 
 // ══ STATE ══
-var S = {period:"fy", qi:3, selM:new Set([0,1,2,3,4,5,6,7,8,9,10,11]), tab:"ov", distSeg:"ALL", charts:{},
+var S = {distView:(function(){ try { return localStorage.getItem("mmh_distview") || "detail"; } catch(e){ return "detail"; } })(), period:"fy", qi:3, selM:new Set([0,1,2,3,4,5,6,7,8,9,10,11]), tab:"ov", distSeg:"ALL", charts:{},
   dataMode:"turnover",   // turnover | jizai — switched via header dmode buttons
   drillData:null,    // {rows, kpi, title, sub, byM, expl, exFilter}
   expanded:false,
@@ -2985,6 +3091,57 @@ function rebuildDistFromDetail() {
 }
 rebuildDistFromDetail();
 
+// ⭐ v7.1 — "By product" (distributor × segment) or "Total" (one line per distributor)
+function getDistView(list){
+  list = list || getDistPeriod();
+  if (S.distView !== "total") return list;
+  var m = {};
+  list.forEach(function(d){
+    var x = m[d.di] || (m[d.di] = {di:d.di, si:null, nm:DIST_NAMES[d.di], sg:"Total", segs:[], cos:[], bm:0, fc:0, gap:0, total:true});
+    x.bm += d.bm; x.fc += d.fc; x.gap += d.gap;
+    if (x.segs.indexOf(d.sg) < 0) x.segs.push(d.sg);
+    if (x.cos.indexOf(d.co) < 0) x.cos.push(d.co);
+  });
+  return Object.keys(m).map(function(k){ var x = m[k]; x.co = x.cos.join(" + "); return x; });
+}
+function distLabel(d, withSegParen){
+  if (d.total) return d.nm;
+  var n = cleanNm(d.nm, d.sg);
+  if (withSegParen) return n + " (" + d.sg + ")";
+  return n + (S.distSeg === "ALL" ? " · " + d.sg : "");
+}
+function segBadge(d){
+  var list = d.total ? d.segs : [d.sg];
+  return list.map(function(s){ return '<span class="badge" style="background:'+(SEGC[s]||"#64748B")+'">'+esc(s)+'</span>'; }).join(" ");
+}
+function distViewBtns(){
+  return '<span class="vw-sep"></span><span class="vw-lbl">View:</span>'
+    + '<button class="seg-btn '+(S.distView!=="total"?"on":"")+'" onclick="setDistView(\'detail\')" title="One line per distributor × product segment">By product</button>'
+    + '<button class="seg-btn '+(S.distView==="total"?"on":"")+'" onclick="setDistView(\'total\')" title="One line per distributor, all products added up">Total per distributor</button>';
+}
+function setDistView(v){
+  S.distView = v;
+  try { localStorage.setItem("mmh_distview", v); } catch(e){}
+  renderAll();
+}
+// Explanation lookup for a distributor line (Total = all its segments together)
+function distExpl(d){
+  var f = periodToExplFilter();
+  var co = function(c){ return String(c).indexOf("Viet") >= 0 ? "Viet Nam" : "Thailand"; };
+  function one(sg, c){
+    var nm = DIST_NAMES[d.di], ex = findExpl(co(c), sg, nm, f);
+    if (!ex) { var al = {"DEVA":"DEVA/OSSTEM","DEVA/OSSTEM":"DEVA"}[nm]; if (al) ex = findExpl(co(c), sg, al, f); }
+    return ex;
+  }
+  if (!d.total) return one(d.sg, d.co);
+  var entries = [], label = null;
+  d.segs.forEach(function(sg){ d.cos.forEach(function(c){
+    var ex = one(sg, c);
+    if (ex && !ex.entries) { label = label || ex.label; entries.push({segment:sg, countryName:(d.cos.length > 1 ? co(c) : ""), vsb:ex.vsb, vlf:ex.vlf, lf:ex.lf, e:ex.e}); }
+  }); });
+  return entries.length ? {label:label, ver:"", entries:entries} : null;
+}
+
 function getDistPeriod() {
   var idxs = getIdxs();
   var inSet = {}; idxs.forEach(function(i){ inSet[i]=1; });
@@ -3011,6 +3168,11 @@ function getDistPeriod() {
 // ══ EXTERNAL HTML TOOLTIP — shows FULL explanation text (no truncation) ══
 // Chart.js external tooltip handler. `lookupFn(dataIndex)` must return an
 // explanation object (single or multi-entry {entries:[...]}) or null.
+// ⭐ v7.1 — remember the mouse position so tooltips sit next to the pointer
+var LAST_PTR = null;
+document.addEventListener("mousemove", function(e){ LAST_PTR = {x:e.pageX, y:e.pageY, t:Date.now()}; }, {passive:true});
+function _valOf(dp){ return (dp.chart.options.indexAxis === "y") ? dp.parsed.x : dp.parsed.y; }
+
 function _explTooltipEl() {
   var el = document.getElementById("chart-expl-tip");
   if (!el) {
@@ -3034,13 +3196,13 @@ function explHtmlTooltip(context, lookupFn) {
   // data mode (Sheets in Jizai, USD/VND in Turnover).
   var rawLbl = context.chart.data.labels[idx];
   var label = Array.isArray(rawLbl) ? rawLbl.join(" · ") : ((tt.dataPoints[0] && tt.dataPoints[0].label) || "");
-  var dps = (tt.dataPoints || []).filter(function(dp){ return dp.raw !== null && dp.raw !== undefined && isFinite(dp.parsed.y); });
+  var dps = (tt.dataPoints || []).filter(function(dp){ return dp.raw !== null && dp.raw !== undefined && isFinite(_valOf(dp)); });
   var numRows = dps.map(function(dp){
     var col = dp.dataset.borderColor || dp.dataset.backgroundColor || "#475569";
     if (Array.isArray(col)) col = col[dp.dataIndex];
     if (typeof col !== "string") col = "#475569";
     return '<div class="cet-num"><span class="cet-sw" style="background:'+col+'"></span>'
-      + esc(dp.dataset.label) + ': <b>' + fmtN(Math.round(dp.parsed.y)) + '</b></div>';
+      + esc(dp.dataset.label) + ': <b>' + fmtN(Math.round(_valOf(dp))) + '</b></div>';
   }).join("");
 
   var ex = null;
@@ -3093,8 +3255,11 @@ function explHtmlTooltip(context, lookupFn) {
 
   // Position: place near cursor but keep inside viewport
   var canvasRect = context.chart.canvas.getBoundingClientRect();
-  var left = canvasRect.left + window.scrollX + tt.caretX + 14;
-  var top  = canvasRect.top  + window.scrollY + tt.caretY - 10;
+  var usePtr = LAST_PTR && (Date.now() - LAST_PTR.t) < 400;
+  var ax = usePtr ? LAST_PTR.x : canvasRect.left + window.scrollX + tt.caretX;
+  var ay = usePtr ? LAST_PTR.y : canvasRect.top  + window.scrollY + tt.caretY;
+  var left = ax + 16;
+  var top  = ay - 12;
 
   tip.style.opacity = "1";
   tip.style.pointerEvents = "none";
@@ -3103,7 +3268,7 @@ function explHtmlTooltip(context, lookupFn) {
   tip.style.top  = top + "px";
   var tw = tip.offsetWidth, th = tip.offsetHeight;
   var vw = window.innerWidth + window.scrollX;
-  if (left + tw > vw - 12) left = canvasRect.left + window.scrollX + tt.caretX - tw - 14;
+  if (left + tw > vw - 12) left = ax - tw - 16;
   if (left < window.scrollX + 8) left = window.scrollX + 8;
   var vh = window.innerHeight + window.scrollY;
   if (top + th > vh - 12) top = vh - th - 12;
@@ -3489,7 +3654,7 @@ function rOV(D) {
    +flipKPI({
       cls:"", lbl:"Forecast / Actual",
       val:gt.fc, mode:"k", prefix:"$",
-      sub:pp(gt.gp)+" vs Budget Mani",
+      sub:pp(gt.gp)+" vs Budget Mani"+'<span id="ov-yoy-mini">'+yoyMini()+'</span>',
       bk:[["Thailand", CUR.s()+fK(D.ctys[0].fc)], ["Viet Nam", CUR.s()+fK(D.ctys[1].fc)]]
         .concat(segs.map(function(s){return [s.sg,CUR.s()+fK(s.fc)];}))
     })
@@ -3720,24 +3885,14 @@ function rDIST(D) {
   document.getElementById("dist-f").innerHTML =
     ["ALL"].concat(SEGS).map(function(s){
       return '<button class="seg-btn '+(S.distSeg===s?"on":"")+'" onclick="setDistSeg(\''+s+'\')">'+s+"</button>";
-    }).join("");
+    }).join("") + distViewBtns();
   var distP = getDistPeriod();
-  var fd = S.distSeg==="ALL" ? distP : distP.filter(function(d){return d.sg===S.distSeg;});
+  var fd = getDistView(S.distSeg==="ALL" ? distP : distP.filter(function(d){return d.sg===S.distSeg;}));
   var srt = fd.slice().sort(function(a,b){return b.fc-a.fc;});
-  document.getElementById("dist-ct1").textContent = "Forecast by Distributor ("+S.distSeg+")";
+  document.getElementById("dist-ct1").textContent = "Forecast by Distributor (" + S.distSeg + (S.distView==="total" ? " · total per distributor" : "") + ")";
 
   // Helper for distributor tooltip — picks the right distributor by hover index
-  function _distLookup(idx) {
-    var d = srt[idx]; if (!d) return null;
-    var coStr = d.co.indexOf("Viet")>=0 ? "Viet Nam" : "Thailand";
-    var ex = findExpl(coStr, d.sg, DIST_NAMES[d.di], periodToExplFilter());
-    if (!ex) {
-      var aliases = {"DEVA":"DEVA/OSSTEM","DEVA/OSSTEM":"DEVA"};
-      var alias = aliases[DIST_NAMES[d.di]];
-      if (alias) ex = findExpl(coStr, d.sg, alias, periodToExplFilter());
-    }
-    return ex;
-  }
+  function _distLookup(idx) { var d = srt[idx]; return d ? distExpl(d) : null; }
 
   // ⭐ v7 — one row per distributor, all names readable
   chartH("c-dist",   Math.max(300, srt.length * 30 + 80));
@@ -3745,14 +3900,14 @@ function rDIST(D) {
   killC("c-dist");
   S.charts["c-dist"] = new Chart(document.getElementById("c-dist"), {
     type:"bar",   /* ⭐ v7: indexAxis moved into options (Chart.js 4) */
-    data:{labels:srt.map(function(d){return cleanNm(d.nm,d.sg)+(S.distSeg==="ALL"?" · "+d.sg:"");}), datasets:[
+    data:{labels:srt.map(function(d){return distLabel(d);}), datasets:[
       {label:"Budget", data:srt.map(function(d){return d.bm;}), backgroundColor:"rgba(160,174,192,.55)", borderRadius:3, datalabels:{display:false}},
       {label:"Forecast / Actual", data:srt.map(function(d){return d.fc;}), backgroundColor:"rgba(58,92,170,.82)", borderRadius:3,
         datalabels:{display:true, color:"#2F4E96", anchor:"end", align:"end", offset:2, clip:false, font:{family:FF,size:11,weight:"700"}, formatter:function(v){return v?fKS(v):"";}}}
     ]},
     options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
       animation:{duration:350},
-      interaction:{mode:"index", intersect:false},
+      interaction:{mode:"index", axis:"y", intersect:false},
       onClick:function(e,els){ if(els.length){ var d=srt[els[0].index]; openDrillDistributor(d.di,d.si); } },
       onHover:function(e,els){ e.native.target.style.cursor=els.length?"pointer":"default"; },
       plugins:{
@@ -3768,7 +3923,7 @@ function rDIST(D) {
   killC("c-dist-g");
   S.charts["c-dist-g"] = new Chart(document.getElementById("c-dist-g"), {
     type:"bar",   /* ⭐ v7: indexAxis moved into options (Chart.js 4) */
-    data:{labels:srt.map(function(d){return cleanNm(d.nm,d.sg)+(S.distSeg==="ALL"?" · "+d.sg:"");}), datasets:[{
+    data:{labels:srt.map(function(d){return distLabel(d);}), datasets:[{
       label:"GAP", data:srt.map(function(d){return d.gap;}),
       backgroundColor:srt.map(function(d){return d.gap>=0?"rgba(22,163,74,.75)":"rgba(220,38,38,.75)";}), borderRadius:3,
       datalabels:{display:true, anchor:"end", align:"end", offset:2, clip:false,
@@ -3777,6 +3932,7 @@ function rDIST(D) {
     }]},
     options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
       animation:{duration:350},
+      interaction:{mode:"index", axis:"y", intersect:false},
       onClick:function(e,els){ if(els.length){ var d=srt[els[0].index]; openDrillDistributor(d.di,d.si); } },
       onHover:function(e,els){ e.native.target.style.cursor=els.length?"pointer":"default"; },
       plugins:{
@@ -3793,10 +3949,10 @@ function rDIST(D) {
   document.getElementById("t-dist").innerHTML =
     "<table><thead><tr><th>↑↓</th><th>Distributor</th><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast/Actual</th><th>GAP</th><th>%GAP</th><th>Trend ("+FYN()+")</th></tr></thead><tbody>"
     +srt.map(function(d){
-        var series = distMonthlySeries(d.di, d.si);
+        var series = distMonthlySeries(d.di, d.total ? null : d.si);
         var hasData = series.some(function(v){return v>0;});
         var spark = hasData ? sparkline(series, {w:96,h:30,color:(d.gap>=0?"#16A34A":"#DC2626")}) : '<span style="color:var(--t3);font-size:11px">—</span>';
-        return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td><span class="badge" style="background:'+SEGC[d.sg]+'">'+d.sg+"</span></td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='spark-cell'>"+spark+"</td></tr>";
+        return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td>'+segBadge(d)+"</td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='spark-cell'>"+spark+"</td></tr>";
       }).join("")
     +'<tr class="grand"><td></td><td>TOTAL ('+S.distSeg+")</td><td></td><td></td><td>"+fmtN(tot.bm)+"</td><td>"+fmtN(tot.fc)+"</td><td>"+(tot.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(tot.gap))+"</td><td></td><td></td></tr>"
     +"</tbody></table>";
@@ -3806,7 +3962,8 @@ function rDIST(D) {
 function rGAP(D) {
   document.getElementById("sp-gap").textContent = pLabel();
   document.getElementById("gap-sc").innerHTML = scHTML(D);
-  var all=getDistPeriod().slice().sort(function(a,b){return b.gap-a.gap;});
+  var gf = document.getElementById("gap-f"); if (gf) gf.innerHTML = distViewBtns();
+  var all=getDistView(getDistPeriod()).slice().sort(function(a,b){return b.gap-a.gap;});
   var pos=all.filter(function(d){return d.gap>0;}), neg=all.filter(function(d){return d.gap<0;});
   var mx=Math.max.apply(null,all.map(function(d){return Math.abs(d.gap);}).concat([1]));
   if(!mx)mx=1;
@@ -3844,7 +4001,7 @@ function rGAP(D) {
   killC("c-wf");
   S.charts["c-wf"] = new Chart(document.getElementById("c-wf"), {
     type:"bar",   /* ⭐ v7: indexAxis moved into options (Chart.js 4) */
-    data:{labels:all.map(function(d){return cleanNm(d.nm,d.sg)+" ("+d.sg+")";}), datasets:[{
+    data:{labels:all.map(function(d){return distLabel(d, true);}), datasets:[{
       label:"GAP", data:all.map(function(d){return d.gap;}),
       backgroundColor:all.map(function(d){return d.gap>=0?"rgba(22,163,74,.8)":"rgba(220,38,38,.8)";}), borderRadius:3,
       datalabels:{display:true, anchor:"end", align:"end", offset:2, clip:false,
@@ -3853,23 +4010,14 @@ function rGAP(D) {
     }]},
     options:{indexAxis:"y", responsive:true, maintainAspectRatio:false,
       animation:{duration:350},
+      interaction:{mode:"index", axis:"y", intersect:false},
       onClick:function(e,els){ if(els.length){ var d=all[els[0].index]; openDrillDistributor(d.di,d.si); } },
       onHover:function(e,els){ e.native.target.style.cursor=els.length?"pointer":"default"; },
       plugins:{
         legend:{display:false},
         datalabels:{display:true},
         tooltip:{enabled:false, external:function(ctx){
-          explHtmlTooltip(ctx, function(idx){
-            var d = all[idx]; if (!d) return null;
-            var coStr = d.co.indexOf("Viet")>=0 ? "Viet Nam" : "Thailand";
-            var ex = findExpl(coStr, d.sg, DIST_NAMES[d.di], periodToExplFilter());
-            if (!ex) {
-              var aliases = {"DEVA":"DEVA/OSSTEM","DEVA/OSSTEM":"DEVA"};
-              var alias = aliases[DIST_NAMES[d.di]];
-              if (alias) ex = findExpl(coStr, d.sg, alias, periodToExplFilter());
-            }
-            return ex;
-          });
+          explHtmlTooltip(ctx, function(idx){ var d = all[idx]; return d ? distExpl(d) : null; });
         }}
       },
       layout:{padding:{right:46, left:46}},
@@ -3879,12 +4027,221 @@ function rGAP(D) {
 
   document.getElementById("t-gap").innerHTML =
     "<table><thead><tr><th>↑↓</th><th>Distributor</th><th>Segment</th><th>Country</th><th>Budget Mani</th><th>Forecast</th><th>GAP</th><th>%GAP</th><th>Contribution</th></tr></thead><tbody>"
-    +all.map(function(d){var cb=G.gap?d.gap/Math.abs(G.gap)*100:0; return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td><span class="badge" style="background:'+SEGC[d.sg]+'">'+d.sg+"</span></td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='"+(cb>=0?"vp":"vn")+"'>"+(cb>=0?"+":"")+cb.toFixed(1)+"%</td></tr>";}).join("")
+    +all.map(function(d){var cb=G.gap?d.gap/Math.abs(G.gap)*100:0; return "<tr"+trClk("openDrillDistributor("+d.di+","+d.si+")")+"><td style='text-align:center;font-size:15px'>"+arrIcon(d.gap)+"</td><td>"+cleanNm(d.nm,d.sg)+'</td><td>'+segBadge(d)+"</td><td>"+d.co+"</td><td>"+fmtN(d.bm)+"</td><td>"+fmtN(d.fc)+"</td><td>"+gv(d.gap)+"</td><td>"+pp(d.bm>0?d.gap/d.bm*100:0)+"</td><td class='"+(cb>=0?"vp":"vn")+"'>"+(cb>=0?"+":"")+cb.toFixed(1)+"%</td></tr>";}).join("")
     +'<tr class="grand"><td></td><td>GRAND TOTAL</td><td></td><td></td><td>'+fmtN(G.bm)+"</td><td>"+fmtN(G.fc)+"</td><td>"+(G.gap>=0?"+"+CUR.s():"-"+CUR.s())+fK(Math.abs(G.gap))+"</td><td>"+fP(G.gp)+"</td><td>100%</td></tr>"
     +"</tbody></table>";
 }
 
 // ════════════════════════════════════════════════════════════════════
+// ══ ⭐ v7.1 — SAME PERIOD LAST YEAR (YoY) ══════════════════════════════
+// This year's Actual/Forecast vs last year's Actual for the SAME months
+// (FY → 12 months, Quarter → same quarter, Month → same months). Both years
+// are grouped by country the same way (this year's grouping).
+function yoyPrevFy(){ var n = parseInt(String(FYN()).replace(/\D/g,""),10); return "FY" + (n - 1); }
+function yoyState(){
+  var pf = yoyPrevFy();
+  if (DATA_IS_SNAPSHOT) return {status:"na", prev:pf, why:"Live data is needed for this view"};
+  if (FY_LIST.length && FY_LIST.indexOf(pf) < 0) return {status:"na", prev:pf, why:"There is no " + pf + " data in the Sheet"};
+  var p = FY_CACHE[pf];
+  if (!p) {
+    if (!PREFETCHING[pf]) { PREFETCHING[pf] = 1; fetchFy(pf, function(){ PREFETCHING[pf] = 0; onPrevFyReady(); }); }
+    return {status:"loading", prev:pf};
+  }
+  if (!p.ok) return {status:"na", prev:pf, why:"Could not load " + pf};
+  return {status:"ok", prev:pf, payload:p};
+}
+var HEALTH_BY_FY = {};
+function prevHealthNote(prev){
+  var h = HEALTH_BY_FY[prev];
+  if (h === undefined) {
+    HEALTH_BY_FY[prev] = null;
+    jsonp("getHealth&fy=" + encodeURIComponent(prev), function(r){
+      HEALTH_BY_FY[prev] = (r && r.ok) ? r : {issues:[]};
+      if (S.tab === "yoy") renderTab("yoy");
+    }, function(){ HEALTH_BY_FY[prev] = {issues:[]}; }, 25000);
+    return "";
+  }
+  if (!h || !h.issues) return "";
+  var bad = h.issues.filter(function(x){ return x.level === "error"; });
+  if (!bad.length) return "";
+  return '<div class="yoy-msg warn">⚠️ ' + esc(prev) + ' has data problems, so the comparison may be off: '
+    + bad.map(function(x){ return '<b>' + esc(x.title) + '</b>' + (x.detail ? ' — ' + esc(x.detail) : ''); }).join("; ")
+    + '. Fix these in the Sheet and refresh.</div>';
+}
+function onPrevFyReady(){
+  TAB_DIRTY.yoy = true;
+  if (S.tab === "yoy") renderTab("yoy");
+  var mini = document.getElementById("ov-yoy-mini"); if (mini) mini.innerHTML = yoyMini();
+  try { renderCtxBanner(); } catch(e){}
+}
+function yoyCty(r, th){
+  if (th && r.phys) return th.indexOf(r.phys) >= 0 ? "TH" : "VN";
+  if (r.cty) return r.cty;
+  return String(r.country||"").toLowerCase().indexOf("thai") >= 0 ? "TH" : "VN";
+}
+function yoyAgg(rows, keys, idxs, th){
+  var mi = {}; (keys||[]).forEach(function(k, i){ mi[String(k)] = i; });
+  var inSet = {}; idxs.forEach(function(i){ inSet[i] = 1; });
+  var o = {tot:0, m:new Array(12).fill(0), seg:{}, cty:{TH:0, VN:0}, dist:{}};
+  (rows||[]).forEach(function(r){
+    var i = mi[String(r.month)]; if (i == null) return;
+    var v = +r.forecast || 0;
+    o.m[i] += v;
+    if (!inSet[i]) return;
+    var c = yoyCty(r, th), nm = String(r.distributor||"").trim();
+    o.tot += v; o.seg[r.segment] = (o.seg[r.segment]||0) + v; o.cty[c] += v;
+    var k = S.distView === "total" ? nm : nm + "|" + r.segment;
+    var d = o.dist[k] || (o.dist[k] = {nm:nm, segs:{}, cty:{}, v:0});
+    d.v += v; d.segs[r.segment] = 1; d.cty[c] = 1;
+  });
+  return o;
+}
+function yoyCalc(){
+  var st = yoyState(); if (st.status !== "ok") return st;
+  var idxs = getIdxs(), th = CTY_TH;
+  var cur = {rows:window.RAW_TURNOVER||[], rowsJizai:window.RAW_JIZAI||[]};
+  var pick = function(p){ return IS_JIZAI() ? (p.rowsJizai||[]) : (p.rows||[]); };
+  st.idxs = idxs;
+  st.TY = yoyAgg(pick(cur), FYC.keys, idxs, th);
+  st.LY = yoyAgg(pick(st.payload), st.payload.fyInfo ? st.payload.fyInfo.keys : [], idxs, th);
+  st.diff = st.TY.tot - st.LY.tot;
+  st.pct  = st.LY.tot ? st.diff / Math.abs(st.LY.tot) * 100 : null;
+  return st;
+}
+function yoyPctTxt(ly, ty){
+  if (!ly) return ty ? "new" : "—";
+  var p = (ty - ly) / Math.abs(ly) * 100; return (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
+}
+function yoyMini(){
+  var c = yoyCalc(); if (c.status !== "ok" || c.pct == null) return "";
+  var up = c.diff >= 0;
+  return '<div class="yoy-mini '+(up?"up":"dn")+'" onclick="event.stopPropagation();goTab(\'yoy\')" title="Same months of '+esc(c.prev)+'">'
+    + (up ? "▲ " : "▼ ") + (up ? "+" : "") + c.pct.toFixed(1) + '% vs ' + esc(c.prev) + ' same period</div>';
+}
+function yoyPeriodTxt(info, idxs){
+  if (!info) return "";
+  if (idxs.length === 12) return info.fy + " full year";
+  var a = idxs[0], b = idxs[idxs.length-1];
+  var l = function(i){ return info.lbl[i] + "-" + info.yy[i]; };
+  return info.fy + " · " + (a === b ? l(a) : l(a) + " → " + l(b));
+}
+function mkYoyBars(id, labels, ly, ty, prevName, curName, onClick){
+  killC(id);
+  var cv = document.getElementById(id); if (!cv) return;
+  chartH(cv, 300);
+  S.charts[id] = new Chart(cv, {
+    type:"bar",
+    data:{ labels:labels, datasets:[
+      {label:prevName + " (last year)", data:ly, backgroundColor:"rgba(148,163,184,.75)", borderRadius:3, barPercentage:.8, categoryPercentage:.7, datalabels:{display:false}},
+      {label:curName + " (this year)", data:ty, backgroundColor:"rgba(58,92,170,.92)", borderRadius:3, barPercentage:.8, categoryPercentage:.7,
+        datalabels:{display:true, anchor:"end", align:"top", offset:2, clip:false, font:{family:FF,size:12,weight:"800"},
+          color:function(c){ var i=c.dataIndex; return (!ly[i] || ty[i] >= ly[i]) ? "#15803d" : "#b91c1c"; },
+          formatter:function(v, c){ return yoyPctTxt(ly[c.dataIndex], v); }}}
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300},
+      interaction:{mode:"index", intersect:false},
+      onClick:onClick,
+      plugins:{ legend:{position:"bottom", labels:{font:{family:FF,size:12}, boxWidth:12}},
+        tooltip:{ callbacks:{ afterBody:function(items){ var i = items[0].dataIndex; return "Change: " + (ty[i]-ly[i] >= 0 ? "+" : "") + fmtN(ty[i]-ly[i]) + "  (" + yoyPctTxt(ly[i], ty[i]) + ")"; } } } },
+      scales:{ x:{grid:{display:false}, ticks:{font:{family:FF,size:12,weight:"700"}, autoSkip:false, maxRotation:0}},
+               y:{beginAtZero:true, grace:"12%", ticks:{callback:function(v){ return fKS(v); }, font:{family:FF,size:11}}, grid:{color:"#EEF2F9"}} },
+      layout:{padding:{top:10}} }
+  });
+}
+function rYOY(){
+  document.getElementById("sp-yoy").textContent = pLabel();
+  var note = document.getElementById("yoy-note"), body = document.getElementById("yoy-body");
+  var c = yoyCalc();
+  if (c.status !== "ok") {
+    body.style.display = "none";
+    note.innerHTML = c.status === "loading"
+      ? '<div class="yoy-msg"><span class="fy-spin dark"></span> Loading ' + esc(c.prev) + ' to compare…</div>'
+      : '<div class="yoy-msg">ℹ️ ' + esc(c.why) + ' — nothing to compare with.</div>';
+    return;
+  }
+  body.style.display = "";
+  var cur = FYN(), prev = c.prev, idxs = c.idxs, TY = c.TY, LY = c.LY;
+  var lyInfo = c.payload.fyInfo;
+
+  // Notes: what is compared + what is not final yet
+  var ms = monthStatusArr(), fcM = [], emM = [];
+  if (ms) idxs.forEach(function(i){ if (ms[i] === "forecast") fcM.push(MONTHLY_GRAND[i].lbl); if (ms[i] === "empty") emM.push(MONTHLY_GRAND[i].lbl); });
+  var rng = function(a){ return a.length > 3 ? a[0] + " → " + a[a.length-1] + " (" + a.length + " months)" : a.join(", "); };
+  note.innerHTML = '<div class="yoy-msg">Comparing <b>' + esc(yoyPeriodTxt(FYC, idxs)) + '</b> (Actual/Forecast) with <b>' + esc(yoyPeriodTxt(lyInfo, idxs)) + '</b> (Actual).'
+    + (CTY_TH ? ' Countries grouped the same way in both years.' : '') + '</div>'
+    + (fcM.length ? '<div class="yoy-msg info">ℹ️ ' + esc(cur) + ' still uses <b>Forecast</b> for ' + esc(rng(fcM)) + ' — growth for these months is not final.</div>' : '')
+    + (emM.length ? '<div class="yoy-msg warn">⏳ Forecast not fully entered for ' + esc(rng(emM)) + ' — a drop here means “not entered”, not a real decline.</div>' : '')
+    + prevHealthNote(prev);
+
+  // KPIs
+  var segsTY = SEGS.map(function(s){ return [s, TY.seg[s]||0, LY.seg[s]||0]; });
+  document.getElementById("kr-yoy").innerHTML =
+    flipKPI({cls:"", lbl:cur + " · this period", val:TY.tot, mode:"k", prefix:"$", sub:"Actual / Forecast",
+      bk:segsTY.map(function(x){ return [x[0], CUR.s() + fK(x[1])]; })})
+   +flipKPI({cls:"", lbl:prev + " · same period", val:LY.tot, mode:"k", prefix:"$", sub:"Actual last year",
+      bk:segsTY.map(function(x){ return [x[0], CUR.s() + fK(x[2])]; })})
+   +flipKPI({cls:kc(c.diff), lbl:"Change vs " + prev, val:c.diff, mode:"k", prefix:c.diff >= 0 ? "+$" : "-$", abs:true,
+      sub:(c.pct == null ? "no sales last year" : pp(c.pct)),
+      bk:segsTY.map(function(x){ var d = x[1]-x[2]; return [x[0], (d>=0?"+":"-") + CUR.s() + fK(Math.abs(d)) + "  " + yoyPctTxt(x[2], x[1]), d>=0?"#86EFAC":"#FCA5A5"]; })});
+
+  // By month (whole year shown; months outside the period are faded)
+  document.getElementById("yoy-ct-m").textContent = "By month — " + cur + " vs " + prev;
+  document.getElementById("yoy-cs-m").textContent = "grey = " + prev + " actual · blue = " + cur + " (striped = forecast) · % = growth";
+  killC("c-yoy-m");
+  var cvm = document.getElementById("c-yoy-m"); chartH(cvm, 320);
+  var inSet = {}; idxs.forEach(function(i){ inSet[i] = 1; });
+  var hatch = hatchFill("rgba(58,92,170,.85)");
+  var tyCols = MONTHLY_GRAND.map(function(m, i){
+    if (!inSet[i]) return "rgba(58,92,170,.22)";
+    return (ms && ms[i] !== "actual") ? hatch : "rgba(58,92,170,.92)";
+  });
+  var lyCols = MONTHLY_GRAND.map(function(m, i){ return inSet[i] ? "rgba(148,163,184,.8)" : "rgba(148,163,184,.28)"; });
+  S.charts["c-yoy-m"] = new Chart(cvm, {
+    type:"bar",
+    data:{ labels:MONTHLY_GRAND.map(function(m){ return m.lbl.slice(0,3); }), datasets:[
+      {label:prev + " actual", data:LY.m, backgroundColor:lyCols, borderRadius:3, barPercentage:.85, categoryPercentage:.72, datalabels:{display:false}},
+      {label:cur + " actual / forecast", data:TY.m, backgroundColor:tyCols, borderColor:"rgba(58,92,170,.85)", borderWidth:function(c){ return (ms && ms[c.dataIndex] !== "actual") ? 1.2 : 0; },
+        borderRadius:3, barPercentage:.85, categoryPercentage:.72,
+        datalabels:{display:function(c){ return !!inSet[c.dataIndex]; }, anchor:"end", align:"top", offset:2, clip:false, font:{family:FF,size:11,weight:"800"},
+          color:function(c){ var i = c.dataIndex; if (ms && ms[i] === "empty") return "#64748B"; return (!LY.m[i] || TY.m[i] >= LY.m[i]) ? "#15803d" : "#b91c1c"; },
+          formatter:function(v, c){ var i = c.dataIndex; if (ms && ms[i] === "empty") return "⏳"; return yoyPctTxt(LY.m[i], v); }}}
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300},
+      interaction:{mode:"index", intersect:false},
+      plugins:{ legend:{position:"bottom", labels:{font:{family:FF,size:12}, boxWidth:12}},
+        tooltip:{ callbacks:{ afterBody:function(items){ var i = items[0].dataIndex; var d = TY.m[i]-LY.m[i]; return "Change: " + (d>=0?"+":"") + fmtN(d) + "  (" + yoyPctTxt(LY.m[i], TY.m[i]) + ")"; } } } },
+      scales:{ x:{grid:{display:false}, ticks:{font:{family:FF,size:12}, autoSkip:false, maxRotation:0}},
+               y:{beginAtZero:true, grace:"12%", ticks:{callback:function(v){ return fKS(v); }, font:{family:FF,size:11}}, grid:{color:"#EEF2F9"}} },
+      layout:{padding:{top:10}} }
+  });
+
+  mkYoyBars("c-yoy-seg", SEGS, SEGS.map(function(s){ return LY.seg[s]||0; }), SEGS.map(function(s){ return TY.seg[s]||0; }), prev, cur);
+  var thL = (CTY_LABELS && CTY_LABELS.TH) || "Thailand", vnL = (CTY_LABELS && CTY_LABELS.VN) || "Viet Nam";
+  mkYoyBars("c-yoy-cty", [thL, vnL], [LY.cty.TH, LY.cty.VN], [TY.cty.TH, TY.cty.VN], prev, cur);
+
+  // Distributor table
+  document.getElementById("yoy-f").innerHTML = distViewBtns().replace('<span class="vw-sep"></span>','');
+  var keys = {}; Object.keys(TY.dist).forEach(function(k){ keys[k] = 1; }); Object.keys(LY.dist).forEach(function(k){ keys[k] = 1; });
+  var rows = Object.keys(keys).map(function(k){
+    var t = TY.dist[k] || {v:0, segs:{}, cty:{}}, l = LY.dist[k] || {v:0, segs:{}, cty:{}};
+    var nm = (TY.dist[k] || LY.dist[k]).nm;
+    var segs = Object.keys(Object.assign({}, l.segs, t.segs)), ctys = Object.keys(Object.assign({}, l.cty, t.cty));
+    return {nm:nm, segs:segs, cty:ctys.map(function(x){ return x === "TH" ? thL : vnL; }).join(" + "), ly:l.v, ty:t.v, d:t.v - l.v};
+  }).filter(function(r){ return Math.round(r.ly) || Math.round(r.ty); })
+    .sort(function(a, b){ return b.d - a.d; });
+  var mx = Math.max.apply(null, rows.map(function(r){ return Math.abs(r.d); }).concat([1]));
+  var tag = function(r){ if (!r.ly && r.ty) return ' <span class="pill u">new</span>'; if (r.ly && !r.ty) return ' <span class="pill n">no sales</span>'; return ""; };
+  document.getElementById("t-yoy").innerHTML =
+    "<table><thead><tr><th>Distributor</th><th>Segment</th><th>Country</th><th>" + esc(prev) + " (last year)</th><th>" + esc(cur) + " (this year)</th><th>Change</th><th>%</th><th style='min-width:140px'></th></tr></thead><tbody>"
+    + rows.map(function(r){
+        var w = (Math.abs(r.d) / mx * 100).toFixed(1);
+        return "<tr><td>" + esc(r.nm) + tag(r) + "</td><td>" + segBadge({total:true, segs:r.segs}) + "</td><td>" + esc(r.cty) + "</td><td>" + fmtN(Math.round(r.ly)) + "</td><td>" + fmtN(Math.round(r.ty)) + "</td><td>" + gv(Math.round(r.d)) + "</td><td class='" + (r.d >= 0 ? "vp" : "vn") + "'>" + yoyPctTxt(r.ly, r.ty) + "</td>"
+          + "<td><div class='yoy-bar'><div class='" + (r.d >= 0 ? "p" : "n") + "' style='width:" + w + "%'></div></div></td></tr>";
+      }).join("")
+    + '<tr class="grand"><td>TOTAL</td><td></td><td></td><td>' + fmtN(Math.round(LY.tot)) + "</td><td>" + fmtN(Math.round(TY.tot)) + "</td><td>" + (c.diff >= 0 ? "+" + CUR.s() : "-" + CUR.s()) + fK(Math.abs(c.diff)) + "</td><td>" + yoyPctTxt(LY.tot, TY.tot) + "</td><td></td></tr>"
+    + "</tbody></table>";
+}
+
 // EXPLANATION TAB v2.0 — Redesigned
 // Cấu trúc nested: version → countries[] → segments[] → distributors[]
 // 5 filter: Ver / Forecast time / Type Forecast/Actual / Country / Segment
@@ -4204,9 +4561,17 @@ function exportExplanations() {
 }
 
 // ══ RENDER ALL ══
+// ⭐ v7.1 — only the visible tab is drawn; the others are drawn when opened
+var TAB_DIRTY = {};
+var TAB_RENDER = { ov:rOV, seg:rSEG, cty:rCTY, dist:rDIST, gap:rGAP, yoy:rYOY, exp:function(){ rEXP(); } };
+function renderTab(t, D){
+  var f = TAB_RENDER[t]; if (!f) return;
+  f(D || computeD()); TAB_DIRTY[t] = false;
+}
 function renderAll() {
   var D = computeD();
-  rOV(D); rSEG(D); rCTY(D); rDIST(D); rGAP(D); rEXP();
+  Object.keys(TAB_RENDER).forEach(function(t){ TAB_DIRTY[t] = true; });
+  renderTab(TAB_RENDER[S.tab] ? S.tab : "ov", D);
   try { renderCtxBanner(); } catch(e){}
   if (VC_OPEN) { try { renderComparePanel(); } catch(e){} }
   ["ov","seg","cty","dist","gap"].forEach(function(t) {
@@ -4269,6 +4634,7 @@ function goTab(t) {
   var sec=document.getElementById("sec-"+t); if(sec) sec.classList.add("on");
   var nt=document.getElementById("nt-"+t); if(nt) nt.classList.add("on");
   syncBottomNav(t);
+  if (TAB_DIRTY[t]) { try { renderTab(t); } catch(e){ console.warn("render "+t, e); } }
   if (t==="cmp") { try { rCMP(); } catch(e){ console.warn("cmp",e); } }
   if (sec) {
     sec.querySelectorAll("[data-counted]").forEach(function(el){ el.dataset.counted="0"; });
@@ -4282,10 +4648,11 @@ function goTab(t) {
     }, 50);
   }
   setTimeout(function(){
-    Object.keys(S.charts).forEach(function(k){
-      try { S.charts[k].resize(); } catch(e){}
+    if (!sec) return;
+    sec.querySelectorAll("canvas").forEach(function(cv){
+      var ch = S.charts[cv.id]; if (ch) { try { ch.resize(); } catch(e){} }
     });
-  }, 90);
+  }, 60);
 }
 
 function startFeed() {
@@ -4426,14 +4793,17 @@ function tryFetchLive(onDone, opts) {
   if (btn && opts.manual) btn.classList.add("spinning");
 
   var seq = ++FY_REQ_SEQ;                                   // ⭐ v7
-  var act = "getTurnoverData" + (S.fy ? "&fy=" + encodeURIComponent(S.fy) : "");
+  var act = "getTurnoverData" + (S.fy ? "&fy=" + encodeURIComponent(S.fy) : "") + (opts.manual ? "&fresh=1" : "");
+  if (opts.manual) { FY_CACHE = {}; HEALTH_BY_FY = {}; }     // Refresh = forget other years too
   jsonp(act, function(payload){
     if (seq !== FY_REQ_SEQ) return;                         // an older request (FY changed) → ignore
     var prevSnap = snapshotData();
     var ok = applyLiveData(payload);
     if (ok) {
       DATA_IS_SNAPSHOT = false;
+      cacheFy(payload);                                       // ⭐ v7.1
       setTimeout(fetchHealth, 400);
+      setTimeout(prefetchFys, 900);
       LAST_FETCH_TS = Date.now();
       LAST_DATA_T = (payload && payload.t) || LAST_FETCH_TS;
       if (payload && payload.lastModified) LAST_MODIFIED = payload.lastModified;
@@ -5348,6 +5718,12 @@ function renderCtxBanner(){
     chips.push('<span class="ctx-chip">Currency <b>'+curTxt+'</b></span>');
   }
   chips.push('<span class="ctx-chip">'+esc(FYN())+' · '+esc(fyRangeLong())+'</span>');
+  try {
+    var yc = yoyCalc();
+    if (yc.status === "ok" && yc.pct != null) {
+      chips.push('<span class="ctx-chip clk" onclick="goTab(\'yoy\')" title="Same months last year — click for details">📈 vs '+esc(yc.prev)+' same period: <b style="color:'+(yc.diff>=0?"var(--pos)":"var(--neg)")+'">'+(yc.diff>=0?"+":"")+yc.pct.toFixed(1)+'%</b></span>');
+    }
+  } catch(e){}
   if (CTY_LABELS) {
     chips.push('<span class="ctx-chip" title="Countries are grouped by the real country column of the Sheet">🌏 '+esc(CTY_LABELS.TH)+' · '+esc(CTY_LABELS.VN)+'</span>');
   }
@@ -5427,7 +5803,7 @@ function renderGauges(D){
 function distMonthlySeries(di, si){
   var arr = new Array(12).fill(0);
   DETAIL_ROWS.forEach(function(r){
-    if (r[3]===di && r[1]===si) arr[r[0]] += r[5];   // forecast value
+    if (r[3]===di && (si==null || r[1]===si)) arr[r[0]] += r[5];   // forecast value (si null = all segments)
   });
   return arr;
 }
@@ -6374,7 +6750,7 @@ function hexA(hex, a){
 
 // ── (12) BOTTOM-NAV active-state sync ───────────────────────────────
 function syncBottomNav(tab){
-  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",cmp:"cmp",exp:"exp"};
+  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",yoy:"gap",cmp:"cmp",exp:"exp"};
   var active=map[tab]||"ov";
   document.querySelectorAll(".btmnav .bn").forEach(function(b){
     b.classList.toggle("on", b.id==="bn-"+active);
