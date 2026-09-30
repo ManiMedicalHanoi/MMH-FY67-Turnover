@@ -880,6 +880,114 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 }
 #print-foot { display:none; }
 
+/* ════════════════════════════════════════════════════════════════════
+   v8 — YEAR & QUARTER · MONTH VIEWS
+   ════════════════════════════════════════════════════════════════════ */
+body.yq-on .hdr-mid .pg, body.yq-on #hdr-sel, body.yq-on .mc-bar { display:none !important; }
+.nt.yq-new::after { content:"NEW"; font-size:8.5px; font-weight:900; letter-spacing:.5px; background:var(--Y); color:var(--N); border-radius:4px; padding:1px 4px; margin-left:6px; vertical-align:2px; }
+.yq-tb { display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; background:var(--sf); border:1px solid var(--br); border-radius:var(--r); box-shadow:var(--sh); padding:10px 14px; margin-bottom:12px; }
+.yq-grp { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.yq-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--B); margin-right:2px; }
+.yq-pill { padding:5px 12px; border-radius:20px; border:1.5px solid var(--br); background:var(--sf); color:var(--t2); font:700 12.5px var(--ff); cursor:pointer; transition:all .12s; white-space:nowrap; }
+.yq-pill:hover { border-color:var(--B); color:var(--B); }
+.yq-pill.on { background:var(--B); color:#fff; border-color:var(--B); }
+.yq-pill .dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:1px; }
+.yq-sel { font:700 13px var(--ff); padding:6px 10px; border-radius:8px; border:1.5px solid var(--br); background:var(--sf); color:var(--t1); min-width:230px; max-width:360px; cursor:pointer; }
+.yq-sel:focus { outline:none; border-color:var(--B); }
+.yq-crumb { display:inline-flex; align-items:center; gap:6px; background:#FFF6D9; border:1px solid #EFCB4A; color:#6b5200; border-radius:20px; padding:4px 6px 4px 11px; font-size:12px; font-weight:800; }
+.yq-crumb button { border:none; background:rgba(0,0,0,.08); border-radius:50%; width:20px; height:20px; cursor:pointer; font-weight:900; color:#6b5200; line-height:20px; padding:0; }
+html[data-theme="dark"] .yq-crumb { background:rgba(255,225,0,.14); color:#FFE100; border-color:rgba(255,225,0,.4); }
+html[data-theme="dark"] .yq-crumb button { color:#FFE100; }
+.yq-hint { font-size:11.5px; color:var(--t3); }
+
+.yq-hero { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:10px; margin-bottom:12px; }
+.yq-card { background:var(--sf); border:1px solid var(--br); border-radius:var(--r); box-shadow:var(--sh); padding:12px 14px 14px; position:relative; overflow:hidden; }
+.yq-card::before { content:''; position:absolute; left:0; top:0; right:0; height:3.5px; background:var(--B); }
+.yq-card.pos::before { background:var(--pos); } .yq-card.neg::before { background:var(--neg); } .yq-card.y::before { background:var(--Y); }
+.yq-card.big { grid-column:span 2; }
+@media (max-width:760px) { .yq-card.big { grid-column:auto; } }
+.yq-k { font-size:10.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--t3); display:flex; justify-content:space-between; gap:8px; }
+.yq-v { font-size:26px; font-weight:900; color:var(--t1); line-height:1.15; margin-top:4px; font-variant-numeric:tabular-nums; letter-spacing:-.3px; }
+.yq-v small { font-size:13px; font-weight:700; color:var(--t3); margin-left:4px; letter-spacing:0; }
+.yq-v.pos { color:var(--pos); } .yq-v.neg { color:var(--neg); }
+.yq-s { font-size:12px; color:var(--t2); margin-top:4px; line-height:1.45; }
+.yq-s b.p { color:var(--pos); } .yq-s b.n { color:var(--neg); }
+.yq-prog { position:relative; height:10px; background:var(--bg); border-radius:6px; margin:10px 0 16px; }
+.yq-prog > i { position:absolute; left:0; top:0; bottom:0; border-radius:6px; width:0; transition:width 1s cubic-bezier(.22,.61,.36,1); }
+.yq-prog > b { position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--t1); opacity:.6; border-radius:2px; }
+.yq-prog > em { position:absolute; top:13px; font-size:10px; font-style:normal; color:var(--t3); transform:translateX(-50%); white-space:nowrap; font-weight:700; }
+.yq-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+.yq-2 > div { background:var(--P); border:1px solid var(--br); border-radius:8px; padding:7px 9px; }
+.yq-2 .k { font-size:10px; font-weight:800; color:var(--t3); text-transform:uppercase; letter-spacing:.4px; }
+.yq-2 .v { font-size:15px; font-weight:900; color:var(--t1); font-variant-numeric:tabular-nums; }
+
+.yq-strip-wrap { padding:12px 14px; }
+.yq-qrow { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:6px; }
+.yq-strip { display:grid; grid-template-columns:repeat(12,minmax(70px,1fr)); gap:6px; }
+@media (max-width:1100px) { .yq-strip { grid-template-columns:repeat(6,1fr); } }
+@media (max-width:560px)  { .yq-strip { grid-template-columns:repeat(3,1fr); } .yq-qrow { grid-template-columns:repeat(2,1fr); } }
+.yq-tile { border:1px solid var(--br); border-radius:9px; padding:7px 8px 8px; cursor:pointer; background:var(--sf); transition:transform .12s, box-shadow .12s; position:relative; min-width:0; }
+.yq-tile:hover { transform:translateY(-2px); box-shadow:var(--sh); border-color:var(--B); }
+.yq-tile .tl { font-size:11px; font-weight:800; color:var(--t2); display:flex; justify-content:space-between; gap:4px; white-space:nowrap; }
+.yq-tile .tv { font-size:14px; font-weight:900; color:var(--t1); margin-top:2px; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.yq-tile .tp { font-size:11.5px; font-weight:800; display:flex; justify-content:space-between; gap:4px; }
+.yq-tile .tb { height:5px; border-radius:3px; background:var(--bg); margin-top:5px; overflow:hidden; }
+.yq-tile .tb i { display:block; height:100%; border-radius:3px; }
+.yq-tile.q { background:linear-gradient(180deg,var(--P),var(--sf)); }
+.yq-tile.st-forecast { background:repeating-linear-gradient(135deg, var(--sf), var(--sf) 7px, rgba(58,92,170,.06) 7px, rgba(58,92,170,.06) 14px); }
+.yq-tile.st-empty { border-style:dashed; }
+.yq-tile.sel { outline:2.5px solid var(--Y); outline-offset:1px; }
+.yq-legend { display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--t2); margin-top:9px; align-items:center; }
+.yq-legend span { display:inline-flex; align-items:center; gap:5px; }
+.yq-legend i { display:inline-block; width:12px; height:12px; border-radius:3px; border:1px solid var(--br); }
+
+.yq-sec-h { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.yq-no { background:var(--B); color:var(--Y); font-weight:900; font-size:11px; border-radius:6px; padding:2px 8px; letter-spacing:.3px; }
+.yq-t table { font-size:12.5px; }
+.yq-t thead th { vertical-align:bottom; white-space:normal; line-height:1.25; }
+.yq-t thead tr.blk th { text-align:center !important; color:#fff; font-size:11px; letter-spacing:.5px; padding:5px 8px !important; }
+.yq-t thead tr.blk th.bs { background:var(--B); }
+.yq-t thead tr.blk th.bc { background:var(--N); }
+html[data-theme="dark"] .yq-t thead tr.blk th.bc { background:#0A1A33; }
+.yq-t thead tr.blk th.bx { background:transparent; }
+.yq-t td { font-variant-numeric:tabular-nums; }
+.yq-t td.nm { max-width:280px; overflow:hidden; text-overflow:ellipsis; }
+.yq-t td.sep, .yq-t th.sep { width:6px; padding:0 !important; background:transparent !important; border-bottom:none; }
+.yq-t tr.fy td { background:var(--B) !important; color:#fff; font-weight:900; }
+.yq-t tr.fy td .vp { color:#86EFAC; } .yq-t tr.fy td .vn { color:#FCA5A5; }
+.yq-t tr.q td { background:var(--L3) !important; font-weight:800; color:var(--N); }
+html[data-theme="dark"] .yq-t tr.q td { color:var(--t1); }
+.yq-t tr.g td { background:var(--P) !important; font-weight:800; }
+.yq-t tr.d td:first-child { padding-left:26px !important; font-weight:600; }
+.yq-t tr.s td:first-child { padding-left:26px !important; font-weight:600; color:var(--t2); }
+.yq-t tr.sum td { background:var(--L1) !important; font-weight:900; color:var(--N); }
+html[data-theme="dark"] .yq-t tr.sum td { color:var(--t1); }
+.yq-t tr.hl td { background:#FFF6D9 !important; }
+html[data-theme="dark"] .yq-t tr.hl td { background:rgba(255,225,0,.12) !important; }
+.yq-t tr.cur td:first-child { box-shadow:inset 4px 0 0 var(--Y); }
+.yq-t tr.zero td { opacity:.55; }
+.yq-t td.ex { white-space:normal; min-width:300px; max-width:470px; text-align:left; font-weight:500; font-size:12px; vertical-align:top; }
+.yq-ex { max-height:3.05em; overflow:hidden; cursor:pointer; line-height:1.5; position:relative; }
+.yq-ex.open { max-height:none; }
+.yq-ex .ln { display:block; white-space:pre-wrap; word-break:break-word; margin-bottom:2px; }
+.yq-ex .lb { font-weight:800; color:var(--B); }
+.yq-ex .mt { font-size:10px; color:var(--t3); font-weight:700; white-space:nowrap; }
+.yq-ex.long:not(.open)::after { content:'▾ more'; position:absolute; right:0; bottom:0; background:linear-gradient(90deg, rgba(255,255,255,0), var(--sf) 45%); padding-left:26px; font-size:10.5px; color:var(--B); font-weight:900; }
+tr.fy .yq-ex .lb, tr.fy .yq-ex .mt { color:#FFE100; }
+tr.fy .yq-ex.long:not(.open)::after { background:linear-gradient(90deg, rgba(58,92,170,0), var(--B) 45%); color:#FFE100; }
+.yq-na { color:var(--t3); font-style:italic; font-size:11px; }
+.yq-bar { display:inline-block; width:84px; height:8px; border-radius:5px; background:var(--bg); vertical-align:middle; position:relative; overflow:hidden; margin-right:6px; }
+.yq-bar i { position:absolute; left:0; top:0; bottom:0; border-radius:5px; }
+tr.fy .yq-bar { background:rgba(255,255,255,.25); }
+.yq-t tr.fy td b[style] { color:#FFE100 !important; }
+.yq-st { display:inline-block; font-size:9.5px; font-weight:900; letter-spacing:.3px; border-radius:4px; padding:1px 5px; margin-left:6px; vertical-align:1px; }
+.yq-st.a { background:#DCFCE7; color:#166534; } .yq-st.f { background:#DBEAFE; color:#1E3A8A; } .yq-st.e { background:#FEF3C7; color:#92400E; }
+.yq-note { font-size:11.5px; color:var(--t3); padding:8px 16px 12px; line-height:1.5; }
+.yq-empty { padding:36px 20px; text-align:center; color:var(--t2); background:var(--sf); border:1px dashed var(--br); border-radius:var(--r); }
+.yq-gap { height:12px; }
+.yq-ex-tb { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--br); background:var(--P); }
+@media print { .yq-tb, .yq-ex-tb .yq-grp { display:none !important; } .yq-ex { max-height:none !important; } .yq-ex::after { display:none !important; } }
+
 </style>
 </head>
 <body>
@@ -903,7 +1011,7 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
   <div class="hdr-top">
     <a class="logo" href="https://docs.google.com/spreadsheets/d/1bujnLrxerjUM1gR3aOoy3r4gvTp4pNyPwJM-ra5iFe8/edit?gid=488446085#gid=488446085" target="_blank" rel="noopener" title="Open data source" style="text-decoration:none;cursor:pointer">
       <div class="logo-b">MMH</div>
-      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v7 · 🔗 Open Sheet</div></div>
+      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v8 · 🔗 Open Sheet</div></div>
     </a>
     <div class="hdr-mid">
       <select class="fy-sel" id="fy-sel" onchange="setFY(this.value)" title="Fiscal year"><option>FY67</option></select>
@@ -937,6 +1045,8 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
     <button class="btn-r" onclick="manualRefresh()" title="Refresh now (Ctrl+R)" id="btn-refresh">↻</button>
   </div>
   <div class="nav">
+    <div class="nt yq-new" id="nt-yr" onclick="goTab('yr')">📅 Year</div>
+    <div class="nt yq-new" id="nt-qm" onclick="goTab('qm')">🗓 Quarter · Month</div>
     <div class="nt on" id="nt-ov"   onclick="goTab('ov')">📊 Overview</div>
     <div class="nt"    id="nt-seg"  onclick="goTab('seg')">📦 By Segment</div>
     <div class="nt"    id="nt-cty"  onclick="goTab('cty')">🌏 By Country</div>
@@ -958,6 +1068,16 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 
 <div class="main">
 <div class="ctx-banner" id="ctx-banner"></div>
+<div class="sec" id="sec-yr">
+  <div class="sh"><div class="sl">Year view</div><div class="sp" id="sp-yr"></div></div>
+  <div id="yr-body"></div>
+</div>
+
+<div class="sec" id="sec-qm">
+  <div class="sh"><div class="sl">Quarter · Month view</div><div class="sp" id="sp-qm"></div></div>
+  <div id="qm-body"></div>
+</div>
+
 <div class="sec on" id="sec-ov">
   <div class="sh"><div class="sl">Overview</div><div class="sp" id="sp-ov"></div></div>
   <div class="kr" id="kr-ov"></div>
@@ -1029,7 +1149,7 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 </div>
 
 <div class="sec" id="sec-cmp">
-  <div class="sh"><div class="sl">Comparison</div><div class="sp">So sánh side-by-side: Segment / Country / Distributor</div></div>
+  <div class="sh"><div class="sl">Comparison</div><div class="sp">Side-by-side comparison: Segment / Country / Distributor</div></div>
   <div class="cmp-controls card reveal" id="cmp-controls"></div>
   <div id="cmp-out"></div>
 </div>
@@ -1070,10 +1190,10 @@ html[data-theme="dark"] .cmp-expl-hd { color:#FCD34D; }
 
 <!-- (12) MOBILE BOTTOM NAV -->
 <nav class="btmnav" id="btmnav">
+  <button class="bn"    id="bn-yr"   onclick="goTab('yr')"><span class="bn-ic">📅</span><span class="bn-tx">Year</span></button>
+  <button class="bn"    id="bn-qm"   onclick="goTab('qm')"><span class="bn-ic">🗓</span><span class="bn-tx">Q · Month</span></button>
   <button class="bn on" id="bn-ov"   onclick="goTab('ov')"><span class="bn-ic">📊</span><span class="bn-tx">Overview</span></button>
-  <button class="bn"    id="bn-seg"  onclick="goTab('seg')"><span class="bn-ic">📦</span><span class="bn-tx">Segment</span></button>
   <button class="bn"    id="bn-gap"  onclick="goTab('gap')"><span class="bn-ic">🔍</span><span class="bn-tx">GAP</span></button>
-  <button class="bn"    id="bn-cmp"  onclick="goTab('cmp')"><span class="bn-ic">⚖️</span><span class="bn-tx">Compare</span></button>
   <button class="bn"    id="bn-exp"  onclick="goTab('exp')"><span class="bn-ic">📋</span><span class="bn-tx">Notes</span></button>
 </nav>
 
@@ -1097,6 +1217,7 @@ var META_CHECK_INTERVAL_MS   = 30000;   // 30 giây — chỉ áp dụng khi ENA
 var ENABLE_CHANGE_HIGHLIGHT  = true;    // flash vàng ô số khi giá trị thay đổi sau refresh
 var ENABLE_NEW_DATA_TOAST    = true;    // popup thông báo khi refresh xong / có data mới
 var ENABLE_LIVE_CLOCK        = true;    // đồng hồ HH:MM:SS + "updated Xs ago"
+var ENABLE_LIVE_SYNC         = true;    // ⭐ v8 — refresh by itself (≤ 20 s) when someone edits the Sheet; no polling of the data itself
 
 function jsonp(action, cb, errCb, timeoutMs) {
   var cbName = "mmh_cb_" + Date.now() + "_" + Math.floor(Math.random()*1e5);
@@ -1882,15 +2003,15 @@ function fmtKgap_usd(n) {
     var v = Math.abs(n) * CUR.rate;
     if (v >= 1e9) {
       var b = v/1e9;
-      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1).replace(".",","));
-      return sign + bStr + "B đ";
+      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1));
+      return sign + bStr + "B ₫";
     }
     if (v >= 1e6) {
       var m = v/1e6;
-      return sign + (m>=10 ? Math.round(m) : m.toFixed(1).replace(".",",")) + "M đ";
+      return sign + (m>=10 ? Math.round(m) : m.toFixed(1)) + "M ₫";
     }
-    if (v >= 1e3) return sign + Math.round(v/1e3) + "K đ";
-    return sign + Math.round(v) + " đ";
+    if (v >= 1e3) return sign + Math.round(v/1e3) + "K ₫";
+    return sign + Math.round(v) + " ₫";
   }
   var a = Math.abs(n);
   if (a >= 1e6) {
@@ -1984,15 +2105,15 @@ function fmtKgap(n) {
     var v = Math.abs(n) * 1000 * CUR.rate;     // VND absolute
     if (v >= 1e9) {
       var b = v/1e9;
-      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1).replace(".",","));
-      return sign + bStr + "B đ";
+      var bStr = (b>=10 ? Math.round(b).toString() : b.toFixed(1));
+      return sign + bStr + "B ₫";
     }
     if (v >= 1e6) {
       var m = v/1e6;
-      return sign + (m>=10 ? Math.round(m) : m.toFixed(1).replace(".",",")) + "M đ";
+      return sign + (m>=10 ? Math.round(m) : m.toFixed(1)) + "M ₫";
     }
-    if (v >= 1e3) return sign + Math.round(v/1e3) + "K đ";
-    return sign + Math.round(v) + " đ";
+    if (v >= 1e3) return sign + Math.round(v/1e3) + "K ₫";
+    return sign + Math.round(v) + " ₫";
   }
   // USD: n is in KUSD units.
   var a = Math.abs(n);
@@ -2280,7 +2401,7 @@ function initReveal() {
 }
 
 function animateBars(scope) {
-  var bars = (scope||document).querySelectorAll(".wfb[data-w], .pgb-f[data-w]");
+  var bars = (scope||document).querySelectorAll(".wfb[data-w], .pgb-f[data-w], .yq-prog > i[data-w]");
   bars.forEach(function(b, i){
     if (b.dataset.animated === "1") return;
     b.dataset.animated = "1";
@@ -4081,8 +4202,8 @@ function prevHealthNote(prev){
     + '. Fix these in the Sheet and refresh.</div>';
 }
 function onPrevFyReady(){
-  TAB_DIRTY.yoy = true;
-  if (S.tab === "yoy") renderTab("yoy");
+  TAB_DIRTY.yoy = true; TAB_DIRTY.yr = true; TAB_DIRTY.qm = true;
+  if (S.tab === "yoy" || S.tab === "yr" || S.tab === "qm") { renderTab(S.tab); var sa = document.getElementById("sec-" + S.tab); if (sa) setTimeout(function(){ animateBars(sa); }, 30); }
   var mini = document.getElementById("ov-yoy-mini"); if (mini) mini.innerHTML = yoyMini();
   try { renderCtxBanner(); } catch(e){}
 }
@@ -4572,10 +4693,736 @@ function exportExplanations() {
   downloadCSV(out, "MMH_" + FYN() + "_explanations_all_versions");
 }
 
+
+// ════════════════════════════════════════════════════════════════════
+// ⭐ v8 — YEAR & QUARTER · MONTH VIEWS
+// Same structure as the Google Sheet tabs "YEAR" and "QUARTER-MONTH":
+//   1.1 Total · 1.2 Segment · 1.3 Segment × Country (6 groups) ·
+//   1.4 Distributors · 1.5 Country report × Segment · lookup by item.
+// "View by" (top toolbar) filters every block to one Segment / Country /
+// Country report / group / distributor. Forecast Explanations are looked
+// up by FY + explanation time + Single/Cumulative + Country report +
+// Segment + Distributor; the newest version that has text wins.
+// ════════════════════════════════════════════════════════════════════
+var YQ_GROUPS = [
+  {code:"G1", name:"TH/MM Surgical",     def:"Surgical · Thailand + Myanmar",            rep:"TH", segs:["Surgical"]},
+  {code:"G2", name:"TH Dental/MMG",      def:"Dental + MMG · Thailand",                   rep:"TH", segs:["Dental","MMG"]},
+  {code:"G3", name:"VN Surgical",        def:"Surgical · Viet Nam",                       rep:"VN", segs:["Surgical"]},
+  {code:"G4", name:"VN/LA/KH/MM Dental", def:"Dental · Viet Nam, Lao, Cambodia, Myanmar", rep:"VN", segs:["Dental"]},
+  {code:"G5", name:"VN/LA/KH/MM MMG",    def:"MMG · Viet Nam, Lao, Cambodia, Myanmar",    rep:"VN", segs:["MMG"]},
+  {code:"G6", name:"VN Eyeless",         def:"Eyeless · Viet Nam",                        rep:"VN", segs:["Eyeless"]}
+];
+var YQ_OTHER = {code:"Other", name:"Other (outside G1–G6)", def:"Any Segment × Country not covered by G1–G6", rep:"VN", segs:[]};
+var YQ_DIMS = [["all","MMH total"],["seg","Segment"],["cty","Country"],["rep","Country report"],["grp","Segment × Country"],["dist","Distributor"]];
+var YQ_SEG_ORDER = ["Surgical","Dental","MMG","Eyeless"];
+var YQ_CTY_ORDER = ["Thailand","Myanmar","Viet Nam","Lao","Cambodia"];
+var YQ_DIST_ORDER = ["AFTA-INNOTECH","MAHACHAK","NOVATEC","AV","DDI","DEVA","PROMPT DENT","VRP DENT","HUNG VI","ICARE","AN TAM","MHI","BAO LINH",
+                     "UDOM","NAM DUNG","VIET THAI","SPI","MECI","ENT","MEDTRONICAM","CPT","USM"];
+
+S.yq = (function(){
+  var d = {dim:"all", item:"", per:null, expl:"latest", closed:{}};
+  try { var j = JSON.parse(localStorage.getItem("mmh_yq") || "null"); if (j) { d.dim = j.dim || "all"; d.item = j.item || ""; d.expl = j.expl || "latest"; d.per = j.per || null; } } catch(e){}
+  return d;
+})();
+function yqSave(){ try { localStorage.setItem("mmh_yq", JSON.stringify({dim:S.yq.dim, item:S.yq.item, expl:S.yq.expl, per:S.yq.per})); } catch(e){} }
+
+// same rule as the Sheet (_YQ_Key column A)
+function yqGroupOf(seg, cty){
+  var s = String(seg||"").toLowerCase(), c = String(cty||"").toLowerCase();
+  var vlkm = /^(viet nam|lao|cambodia|myanmar)$/.test(c);
+  if (s==="surgical" && (c==="thailand" || c==="myanmar")) return "G1";
+  if ((s==="dental" || s==="mmg") && c==="thailand") return "G2";
+  if (s==="surgical" && c==="viet nam") return "G3";
+  if (s==="dental" && vlkm) return "G4";
+  if (s==="mmg" && vlkm) return "G5";
+  if (s==="eyeless" && c==="viet nam") return "G6";
+  return "Other";
+}
+function yqGroup(code){ return YQ_GROUPS.find(function(g){ return g.code===code; }) || YQ_OTHER; }
+function yqRepLbl(code){ return code==="TH" ? ((CTY_LABELS && CTY_LABELS.TH) || "Thailand") : ((CTY_LABELS && CTY_LABELS.VN) || "Viet Nam and others"); }
+
+// ── data ───────────────────────────────────────────────────────────
+function yqNormRows(rows, keys){
+  var mi = {}; (keys||[]).forEach(function(k, i){ mi[String(k)] = i; });
+  var out = [];
+  (rows||[]).forEach(function(r){
+    var i = mi[String(r.month).trim()]; if (i == null) return;
+    var seg = String(r.segment||"").trim(); if (!seg) return;
+    var cty = yoyCty(r, CTY_TH);                               // TH | VN — same grouping for both years
+    var phys = String(r.phys||"").trim() || (cty==="TH" ? "Thailand" : "Viet Nam");
+    var dist = String(r.distributor||"").trim() || "(n/a)";
+    out.push({i:i, seg:seg, cty:cty, phys:phys, grp:yqGroupOf(seg, phys), dist:dist, dk:dist+" ("+phys+")",
+              bm:+r.budget||0, fc:+r.forecast||0});
+  });
+  return out;
+}
+function yqPrep(){
+  var cur = IS_JIZAI() ? window.RAW_JIZAI : window.RAW_TURNOVER;
+  if (!Array.isArray(cur) || !FYC) return null;
+  var st = yoyState();
+  var P = { cur:yqNormRows(cur, FYC.keys), ly:null, lyStatus:st.status, lyName:st.prev, lyWhy:st.why || "" };
+  if (st.status === "ok") P.ly = yqNormRows(IS_JIZAI() ? st.payload.rowsJizai : st.payload.rows, st.payload.fyInfo ? st.payload.fyInfo.keys : []);
+  var ms = monthStatusArr();
+  P.status = ms || new Array(12).fill("forecast");
+  P.closed = []; P.status.forEach(function(s, i){ if (s === "actual") P.closed.push(i); });
+  return P;
+}
+function yqScopeFn(){
+  var d = S.yq.dim, it = S.yq.item;
+  if (d === "all" || !it) return function(){ return true; };
+  return function(r){
+    if (d === "seg")  return r.seg === it;
+    if (d === "cty")  return r.phys === it;
+    if (d === "rep")  return r.cty === it;
+    if (d === "grp")  return r.grp === it;
+    if (d === "dist") return r.dk === it;
+    return true;
+  };
+}
+function yqItems(dim, P){
+  var set = {}, rows = P.cur.concat(P.ly || []);
+  rows.forEach(function(r){
+    if (dim === "seg")  set[r.seg] = r.seg;
+    if (dim === "cty")  set[r.phys] = r.phys;
+    if (dim === "rep")  set[r.cty] = yqRepLbl(r.cty);
+    if (dim === "grp")  set[r.grp] = r.grp === "Other" ? YQ_OTHER.name : r.grp + " " + yqGroup(r.grp).name;
+    if (dim === "dist") set[r.dk] = r.dk;
+  });
+  var keys = Object.keys(set), ord;
+  if (dim === "seg") ord = YQ_SEG_ORDER; else if (dim === "cty") ord = YQ_CTY_ORDER; else if (dim === "rep") ord = ["TH","VN"];
+  else if (dim === "grp") ord = YQ_GROUPS.map(function(g){ return g.code; }).concat(["Other"]);
+  keys.sort(function(a, b){
+    if (dim === "dist") {
+      var na = a.replace(/ \(.*$/, ""), nb = b.replace(/ \(.*$/, "");
+      var ia = YQ_DIST_ORDER.indexOf(na), ib = YQ_DIST_ORDER.indexOf(nb);
+      if (ia < 0) ia = 999; if (ib < 0) ib = 999; if (ia !== ib) return ia - ib; return a < b ? -1 : 1;
+    }
+    var xa = ord.indexOf(a), xb = ord.indexOf(b); if (xa < 0) xa = 999; if (xb < 0) xb = 999;
+    return xa !== xb ? xa - xb : (a < b ? -1 : 1);
+  });
+  return keys.map(function(k){ return [k, set[k]]; });
+}
+function yqScopeLabel(){
+  var d = S.yq.dim, it = S.yq.item;
+  if (d === "all" || !it) return "MMH total";
+  var dn = (YQ_DIMS.find(function(x){ return x[0]===d; }) || [,""])[1];
+  var lbl = it;
+  if (d === "rep") lbl = yqRepLbl(it);
+  if (d === "grp") lbl = it === "Other" ? YQ_OTHER.name : it + " " + yqGroup(it).name;
+  return dn + " · " + lbl;
+}
+// metrics of the rows matching pred over month indices idxs
+function yqM(P, pred, idxs){
+  var inS = {}; idxs.forEach(function(i){ inS[i] = 1; });
+  var o = {bm:0, fc:0, ly:0, n:0};
+  P.cur.forEach(function(r){ if (inS[r.i] && pred(r)) { o.bm += r.bm; o.fc += r.fc; o.n++; } });
+  if (P.ly) P.ly.forEach(function(r){ if (inS[r.i] && pred(r)) { o.ly += r.fc; o.n++; } });
+  o.gap = o.fc - o.bm;
+  o.gp  = o.bm ? o.gap / Math.abs(o.bm) * 100 : null;
+  o.ach = o.bm > 0 ? o.fc / o.bm * 100 : null;
+  o.yoy = P.ly ? o.fc - o.ly : null;
+  o.yp  = (P.ly && o.ly) ? (o.fc - o.ly) / Math.abs(o.ly) * 100 : null;
+  return o;
+}
+function yqAnd(a, b){ return function(r){ return a(r) && b(r); }; }
+var YQ_ALL12 = [0,1,2,3,4,5,6,7,8,9,10,11];
+function yqQIdx(q){ return [q*3, q*3+1, q*3+2]; }
+function yqRange(a, b){ var o = []; for (var i = a; i <= b; i++) o.push(i); return o; }
+
+// ── formatting ─────────────────────────────────────────────────────
+function yqUnit(){ return IS_JIZAI() ? "Sheets" : (CUR.code === "VND" ? "M VND" : "K USD"); }
+function yqF(n){
+  if (n == null || isNaN(n)) return "—";
+  if (IS_JIZAI()) return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n);
+  if (CUR.code === "VND") return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n * CUR.rate / 1e6);
+  return new Intl.NumberFormat("en-US", {minimumFractionDigits:1, maximumFractionDigits:1}).format(n / 1000);
+}
+function yqG(n){
+  if (n == null || isNaN(n)) return "—";
+  var t = yqF(Math.abs(n)); if (t === "0.0" || t === "0") return '<span class="arr-e">0</span>';
+  return '<span class="' + (n >= 0 ? "vp" : "vn") + '">' + (n >= 0 ? "+" : "−") + t + "</span>";
+}
+function yqP(p){
+  if (p == null || isNaN(p)) return '<span class="arr-e">—</span>';
+  return '<span class="' + (p >= 0 ? "vp" : "vn") + '">' + (p >= 0 ? "+" : "−") + Math.abs(p).toFixed(1) + "%</span>";
+}
+function yqBig(n){ if (n == null || isNaN(n)) return "—"; return IS_JIZAI() ? fmtCount(n, "k") : CUR.s() + fK(n); }
+function yqAchCol(a){ if (a == null) return "var(--t3)"; return a >= 100 ? "#16A34A" : (a >= 90 ? "#D97706" : "#DC2626"); }
+function yqBarHTML(m){
+  if (m.ach == null) return '<span class="arr-e">—</span>';
+  var w = Math.max(0, Math.min(100, m.ach));
+  return '<span class="yq-bar"><i style="width:' + w.toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><b style="color:' + yqAchCol(m.ach) + '">' + Math.round(m.ach) + '%</b>';
+}
+function yqStatusTag(st){
+  if (st === "actual")   return '<span class="yq-st a" title="Actual closed">✓ ACTUAL</span>';
+  if (st === "empty")    return '<span class="yq-st e" title="Forecast not fully entered yet">⏳ PARTIAL</span>';
+  return '<span class="yq-st f" title="Forecast">FORECAST</span>';
+}
+function yqMonLbl(i){ return MONTHLY_GRAND[i] ? MONTHLY_GRAND[i].lbl : ""; }
+function yqQLbl(q){ return "Q" + (q+1) + " · " + yqMonLbl(q*3).slice(0,3) + "–" + yqMonLbl(q*3+2); }
+
+// ── Forecast Explanation lookups (VERSIONS_DATA of the FY in view) ──
+function yqExFind(ft, sc, fn){
+  var vers = _filterVersions(ft ? {ft:String(ft), sc:sc} : {sc:sc});
+  for (var i = 0; i < vers.length; i++) {
+    var t = "";
+    try { t = fn(vers[i]) || ""; } catch(e) { t = ""; }
+    if (String(t).trim()) return {e:String(t).trim(), v:vers[i].v, ft:vers[i].ft, t:vers[i].tFct};
+  }
+  return null;
+}
+function yqCo(v, code){ return (v.countries || []).find(function(c){ return c.code === code; }); }
+function yqXSeg(code, seg){ return function(v){ var co = yqCo(v, code); if (!co) return ""; var sg = (co.segments||[]).find(function(s){ return s.name === seg; }); return sg && sg.total && sg.total.e; }; }
+function yqXCty(code){ return function(v){ var co = yqCo(v, code); return co && co.total && co.total.e; }; }
+function yqXDist(codes, seg, name){
+  return function(v){
+    for (var i = 0; i < codes.length; i++) {
+      var co = yqCo(v, codes[i]); if (!co) continue;
+      var sg = (co.segments||[]).find(function(s){ return s.name === seg; }); if (!sg) continue;
+      var d = (sg.distributors||[]).find(function(x){ return String(x.name).trim().toLowerCase() === String(name).trim().toLowerCase(); });
+      if (d && d.e) return d.e;
+    }
+    return "";
+  };
+}
+function yqCode(rep){ return rep === "TH" ? "t" : "v"; }
+function yqSlotsTotal(){
+  var s = [{lb:"MMH total", fn:yqXCty("g")}];
+  ["TH","VN"].forEach(function(rep){
+    YQ_SEG_ORDER.forEach(function(sg){ s.push({lb:sg + " · " + yqRepLbl(rep), fn:yqXSeg(yqCode(rep), sg)}); });
+  });
+  return s;
+}
+function yqSlotsSeg(sg){ return ["TH","VN"].map(function(rep){ return {lb:yqRepLbl(rep), fn:yqXSeg(yqCode(rep), sg)}; }); }
+function yqSlotsGrp(code){
+  var g = yqGroup(code); if (!g.segs.length) return [];
+  return g.segs.map(function(sg){ return {lb:g.segs.length > 1 ? sg : "", fn:yqXSeg(yqCode(g.rep), sg)}; });
+}
+function yqSlotsDist(name, cty, segs){
+  var codes = cty === "TH" ? ["t","v"] : ["v","t"];
+  return segs.map(function(sg){ return {lb:segs.length > 1 ? sg : "", fn:yqXDist(codes, sg, name)}; });
+}
+function yqSlotsRep(rep){
+  return [{lb:"", fn:yqXCty(yqCode(rep))}].concat(YQ_SEG_ORDER.map(function(sg){ return {lb:sg, fn:yqXSeg(yqCode(rep), sg)}; }));
+}
+function yqSlotsRepSeg(rep, sg){ return [{lb:"", fn:yqXSeg(yqCode(rep), sg)}]; }
+function yqSlotsScope(P){
+  var d = S.yq.dim, it = S.yq.item;
+  if (d === "all" || !it) return yqSlotsTotal();
+  if (d === "seg") return yqSlotsSeg(it);
+  if (d === "rep") return yqSlotsRep(it);
+  if (d === "grp") return yqSlotsGrp(it);
+  if (d === "dist") {
+    var segs = {}, cty = "VN", nm = it.replace(/ \(.*$/, "");
+    P.cur.forEach(function(r){ if (r.dk === it) { segs[r.seg] = 1; cty = r.cty; } });
+    var list = YQ_SEG_ORDER.filter(function(s){ return segs[s]; });
+    return yqSlotsDist(nm, cty, list.length ? list : YQ_SEG_ORDER);
+  }
+  return [];       // Country (physical) has no explanation key
+}
+function yqExHTML(slots, ft, sc){
+  if (IS_JIZAI()) return '<span class="yq-na">Explanations are written for Turnover</span>';
+  if (!slots || !slots.length) return '<span class="yq-na">—</span>';
+  var parts = [];
+  slots.forEach(function(sl){ var f = yqExFind(ft, sc, sl.fn); if (f) parts.push({lb:sl.lb, f:f}); });
+  if (!parts.length) return '<span class="yq-na">—</span>';
+  var txt = parts.map(function(p){ return p.f.e; }).join(" ");
+  var long = parts.length > 1 || txt.length > 110 || /\n/.test(txt);
+  return '<div class="yq-ex' + (long ? " long" : "") + '" onclick="event.stopPropagation();this.classList.toggle(\'open\')" title="Click to expand / collapse">'
+    + parts.map(function(p){
+        return '<span class="ln">' + (p.lb ? '<span class="lb">▸ ' + esc(p.lb) + ':</span> ' : '') + esc(p.f.e)
+          + ' <span class="mt">· ' + esc(ftLabel(p.f.ft) || "—") + (p.f.t ? " " + esc(p.f.t) : "") + ' · v' + esc(p.f.v) + '</span></span>';
+      }).join("") + '</div>';
+}
+function yqExplFt(){             // Year view, sections 1.2 – 1.5
+  var e = S.yq.expl || "latest";
+  if (e === "fy") return FYN();
+  if (/^Q[1-4]$/.test(e)) return e;
+  return null;
+}
+
+// ── shared toolbar (View by) ───────────────────────────────────────
+function yqViewBy(P){
+  var d = S.yq.dim;
+  var h = '<div class="yq-grp"><span class="yq-lbl">View by</span>'
+    + YQ_DIMS.map(function(x){ return '<button class="yq-pill' + (d===x[0] ? " on" : "") + '" onclick="yqSetDim(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join("")
+    + '</div>';
+  if (d !== "all") {
+    var items = yqItems(d, P);
+    h += '<div class="yq-grp"><span class="yq-lbl">Item</span><select class="yq-sel" onchange="yqSetItem(this.value)">'
+      + items.map(function(x){ return '<option value="' + esc(x[0]) + '"' + (x[0]===S.yq.item ? " selected" : "") + '>' + esc(x[1]) + '</option>'; }).join("")
+      + '</select></div>';
+  }
+  if (d !== "all" && S.yq.item) h += '<span class="yq-crumb">📍 ' + esc(yqScopeLabel()) + ' <button title="Back to MMH total" onclick="yqSetDim(\'all\')">×</button></span>';
+  return h;
+}
+function yqSetDim(d){
+  S.yq.dim = d;
+  if (d === "all") S.yq.item = "";
+  else { var P = yqPrep(); var it = P ? yqItems(d, P) : []; if (!it.some(function(x){ return x[0]===S.yq.item; })) S.yq.item = it.length ? it[0][0] : ""; }
+  yqSave(); yqRerender();
+}
+function yqSetItem(v){ S.yq.item = v; yqSave(); yqRerender(); }
+function yqScope(dim, item){ S.yq.dim = dim; S.yq.item = item; yqSave(); yqRerender(); window.scrollTo({top:0, behavior:"smooth"}); }
+function yqRerender(){
+  TAB_DIRTY.yr = TAB_DIRTY.qm = true;
+  if (S.tab === "yr" || S.tab === "qm") renderTab(S.tab);
+  var sec = document.getElementById("sec-" + S.tab);
+  if (sec) setTimeout(function(){ animateBars(sec); }, 30);
+}
+function yqWaitHTML(){
+  var off = (document.getElementById("src-tx") || {}).textContent === "Offline";
+  if (off) return '<div class="yq-empty">⚠️ Could not reach the Google Sheet, so this view has no data yet.<br><span class="yq-hint">It is built from the live SUM TURNOVER rows — press ↻ (top right) to try again.</span></div>';
+  return '<div class="yq-empty"><span class="fy-spin dark"></span> Waiting for live data from the Google Sheet…<br><span class="yq-hint">This view is built from the live SUM TURNOVER rows — it appears as soon as the connection is up.</span></div>';
+}
+function yqLyNote(P){
+  if (P.ly) return "";
+  if (P.lyStatus === "loading") return '<div class="yoy-msg"><span class="fy-spin dark"></span> Loading ' + esc(P.lyName) + ' for the LY / YoY columns…</div>';
+  return '<div class="yoy-msg">ℹ️ LY / YoY not available: ' + esc(P.lyWhy || ("no " + P.lyName + " data")) + '.</div>';
+}
+
+// ── table builders ─────────────────────────────────────────────────
+// Year table: one block of numbers + achievement + explanation
+function yqTableY(rows, first, exHead){
+  var h = '<div class="tw yq-t"><table><thead><tr><th>' + esc(first) + '</th><th>Budget Mani</th><th>Forecast / Actual</th><th>Vs. Budget</th><th>Vs. Budget %</th>'
+    + '<th>' + esc(yqLyName()) + '</th><th>YoY</th><th>YoY %</th><th style="text-align:left">Achievement</th><th style="text-align:left">' + esc(exHead) + '</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var m = r.m;
+    h += '<tr class="' + (r.cls||"") + (r.click ? " clickable" : "") + '"' + (r.click ? ' onclick="' + r.click + '"' : '') + ' title="' + esc(r.tip || "") + '">'
+      + '<td class="nm">' + r.label + '</td><td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td><td>' + yqP(m.gp) + '</td>'
+      + '<td>' + (m.yoy == null ? "—" : yqF(m.ly)) + '</td><td>' + (m.yoy == null ? "—" : yqG(m.yoy)) + '</td><td>' + (m.yoy == null ? "—" : yqP(m.yp)) + '</td>'
+      + '<td style="text-align:left">' + yqBarHTML(m) + '</td><td class="ex">' + (r.ex || "") + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+// Quarter/Month table: SINGLE block + CUMULATIVE block + 2 explanations
+function yqTableQ(rows, first, sLbl, cLbl){
+  var cols = function(){ return '<th>Budget Mani</th><th>Forecast / Actual</th><th>Vs. Budget</th><th>Vs. Budget %</th><th>' + esc(yqLyName()) + '</th><th>YoY %</th><th style="text-align:left">Achv.</th>'; };
+  var h = '<div class="tw yq-t"><table><thead>'
+    + '<tr class="blk"><th class="bx"></th><th class="bs" colspan="7">' + esc(sLbl) + '</th><th class="sep"></th><th class="bc" colspan="7">' + esc(cLbl) + '</th><th class="bx" colspan="2"></th></tr>'
+    + '<tr><th>' + esc(first) + '</th>' + cols() + '<th class="sep"></th>' + cols() + '<th style="text-align:left">Explanation · Single</th><th style="text-align:left">Explanation · Cumulative</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var a = r.s, b = r.c;
+    var blk = function(m){
+      return '<td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td><td>' + yqP(m.gp) + '</td>'
+        + '<td>' + (m.yoy == null ? "—" : yqF(m.ly)) + '</td><td>' + (m.yoy == null ? "—" : yqP(m.yp)) + '</td><td style="text-align:left">' + yqBarHTML(m) + '</td>';
+    };
+    h += '<tr class="' + (r.cls||"") + (r.click ? " clickable" : "") + '"' + (r.click ? ' onclick="' + r.click + '"' : '') + '>'
+      + '<td class="nm">' + r.label + '</td>' + blk(a) + '<td class="sep"></td>' + blk(b)
+      + '<td class="ex">' + (r.exS || "") + '</td><td class="ex">' + (r.exC || "") + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function yqLyName(){ return "LY " + yoyPrevFy(); }
+function yqCard(title, sub, body, cls){
+  return '<div class="card" style="margin-bottom:12px"><div class="ch yq-sec-h">' + title + (sub ? '<div class="cs">' + sub + '</div>' : '') + '</div>' + body + '</div>';
+}
+function yqH(no, txt){ return '<span class="yq-no">' + no + '</span><div class="ct">' + txt + '</div>'; }
+function yqIsZero(m){ return !Math.round(m.bm) && !Math.round(m.fc) && !Math.round(m.ly || 0); }
+function yqJs(s){ return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;"); }
+
+// Rows for sections 1.2 – 1.5 (shared by both views); mk(pred) → metric row data
+function yqSectionRows(P, scope, mk){
+  var out = {seg:[], grp:[], dist:[], rep:[]};
+  var hide = S.yq.dim !== "all" && S.yq.item;
+  // 1.2 Segment
+  var segs = YQ_SEG_ORDER.slice();
+  P.cur.concat(P.ly||[]).forEach(function(r){ if (segs.indexOf(r.seg) < 0) segs.push(r.seg); });
+  segs.forEach(function(sg){
+    var row = mk(yqAnd(scope, function(r){ return r.seg === sg; }));
+    if (hide && row.zero) return;
+    row.label = esc(segLabel(sg)); row.key = sg; row.slots = yqSlotsSeg(sg);
+    row.click = "yqScope('seg','" + yqJs(sg) + "')"; out.seg.push(row);
+  });
+  // 1.3 groups + 1.4 distributors
+  var groups = YQ_GROUPS.slice(); if (P.cur.concat(P.ly||[]).some(function(r){ return r.grp === "Other"; })) groups.push(YQ_OTHER);
+  groups.forEach(function(g){
+    var gp = yqAnd(scope, function(r){ return r.grp === g.code; });
+    var row = mk(gp);
+    if (hide && row.zero) return;
+    row.label = '<b>' + esc(g.code === "Other" ? "" : g.code + " ") + '</b>' + esc(g.name); row.key = g.code; row.slots = yqSlotsGrp(g.code); row.def = g.def;
+    row.click = "yqScope('grp','" + g.code + "')"; out.grp.push(row);
+    var dl = {}, dmeta = {};
+    P.cur.concat(P.ly||[]).forEach(function(r){ if (r.grp === g.code && scope(r)) { dl[r.dk] = 1; dmeta[r.dk] = {nm:r.dist, cty:r.cty, phys:r.phys}; } });
+    var dks = Object.keys(dl).sort(function(a, b){
+      var ia = YQ_DIST_ORDER.indexOf(dmeta[a].nm), ib = YQ_DIST_ORDER.indexOf(dmeta[b].nm);
+      if (ia < 0) ia = 999; if (ib < 0) ib = 999; return ia !== ib ? ia - ib : (a < b ? -1 : 1);
+    });
+    var drs = [];
+    dks.forEach(function(dk){
+      var dr = mk(yqAnd(gp, function(r){ return r.dk === dk; }));
+      dr.label = esc(dmeta[dk].nm) + ' <span style="color:var(--t3);font-weight:600">(' + esc(dmeta[dk].phys) + ')</span>';
+      dr.slots = yqSlotsDist(dmeta[dk].nm, dmeta[dk].cty, g.segs.length ? g.segs : YQ_SEG_ORDER);
+      dr.click = "yqScope('dist','" + yqJs(dk) + "')"; drs.push(dr);
+    });
+    out.dist.push({g:row, rows:drs, code:g.code});
+  });
+  // 1.5 Country report × Segment
+  ["TH","VN"].forEach(function(rep){
+    var rp = yqAnd(scope, function(r){ return r.cty === rep; });
+    var row = mk(rp);
+    if (hide && row.zero) return;
+    row.label = '<b>' + esc(yqRepLbl(rep)) + '</b>'; row.slots = yqSlotsRep(rep); row.click = "yqScope('rep','" + rep + "')";
+    var segRows = [];
+    segs.forEach(function(sg){
+      var sr = mk(yqAnd(rp, function(r){ return r.seg === sg; }));
+      if (sr.zero) return;
+      sr.label = esc(segLabel(sg)); sr.slots = yqSlotsRepSeg(rep, sg); segRows.push(sr);
+    });
+    out.rep.push({r:row, rows:segRows});
+  });
+  return out;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// YEAR VIEW
+// ════════════════════════════════════════════════════════════════════
+function rYR(){
+  var body = document.getElementById("yr-body"); if (!body) return;
+  document.getElementById("sp-yr").textContent = FYN() + " · " + fyRangeLong() + " · " + yqUnit();
+  var P = yqPrep();
+  if (!P || DATA_IS_SNAPSHOT) { body.innerHTML = yqWaitHTML(); return; }
+  var scope = yqScopeFn(), fy = FYN();
+  var M = yqM(P, scope, YQ_ALL12);
+  var mm = YQ_ALL12.map(function(i){ return yqM(P, scope, [i]); });
+  var qq = [0,1,2,3].map(function(q){ return yqM(P, scope, yqQIdx(q)); });
+  var closed = P.closed;
+  var Mc = yqM(P, scope, closed);
+  var budToDate = Mc.bm, actToDate = Mc.fc;
+  var paceMark = M.bm > 0 ? budToDate / M.bm * 100 : 0;
+  var progress = M.bm > 0 ? actToDate / M.bm * 100 : null;
+
+  // groups on target
+  var gRows = YQ_GROUPS.map(function(g){ var m = yqM(P, yqAnd(scope, function(r){ return r.grp === g.code; }), YQ_ALL12); m.g = g; return m; })
+                .filter(function(m){ return m.bm || m.fc; });
+  var onT = gRows.filter(function(m){ return m.ach != null && m.ach >= 100; });
+  var offT = gRows.filter(function(m){ return !(m.ach != null && m.ach >= 100); });
+
+  var explSel = S.yq.expl || "latest";
+  var tb = '<div class="yq-tb">' + yqViewBy(P)
+    + '<div class="yq-grp"><span class="yq-lbl">Explanations in 1.2 – 1.5</span><select class="yq-sel" style="min-width:170px" onchange="S.yq.expl=this.value;yqSave();yqRerender()">'
+    + [["latest","Latest version (any period)"],["fy","Full year · " + fy],["Q1","Q1"],["Q2","Q2"],["Q3","Q3"],["Q4","Q4"]].map(function(x){
+        return '<option value="' + x[0] + '"' + (x[0]===explSel ? " selected" : "") + '>' + x[1] + '</option>'; }).join("")
+    + '</select></div></div>';
+
+  var achC = yqAchCol(M.ach);
+  var hero = '<div class="yq-hero">'
+    + '<div class="yq-card"><div class="yq-k">FY budget Mani <span>' + esc(fy) + '</span></div><div class="yq-v">' + yqBig(M.bm) + '</div>'
+      + '<div class="yq-s">' + esc(yqScopeLabel()) + ' · 12 months</div></div>'
+    + '<div class="yq-card ' + (M.gap >= 0 ? "pos" : "neg") + '"><div class="yq-k">Forecast / Actual · full year <span>' + (M.ach == null ? "" : Math.round(M.ach) + "%") + '</span></div>'
+      + '<div class="yq-v">' + yqBig(M.fc) + '</div>'
+      + '<div class="yq-prog"><i data-w="' + Math.min(100, M.ach || 0).toFixed(1) + '" style="width:' + Math.min(100, M.ach || 0).toFixed(1) + '%;background:' + achC + '"></i><b style="left:100%"></b></div>'
+      + '<div class="yq-s">vs budget <b class="' + (M.gap >= 0 ? "p" : "n") + '">' + (M.gap >= 0 ? "+" : "−") + yqBig(Math.abs(M.gap)) + '</b> (' + (M.gp == null ? "—" : (M.gp >= 0 ? "+" : "") + M.gp.toFixed(1) + "%") + ')</div></div>'
+    + '<div class="yq-card y"><div class="yq-k">Progress to FY budget <span>' + closed.length + '/12 closed</span></div>'
+      + '<div class="yq-v">' + (progress == null ? "—" : progress.toFixed(1) + "%") + '</div>'
+      + '<div class="yq-prog"><i data-w="' + Math.min(100, progress || 0).toFixed(1) + '" style="width:' + Math.min(100, progress || 0).toFixed(1) + '%;background:' + (progress != null && progress >= paceMark ? "#16A34A" : "#D97706") + '"></i>'
+        + '<b style="left:' + Math.min(100, paceMark).toFixed(1) + '%"></b><em style="left:' + Math.min(96, Math.max(4, paceMark)).toFixed(1) + '%">plan ' + paceMark.toFixed(0) + '%</em></div>'
+      + '<div class="yq-s">Actual of closed months ' + yqBig(actToDate) + ' vs budget of those months ' + yqBig(budToDate)
+        + (budToDate ? ' → <b class="' + (actToDate >= budToDate ? "p" : "n") + '">' + (actToDate >= budToDate ? "ahead" : "behind") + ' ' + yqBig(Math.abs(actToDate - budToDate)) + '</b>' : '') + '</div></div>'
+    + '<div class="yq-card ' + (M.yoy == null ? "" : (M.yoy >= 0 ? "pos" : "neg")) + '"><div class="yq-k">vs last year <span>' + esc(P.lyName) + '</span></div>'
+      + '<div class="yq-v ' + (M.yp == null ? "" : (M.yp >= 0 ? "pos" : "neg")) + '">' + (M.yp == null ? "—" : (M.yp >= 0 ? "+" : "") + M.yp.toFixed(1) + "%") + '</div>'
+      + '<div class="yq-s">' + (P.ly ? esc(P.lyName) + ' full year ' + yqBig(M.ly) + ' → ' + esc(fy) + ' ' + yqBig(M.fc) : (P.lyStatus === "loading" ? "Loading " + esc(P.lyName) + "…" : "No " + esc(P.lyName) + " data")) + '</div></div>'
+    + '<div class="yq-card"><div class="yq-k">Groups on budget <span>≥ 100%</span></div><div class="yq-v">' + onT.length + '<small>/ ' + gRows.length + '</small></div>'
+      + '<div class="yq-s">' + (offT.length ? 'Below: ' + offT.map(function(m){ return '<b class="n">' + esc(m.g.code) + '</b> ' + (m.ach == null ? "—" : Math.round(m.ach) + "%"); }).join(" · ") : "All groups on or above budget 👍") + '</div></div>'
+    + '</div>';
+
+  // month progress strip
+  var st = P.status;
+  var tile = function(m, lbl, stt, click, isQ){
+    var a = m.ach;
+    return '<div class="yq-tile ' + (isQ ? "q " : "") + "st-" + stt + '" onclick="' + click + '" title="' + esc(lbl) + ' · Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + ' — click for the Quarter · Month view">'
+      + '<div class="tl"><span>' + esc(lbl) + '</span><span>' + (stt === "actual" ? "✓" : (stt === "empty" ? "⏳" : "◔")) + '</span></div>'
+      + '<div class="tv">' + yqBig(m.fc) + '</div>'
+      + '<div class="tp"><span style="color:' + yqAchCol(a) + '">' + (a == null ? "—" : Math.round(a) + "%") + '</span>'
+        + (m.yp == null ? "" : '<span class="' + (m.yp >= 0 ? "vp" : "vn") + '" style="font-size:10.5px">' + (m.yp >= 0 ? "▲" : "▼") + Math.abs(m.yp).toFixed(0) + '%</span>') + '</div>'
+      + '<div class="tb"><i style="width:' + Math.min(100, a || 0).toFixed(1) + '%;background:' + yqAchCol(a) + '"></i></div></div>';
+  };
+  var qStat = function(q){ var s = st.slice(q*3, q*3+3); return s.every(function(x){ return x==="actual"; }) ? "actual" : (s.filter(function(x){ return x==="empty"; }).length >= 2 ? "empty" : "forecast"); };
+  var strip = yqCard(yqH("▦", "Progress by quarter and month"), "achievement = Forecast/Actual ÷ Budget · ▲▼ vs " + esc(P.lyName) + " · click a tile to open it",
+    '<div class="yq-strip-wrap"><div class="yq-qrow">' + [0,1,2,3].map(function(q){ return tile(qq[q], yqQLbl(q), qStat(q), "yqOpenPer('q'," + q + ")", true); }).join("") + '</div>'
+    + '<div class="yq-strip">' + YQ_ALL12.map(function(i){ return tile(mm[i], yqMonLbl(i), st[i], "yqOpenPer('m'," + i + ")"); }).join("") + '</div>'
+    + '<div class="yq-legend"><span><i style="background:#16A34A"></i>≥ 100% of budget</span><span><i style="background:#D97706"></i>90–99%</span><span><i style="background:#DC2626"></i>&lt; 90%</span>'
+    + '<span>✓ Actual closed</span><span>◔ Forecast</span><span>⏳ Forecast partly entered</span></div></div>');
+
+  var chart = yqCard(yqH("📈", "Monthly · Budget vs Forecast/Actual · " + esc(yqLyName()) + " · cumulative achievement"), esc(yqScopeLabel()) + " · " + yqUnit(),
+    '<div class="cb"><div class="cw t"><canvas id="c-yr-m"></canvas></div></div>');
+
+  // 1.1 total table (Year → Quarter → Month)
+  var exSlots = yqSlotsScope(P);
+  var dimCountry = S.yq.dim === "cty" && S.yq.item;
+  var rows11 = [{cls:"fy", label:"Σ " + esc(fy) + " full year", m:M, ex:dimCountry ? "" : yqExHTML(exSlots, fy, "Single")}];
+  for (var q = 0; q < 4; q++) {
+    rows11.push({cls:"q clickable", label:"Q" + (q+1) + ' <span style="font-weight:600;color:var(--t2)">(' + yqMonLbl(q*3) + " → " + yqMonLbl(q*3+2) + ')</span>',
+                 m:qq[q], ex:dimCountry ? "" : yqExHTML(exSlots, "Q" + (q+1), "Single"), click:"yqOpenPer('q'," + q + ")"});
+    for (var i = q*3; i < q*3+3; i++) {
+      var last = closed.length ? closed[closed.length-1] : -1;
+      rows11.push({cls:"s" + (i === last ? " cur" : ""), label:yqMonLbl(i) + yqStatusTag(st[i]), m:mm[i],
+                   ex:dimCountry ? "" : yqExHTML(exSlots, FYC.keys[i], "Single"), click:"yqOpenPer('m'," + i + ")"});
+    }
+  }
+  var t11 = yqCard(yqH("1.1", "Total · " + esc(yqScopeLabel()) + " (Year → Quarter → Month)"),
+    yqUnit() + " · each row's explanation = that period's newest version" + (dimCountry ? " · explanations are stored per Country report" : ""),
+    yqTableY(rows11, "Period", "Forecast explanation (Single)"));
+
+  // 1.2 – 1.5
+  var eft = yqExplFt();
+  var mkY = function(pred){ var m = yqM(P, pred, YQ_ALL12); return {m:m, zero:yqIsZero(m)}; };
+  var SR = yqSectionRows(P, scope, mkY);
+  var exY = function(r){ return yqExHTML(r.slots, eft, "Single"); };
+  var eLbl = eft ? "Explanation · " + ftLabel(eft) : "Explanation · latest version";
+  var t12 = yqCard(yqH("1.2", "By segment"), "click a row to view that segment", yqTableY(SR.seg.map(function(r){ r.ex = exY(r); return r; }), "Segment", eLbl));
+  var t13 = yqCard(yqH("1.3", "By Segment × Country · regional groups"), "TH = Thailand · MM = Myanmar · VN = Viet Nam · LA = Lao · KH = Cambodia",
+    '<div class="g2" style="padding:12px 14px 0;margin:0"><div><div class="cw" style="height:260px"><canvas id="c-yr-g"></canvas></div></div><div style="font-size:12px;color:var(--t2);line-height:1.7">'
+    + YQ_GROUPS.map(function(g){ return '<b>' + g.code + '</b> ' + esc(g.name) + ' — ' + esc(g.def); }).join("<br>") + '</div></div>'
+    + yqTableY(SR.grp.map(function(r){ r.ex = exY(r); r.tip = r.def; return r; }), "Group", eLbl));
+  var r14 = [];
+  SR.dist.forEach(function(G){
+    G.g.cls = "g"; G.g.ex = exY(G.g); r14.push(G.g);
+    G.rows.forEach(function(d){ d.cls = "d" + (yqIsZero(d.m) ? " zero" : ""); d.ex = exY(d); r14.push(d); });
+  });
+  var t14 = yqCard(yqH("1.4", "By Segment × Country × Distributor"), "click a distributor to view it on its own", yqTableY(r14, "Group / Distributor (Country)", eLbl));
+  var r15 = [];
+  SR.rep.forEach(function(R){ R.r.cls = "g"; R.r.ex = exY(R.r); r15.push(R.r); R.rows.forEach(function(s){ s.cls = "s"; s.ex = exY(s); r15.push(s); }); });
+  var t15 = yqCard(yqH("1.5", "By Country report × Segment"), "same keys as the Forecast Explanation Input sheet", yqTableY(r15, "Country report / Segment", eLbl));
+
+  body.innerHTML = tb + yqLyNote(P) + hero + strip + chart + t11 + t12 + t13 + t14 + t15
+    + '<div class="yq-note">Vs. Budget % = (Forecast/Actual − Budget Mani) ÷ Budget Mani · YoY % = (Forecast/Actual − LY) ÷ LY · LY = Actual/Forecast of the same months of ' + esc(P.lyName)
+    + ' · Progress to FY budget = Actual of closed months ÷ full-year budget; the marker shows the share of the budget planned for those months · ' + esc(RULE_TEXT || "") + '</div>';
+
+  // charts
+  yqChartMonthly("c-yr-m", mm, P, -1);
+  yqChartGroups("c-yr-g", SR.grp.map(function(r){ return r.key; }), SR.grp.map(function(r){ return r.m; }));
+}
+
+function yqOpenPer(k, i){ S.yq.per = {k:k, i:i}; yqSave(); TAB_DIRTY.qm = true; goTab("qm"); }
+
+function yqChartMonthly(id, mm, P, selIdx){
+  killC(id);
+  var cv = document.getElementById(id); if (!cv) return;
+  chartH(cv, 320);
+  var st = P.status, hatch = hatchFill("rgba(58,92,170,.85)");
+  var cb = 0, cf = 0, cum = mm.map(function(m){ cb += m.bm; cf += m.fc; return cb > 0 ? cf / cb * 100 : null; });
+  var ds = [
+    {type:"bar", label:"Budget Mani", data:mm.map(function(m){ return m.bm; }), backgroundColor:mm.map(function(m, i){ return i === selIdx ? "rgba(255,225,0,.55)" : "rgba(194,212,241,.95)"; }),
+     borderRadius:3, barPercentage:.85, categoryPercentage:.72, order:2, datalabels:{display:false}},
+    {type:"bar", label:"Forecast / Actual", data:mm.map(function(m){ return m.fc; }),
+     backgroundColor:mm.map(function(m, i){ return st[i] === "actual" ? "rgba(58,92,170,.92)" : hatch; }),
+     borderColor:"rgba(58,92,170,.9)", borderWidth:function(c){ return st[c.dataIndex] === "actual" ? 0 : 1.2; },
+     borderRadius:3, barPercentage:.85, categoryPercentage:.72, order:2,
+     datalabels:{display:true, anchor:"end", align:"top", offset:1, clip:false, font:{family:FF, size:10.5, weight:"800"},
+       color:function(c){ var m = mm[c.dataIndex]; return m.ach == null ? "#64748B" : yqAchCol(m.ach); },
+       formatter:function(v, c){ var m = mm[c.dataIndex]; return m.ach == null ? "" : Math.round(m.ach) + "%"; }}}
+  ];
+  if (P.ly) ds.push({type:"line", label:yqLyName(), data:mm.map(function(m){ return m.ly; }), borderColor:"#EFCB4A", backgroundColor:"#EFCB4A",
+                     borderWidth:2.5, pointRadius:3, tension:.25, order:1, datalabels:{display:false}});
+  ds.push({type:"line", label:"Cumulative achievement %", data:cum, yAxisID:"y1", borderColor:"#16A34A", backgroundColor:"#16A34A", borderDash:[5,4],
+           borderWidth:2, pointRadius:2, tension:.2, order:0, datalabels:{display:false}});
+  S.charts[id] = new Chart(cv, {
+    data:{labels:MONTHLY_GRAND.map(function(m){ return m.lbl; }), datasets:ds},
+    options:{responsive:true, maintainAspectRatio:false, animation:{duration:300}, interaction:{mode:"index", intersect:false},
+      onClick:function(e, els){ if (els && els.length) yqOpenPer("m", els[0].index); },
+      plugins:{legend:{position:"bottom", labels:{font:{family:FF, size:12}, boxWidth:12}},
+        tooltip:{callbacks:{label:function(c){
+          if (c.dataset.yAxisID === "y1") return " Cumulative achievement: " + (c.raw == null ? "—" : c.raw.toFixed(1) + "%");
+          return " " + c.dataset.label + ": " + yqF(c.raw) + " " + yqUnit(); },
+          afterBody:function(items){ var i = items[0].dataIndex, m = mm[i];
+            return ["Vs. Budget: " + (m.gap >= 0 ? "+" : "−") + yqF(Math.abs(m.gap)) + " (" + (m.gp == null ? "—" : m.gp.toFixed(1) + "%") + ")",
+                    "Status: " + (st[i] === "actual" ? "Actual" : (st[i] === "empty" ? "Forecast partly entered" : "Forecast"))]; }}}},
+      scales:{x:{grid:{display:false}, ticks:{font:{family:FF, size:11.5, weight:"700"}, autoSkip:false, maxRotation:0}},
+        y:{beginAtZero:true, grace:"14%", ticks:{callback:function(v){ return fKS(v); }, font:{family:FF, size:11}}, grid:{color:"rgba(148,163,184,.18)"}},
+        y1:{position:"right", beginAtZero:true, suggestedMax:120, grid:{display:false}, ticks:{callback:function(v){ return v + "%"; }, font:{family:FF, size:10.5}}}},
+      layout:{padding:{top:14}}}
+  });
+}
+function yqChartGroups(id, labels, ms, title){
+  killC(id);
+  var cv = document.getElementById(id); if (!cv) return;
+  chartH(cv, 270);
+  S.charts[id] = new Chart(cv, {
+    type:"bar",
+    data:{labels:labels, datasets:[
+      {label:"Budget Mani", data:ms.map(function(m){ return m.bm; }), backgroundColor:"rgba(194,212,241,.95)", borderRadius:3, datalabels:{display:false}},
+      {label:"Forecast / Actual", data:ms.map(function(m){ return m.fc; }), backgroundColor:ms.map(function(m){ return m.ach != null && m.ach >= 100 ? "rgba(22,163,74,.85)" : "rgba(58,92,170,.92)"; }), borderRadius:3,
+       datalabels:{display:true, anchor:"end", align:"right", offset:2, clip:false, font:{family:FF, size:10.5, weight:"800"},
+         color:function(c){ return yqAchCol(ms[c.dataIndex].ach); }, formatter:function(v, c){ var a = ms[c.dataIndex].ach; return a == null ? "" : Math.round(a) + "%"; }}}
+    ]},
+    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false, animation:{duration:300},
+      plugins:{legend:{position:"bottom", labels:{font:{family:FF, size:11.5}, boxWidth:12}}, title:{display:!!title, text:title||"", font:{family:FF, size:12.5, weight:"800"}},
+        tooltip:{callbacks:{label:function(c){ return " " + c.dataset.label + ": " + yqF(c.raw) + " " + yqUnit(); }}}},
+      scales:{x:{beginAtZero:true, grace:"12%", ticks:{callback:function(v){ return fKS(v); }, font:{family:FF, size:10.5}}, grid:{color:"rgba(148,163,184,.18)"}},
+              y:{grid:{display:false}, ticks:{font:{family:FF, size:11.5, weight:"800"}}}},
+      layout:{padding:{right:26}}}
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════
+// QUARTER · MONTH VIEW
+// ════════════════════════════════════════════════════════════════════
+function yqDefaultPer(){
+  var now = new Date(), key = now.getFullYear() + ("0" + (now.getMonth() + 1)).slice(-2);
+  var i = FYC ? FYC.keys.indexOf(key) : -1;
+  return {k:"m", i:i >= 0 ? i : 0};
+}
+function yqPerInfo(){
+  var p = S.yq.per; if (!p || (p.k !== "m" && p.k !== "q")) p = S.yq.per = yqDefaultPer();
+  if (p.k === "q") { var a = p.i*3, b = a+2;
+    return {k:"q", i:p.i, idxs:[a, a+1, b], end:b, ftS:"Q" + (p.i+1), ftC:FYC.keys[b], lbl:"Q" + (p.i+1) + " " + FYN() + " (" + yqMonLbl(a) + " → " + yqMonLbl(b) + ")"}; }
+  return {k:"m", i:p.i, idxs:[p.i], end:p.i, ftS:FYC.keys[p.i], ftC:FYC.keys[p.i], lbl:yqMonLbl(p.i)};
+}
+function yqSetPer(k, i){ S.yq.per = {k:k, i:i}; yqSave(); yqRerender(); }
+
+function rQM(){
+  var body = document.getElementById("qm-body"); if (!body) return;
+  var P = yqPrep();
+  if (!P || DATA_IS_SNAPSHOT) { body.innerHTML = yqWaitHTML(); document.getElementById("sp-qm").textContent = FYN(); return; }
+  var per = yqPerInfo(), scope = yqScopeFn(), fy = FYN(), st = P.status;
+  var cumIdx = yqRange(0, per.end);
+  document.getElementById("sp-qm").textContent = per.lbl + " · " + fy + " · " + yqUnit();
+  var sLbl = (per.k === "q" ? "SINGLE QUARTER · " : "SINGLE MONTH · ") + per.lbl;
+  var cLbl = "CUMULATIVE · " + yqMonLbl(0) + " → " + yqMonLbl(per.end);
+
+  var tb = '<div class="yq-tb"><div class="yq-grp"><span class="yq-lbl">Quarter</span>'
+    + [0,1,2,3].map(function(q){ return '<button class="yq-pill' + (per.k==="q" && per.i===q ? " on" : "") + '" onclick="yqSetPer(\'q\',' + q + ')">' + esc(yqQLbl(q)) + '</button>'; }).join("")
+    + '</div><div class="yq-grp"><span class="yq-lbl">Month</span>'
+    + YQ_ALL12.map(function(i){
+        var c = st[i] === "actual" ? "#16A34A" : (st[i] === "empty" ? "#F59E0B" : "#3A5CAA");
+        return '<button class="yq-pill' + (per.k==="m" && per.i===i ? " on" : "") + '" title="' + (st[i] === "actual" ? "Actual closed" : (st[i] === "empty" ? "Forecast partly entered" : "Forecast")) + '" onclick="yqSetPer(\'m\',' + i + ')"><span class="dot" style="background:' + c + '"></span>' + esc(yqMonLbl(i)) + '</button>';
+      }).join("")
+    + '</div></div><div class="yq-tb">' + yqViewBy(P) + '</div>';
+
+  var Ms = yqM(P, scope, per.idxs), Mc = yqM(P, scope, cumIdx), Mfy = yqM(P, scope, YQ_ALL12);
+  var ytdShare = Mfy.bm > 0 ? Mc.fc / Mfy.bm * 100 : null, planShare = Mfy.bm > 0 ? Mc.bm / Mfy.bm * 100 : 0;
+  var card = function(t, m, cls){
+    return '<div class="yq-card big ' + (m.gap >= 0 ? "pos" : "neg") + '"><div class="yq-k">' + esc(t) + ' <span>' + esc(yqScopeLabel()) + '</span></div>'
+      + '<div class="yq-v">' + yqBig(m.fc) + '<small>Forecast / Actual</small></div>'
+      + '<div class="yq-prog"><i data-w="' + Math.min(100, m.ach || 0).toFixed(1) + '" style="width:' + Math.min(100, m.ach || 0).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i><b style="left:100%"></b></div>'
+      + '<div class="yq-2"><div><div class="k">Budget Mani</div><div class="v">' + yqBig(m.bm) + '</div></div>'
+      + '<div><div class="k">Vs. budget</div><div class="v"><span class="' + (m.gap >= 0 ? "vp" : "vn") + '">' + (m.gap >= 0 ? "+" : "−") + yqBig(Math.abs(m.gap)) + '</span> · ' + (m.ach == null ? "—" : Math.round(m.ach) + "%") + '</div></div>'
+      + '<div><div class="k">' + esc(yqLyName()) + '</div><div class="v">' + (m.yoy == null ? "—" : yqBig(m.ly)) + '</div></div>'
+      + '<div><div class="k">YoY</div><div class="v">' + (m.yoy == null ? "—" : yqP(m.yp)) + '</div></div></div></div>';
+  };
+  var hero = '<div class="yq-hero">' + card(sLbl, Ms) + card(cLbl, Mc)
+    + '<div class="yq-card y"><div class="yq-k">YTD vs full-year budget <span>' + esc(fy) + '</span></div>'
+    + '<div class="yq-v">' + (ytdShare == null ? "—" : ytdShare.toFixed(1) + "%") + '</div>'
+    + '<div class="yq-prog"><i data-w="' + Math.min(100, ytdShare || 0).toFixed(1) + '" style="width:' + Math.min(100, ytdShare || 0).toFixed(1) + '%;background:' + (ytdShare != null && ytdShare >= planShare ? "#16A34A" : "#D97706") + '"></i>'
+    + '<b style="left:' + Math.min(100, planShare).toFixed(1) + '%"></b><em style="left:' + Math.min(96, Math.max(4, planShare)).toFixed(1) + '%">plan ' + planShare.toFixed(0) + '%</em></div>'
+    + '<div class="yq-s">Cumulative F/A ' + yqBig(Mc.fc) + ' of the ' + yqBig(Mfy.bm) + ' full-year budget · still to go <b>' + yqBig(Math.max(0, Mfy.bm - Mc.fc)) + '</b></div></div></div>';
+
+  var exS = yqSlotsScope(P), dimCountry = S.yq.dim === "cty" && S.yq.item;
+  var t11 = yqCard(yqH("1.1", "Total · " + esc(yqScopeLabel())), yqUnit(),
+    yqTableQ([{cls:"fy", label:"Σ " + esc(yqScopeLabel()), s:Ms, c:Mc,
+               exS:dimCountry ? "" : yqExHTML(exS, per.ftS, "Single"), exC:dimCountry ? "" : yqExHTML(exS, per.ftC, "Cumulative")}], "Total", sLbl, cLbl));
+
+  var mkQ = function(pred){ var s = yqM(P, pred, per.idxs), c = yqM(P, pred, cumIdx); return {s:s, c:c, m:c, zero:yqIsZero(s) && yqIsZero(c)}; };
+  var SR = yqSectionRows(P, scope, mkQ);
+  var ex2 = function(r){ r.exS = yqExHTML(r.slots, per.ftS, "Single"); r.exC = yqExHTML(r.slots, per.ftC, "Cumulative"); return r; };
+  var charts = '<div class="g2">'
+    + yqCard(yqH("📊", "Single · Segment × Country groups"), esc(per.lbl), '<div class="cb"><div class="cw" style="height:270px"><canvas id="c-qm-gs"></canvas></div></div>')
+    + yqCard(yqH("📊", "Cumulative · Segment × Country groups"), esc(cLbl.replace("CUMULATIVE · ", "")), '<div class="cb"><div class="cw" style="height:270px"><canvas id="c-qm-gc"></canvas></div></div>')
+    + '</div>';
+  var t12 = yqCard(yqH("1.2", "By segment"), "", yqTableQ(SR.seg.map(ex2), "Segment", sLbl, cLbl));
+  var t13 = yqCard(yqH("1.3", "By Segment × Country · regional groups"), "TH = Thailand · MM = Myanmar · VN = Viet Nam · LA = Lao · KH = Cambodia",
+    yqTableQ(SR.grp.map(ex2), "Group", sLbl, cLbl));
+  var r14 = [];
+  SR.dist.forEach(function(G){ G.g.cls = "g"; r14.push(ex2(G.g)); G.rows.forEach(function(d){ d.cls = "d" + (d.zero ? " zero" : ""); r14.push(ex2(d)); }); });
+  var t14 = yqCard(yqH("1.4", "By Segment × Country × Distributor"), "click a distributor to view it on its own", yqTableQ(r14, "Group / Distributor (Country)", sLbl, cLbl));
+  var r15 = [];
+  SR.rep.forEach(function(R){ R.r.cls = "g"; r15.push(ex2(R.r)); R.rows.forEach(function(s){ s.cls = "s"; r15.push(ex2(s)); }); });
+  var t15 = yqCard(yqH("1.5", "By Country report × Segment"), "same keys as the Forecast Explanation Input sheet", yqTableQ(r15, "Country report / Segment", sLbl, cLbl));
+
+  // 1.6 lookup by item: every quarter and month of the scoped item
+  var mm = YQ_ALL12.map(function(i){ return yqM(P, scope, [i]); });
+  var rows16 = [{cls:"fy", label:"Σ Full year " + esc(fy), s:yqM(P, scope, YQ_ALL12), c:yqM(P, scope, YQ_ALL12),
+                 exS:dimCountry ? "" : yqExHTML(exS, fy, "Single"), exC:dimCountry ? "" : yqExHTML(exS, FYC.keys[11], "Cumulative")}];
+  for (var q = 0; q < 4; q++) {
+    var qi = yqQIdx(q);
+    rows16.push({cls:"q clickable" + (per.k==="q" && per.i===q ? " hl" : ""), click:"yqSetPer('q'," + q + ")",
+      label:"Q" + (q+1) + ' <span style="font-weight:600;color:var(--t2)">(' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + ')</span>',
+      s:yqM(P, scope, qi), c:yqM(P, scope, yqRange(0, qi[2])),
+      exS:dimCountry ? "" : yqExHTML(exS, "Q" + (q+1), "Single"), exC:dimCountry ? "" : yqExHTML(exS, FYC.keys[qi[2]], "Cumulative")});
+    qi.forEach(function(i){
+      rows16.push({cls:"s" + (per.k==="m" && per.i===i ? " hl" : ""), click:"yqSetPer('m'," + i + ")", label:yqMonLbl(i) + yqStatusTag(st[i]),
+        s:mm[i], c:yqM(P, scope, yqRange(0, i)),
+        exS:dimCountry ? "" : yqExHTML(exS, FYC.keys[i], "Single"), exC:dimCountry ? "" : yqExHTML(exS, FYC.keys[i], "Cumulative")});
+    });
+  }
+  var t16 = '<div class="card" style="margin-bottom:12px"><div class="ch yq-sec-h">' + yqH("1.6", "Lookup by item · every quarter and month of " + esc(yqScopeLabel())) + '<div class="cs">highlighted row = the period chosen above · click a row to choose it</div></div>'
+    + '<div class="yq-ex-tb">' + yqViewBy(P) + (dimCountry ? '<span class="yq-hint">Explanations are stored per Country report — choose "Country report" to see them.</span>' : '') + '</div>'
+    + '<div class="cb"><div class="cw t"><canvas id="c-qm-ex"></canvas></div></div>'
+    + yqTableQ(rows16, "Period · " + yqScopeLabel(), "SINGLE (each row's quarter / month) · " + fy, "CUMULATIVE (FY start → end of each row)") + '</div>';
+
+  body.innerHTML = tb + yqLyNote(P) + hero + t11 + charts + t12 + t13 + t14 + t15 + t16
+    + '<div class="yq-note">SINGLE = the chosen quarter / month · CUMULATIVE = from the FY start (' + esc(yqMonLbl(0)) + ') to the end of the chosen period · explanations: Single entries for the period, Cumulative entries for its last month (newest version with text) · ' + esc(RULE_TEXT || "") + '</div>';
+
+  yqChartGroups("c-qm-gs", SR.grp.map(function(r){ return r.key; }), SR.grp.map(function(r){ return r.s; }));
+  yqChartGroups("c-qm-gc", SR.grp.map(function(r){ return r.key; }), SR.grp.map(function(r){ return r.c; }));
+  yqChartMonthly("c-qm-ex", mm, P, per.k === "m" ? per.i : -1);
+}
+
+// ── PowerPoint export for the two new views ────────────────────────
+function yqPptLabel(tab){
+  if (tab === "qm") { var p = yqPerInfo(); return p.lbl + " · " + FYN() + " · " + yqScopeLabel(); }
+  return FYN() + " (Full Year) · " + yqScopeLabel();
+}
+function yqPptNum(n){ if (n == null || isNaN(n)) return "—"; return IS_JIZAI() ? new Intl.NumberFormat("en-US").format(Math.round(n)) : new Intl.NumberFormat("en-US").format(Math.round(n / 1000)); }
+function yqPptGap(n){ if (n == null || isNaN(n)) return "—"; return (n >= 0 ? "+" : "-") + yqPptNum(Math.abs(n)); }
+function pptBuildYQ(c, tab){
+  var P = yqPrep(); if (!P) return;
+  var B = c.B, scope = yqScopeFn(), unit = IS_JIZAI() ? "Sheets" : "KUSD";
+  var head = function(first){ return [c.cellH(first, "left"), c.cellH("Budget Mani"), c.cellH("Fct/Actual"), c.cellH("Vs. Budget"), c.cellH("%"), c.cellH(yqLyName()), c.cellH("YoY %")]; };
+  var line = function(lbl, m, kind){
+    var L = kind === "grand" ? c.cellGrand : (kind === "sub" ? c.cellSub : c.cellL), R = kind === "grand" ? c.cellGrand : (kind === "sub" ? c.cellSubR : c.cellR);
+    var col = function(t, pos){
+      if (kind === "grand") return c.cellGrand(t);
+      return { text:t, options:{ align:"right", bold:kind !== "sub", color:(pos ? B.pos : B.neg), fontFace:c.FF,
+                                 fill:(kind === "sub" ? B.lb2 : B.white), fontSize:(kind === "sub" ? 9.5 : undefined) } };
+    };
+    return [L(lbl, kind === "bold"), R(yqPptNum(m.bm)), R(yqPptNum(m.fc), true), col(yqPptGap(m.gap), m.gap >= 0),
+            m.gp == null ? R("—") : col(pptPctv(m.gp), m.gp >= 0),
+            R(m.yoy == null ? "—" : yqPptNum(m.ly)), m.yp == null ? R("—") : col(pptPctv(m.yp), m.yp >= 0)];
+  };
+  var idxs = YQ_ALL12, cum = null;
+  if (tab === "qm") { var per = yqPerInfo(); idxs = per.idxs; cum = yqRange(0, per.end); }
+  // slide 1: totals by quarter / month (Year) or single vs cumulative (QM)
+  var s1 = pptContentSlide(c.pptx, tab === "qm" ? "Quarter · Month" : "Year view", yqPptLabel(tab) + " · " + unit, c.nextPage());
+  var rows = [head("Period")];
+  if (tab === "qm") {
+    rows.push(line("SINGLE · " + yqPerInfo().lbl, yqM(P, scope, idxs), "bold"));
+    rows.push(line("CUMULATIVE · " + yqMonLbl(0) + " → " + yqMonLbl(yqPerInfo().end), yqM(P, scope, cum), "bold"));
+    rows.push(line("FULL YEAR " + FYN(), yqM(P, scope, YQ_ALL12), "grand"));
+  } else {
+    rows.push(line(FYN() + " FULL YEAR", yqM(P, scope, YQ_ALL12), "grand"));
+    [0,1,2,3].forEach(function(q){
+      rows.push(line("Q" + (q+1), yqM(P, scope, yqQIdx(q)), "bold"));
+      yqQIdx(q).forEach(function(i){ rows.push(line("   " + yqMonLbl(i), yqM(P, scope, [i]), "sub")); });
+    });
+  }
+  s1.addTable(rows, c.baseTableOpts({y:1.45, colW:[3.3, 1.5, 1.6, 1.5, 1.2, 1.6, 1.44], rowH:tab === "qm" ? 0.42 : 0.265, fontSize:tab === "qm" ? 12 : 9.5, autoPage:false}));
+  // slide 2: groups + segments
+  var s2 = pptContentSlide(c.pptx, "Segment × Country groups", yqPptLabel(tab) + (tab === "qm" ? " · single period" : "") + " · " + unit, c.nextPage());
+  var r2 = [head("Group / Segment")];
+  YQ_GROUPS.forEach(function(g){ r2.push(line(g.code + " " + g.name, yqM(P, yqAnd(scope, function(r){ return r.grp === g.code; }), idxs), "")); });
+  r2.push(line("Total", yqM(P, scope, idxs), "grand"));
+  YQ_SEG_ORDER.forEach(function(sg){ r2.push(line(sg, yqM(P, yqAnd(scope, function(r){ return r.seg === sg; }), idxs), "sub")); });
+  s2.addTable(r2, c.baseTableOpts({y:1.45, colW:[3.3, 1.5, 1.6, 1.5, 1.2, 1.6, 1.44], rowH:0.36, autoPage:false}));
+  // slide 3+: distributors
+  var r3 = [head("Distributor (Country)")];
+  YQ_GROUPS.concat([YQ_OTHER]).forEach(function(g){
+    var gp = yqAnd(scope, function(r){ return r.grp === g.code; });
+    var gm = yqM(P, gp, idxs); if (yqIsZero(gm) && g.code === "Other") return;
+    r3.push(line(g.code === "Other" ? g.name : g.code + " " + g.name, gm, "bold"));
+    var seen = {};
+    P.cur.forEach(function(r){ if (gp(r)) seen[r.dk] = 1; });
+    Object.keys(seen).sort().forEach(function(dk){ r3.push(line("   " + dk, yqM(P, yqAnd(gp, function(r){ return r.dk === dk; }), idxs), "sub")); });
+  });
+  var s3 = pptContentSlide(c.pptx, "Distributors", yqPptLabel(tab) + " · " + unit, c.nextPage());
+  s3.addTable(r3, c.baseTableOpts({y:1.45, colW:[3.3, 1.5, 1.6, 1.5, 1.2, 1.6, 1.44], rowH:0.25, fontSize:9, autoPage:true}));
+}
+
 // ══ RENDER ALL ══
 // ⭐ v7.1 — only the visible tab is drawn; the others are drawn when opened
 var TAB_DIRTY = {};
-var TAB_RENDER = { ov:rOV, seg:rSEG, cty:rCTY, dist:rDIST, gap:rGAP, yoy:rYOY, exp:function(){ rEXP(); } };
+var TAB_RENDER = { yr:rYR, qm:rQM, ov:rOV, seg:rSEG, cty:rCTY, dist:rDIST, gap:rGAP, yoy:rYOY, exp:function(){ rEXP(); } };
 function renderTab(t, D){
   var f = TAB_RENDER[t]; if (!f) return;
   f(D || computeD()); TAB_DIRTY[t] = false;
@@ -4641,6 +5488,9 @@ function setDistSeg(sg) { S.distSeg=sg; rDIST(computeD());
 }
 function goTab(t) {
   S.tab = t;
+  document.body.classList.toggle("yq-on", t === "yr" || t === "qm");     // ⭐ v8 — these views have their own period controls
+  try { localStorage.setItem("mmh_tab", t); } catch(e){}
+  try { renderCtxBanner(); } catch(e){}
   document.querySelectorAll(".sec").forEach(function(s){s.classList.remove("on");});
   document.querySelectorAll(".nt").forEach(function(n){n.classList.remove("on");});
   var sec=document.getElementById("sec-"+t); if(sec) sec.classList.add("on");
@@ -4982,6 +5832,8 @@ function pptTabMeta(tab){
     dist: { name:"By Distributor", deck:seg+" by Distributor",        file:seg+"_by_Distributor" },
     gap:  { name:"GAP Analysis",   deck:seg+" — GAP Analysis",        file:seg+"_GAP_Analysis" },
     cmp:  { name:"Comparison",     deck:seg+" — Comparison",          file:seg+"_Comparison" },
+    yr:   { name:"Year view",      deck:seg+" — Year view",           file:seg+"_Year_view" },
+    qm:   { name:"Quarter · Month",deck:seg+" — Quarter / Month",     file:seg+"_Quarter_Month" },
     exp:  { name:"Explanations",   deck:seg+" — Explanations",        file:seg+"_Explanations" }
   };
   return M[tab] || M.ov;
@@ -4999,6 +5851,7 @@ function exportPPT() {
     var B = PPT_BRAND, FF = PPT_FONT;
     var D = computeD();                       // live data at the current period
     var periodLabel = pLabelEN();             // English period label
+    if (S && (S.tab === "yr" || S.tab === "qm")) periodLabel = yqPptLabel(S.tab);   // ⭐ v8
     var unitTag = IS_JIZAI() ? "Unit: Sheets" : "Unit: thousand USD (KUSD)";
     var tab = (S && S.tab) || "ov";
     var meta = pptTabMeta(tab);
@@ -5060,6 +5913,8 @@ function exportPPT() {
       case "gap":  pptBuildGap(ctx);         break;
       case "cmp":  pptBuildComparison(ctx);  break;
       case "exp":  pptBuildExplanations(ctx);break;
+      case "yr":   pptBuildYQ(ctx, "yr");     break;
+      case "qm":   pptBuildYQ(ctx, "qm");     break;
       default:     pptBuildOverview(ctx);    break;
     }
 
@@ -5606,6 +6461,7 @@ function fetchEditLog() {
   jsonp("getEditLog&n=10", function(data){
     if (data && data.ok && Array.isArray(data.entries)) {
       UPD_ENTRIES = data.entries;
+      try { liveSyncCheck(data.entries); } catch(e){}
       UPD_HINT = (data.entries.length===0 && data.triggerInstalled===false)
         ? "⚠ Edit-log trigger not installed — run installEditLogTrigger() once in Apps Script (Extensions → Apps Script → Run)."
         : (data.note || "");
@@ -5614,6 +6470,28 @@ function fetchEditLog() {
       renderUpdBanner();
     }
   }, function(){ /* keep last good content on error */ }, 9000);
+}
+
+// ⭐ v8 — LIVE SYNC: the edit-log banner already polls every 20 s. When it shows an
+// edit newer than our last data fetch (on a data tab, not on a report tab), the
+// numbers are fetched again quietly and the page redraws — near real time without
+// polling the full data set.
+var LIVE_SYNC_BUSY = false, LIVE_SYNC_LAST = 0;
+var LIVE_SYNC_SKIP = /^(YEAR|QUARTER-MONTH|DASHBOARD|DASHBOARD_new|EditLog)$|^_/;
+function liveSyncCheck(entries){
+  if (!ENABLE_LIVE_SYNC || !LAST_FETCH_TS || LIVE_SYNC_BUSY || DATA_IS_SNAPSHOT) return;
+  var fresh = (entries || []).filter(function(e){ return e.ts > LAST_FETCH_TS + 1500 && !LIVE_SYNC_SKIP.test(String(e.sheet || "")); });
+  if (!fresh.length || Date.now() - LIVE_SYNC_LAST < 15000) return;
+  LIVE_SYNC_BUSY = true; LIVE_SYNC_LAST = Date.now();
+  var who = lookupPIC(fresh[0].user);
+  tryFetchLive(function(ok){
+    LIVE_SYNC_BUSY = false;
+    if (!ok) return;
+    if (S.period==="month") buildMonthChips();
+    renderAll();
+    setTimeout(flashChangedValues, 350);
+    showToast("Sheet updated by " + esc(who) + " — numbers refreshed", "success");
+  }, {silent:true});
 }
 
 function renderUpdBanner() {
@@ -5714,7 +6592,8 @@ function renderCtxBanner(){
     notes.push('<span class="ctx-chip clk '+(hasErr?"err":"warn")+'" onclick="openHealth()">🩺 '+HEALTH.issues.length+' data warning'+(HEALTH.issues.length>1?"s":"")+' — click to see</span>');
   }
 
-  if (S.period !== "fy") {
+  var yqTab = (S.tab === "yr" || S.tab === "qm");
+  if (S.period !== "fy" && !yqTab) {
     var periodTxt = (S.period==="qtr")
         ? quarterLbl(S.qi)
         : (function(){
@@ -5740,7 +6619,7 @@ function renderCtxBanner(){
     chips.push('<span class="ctx-chip" title="Countries are grouped by the real country column of the Sheet">🌏 '+esc(CTY_LABELS.TH)+' · '+esc(CTY_LABELS.VN)+'</span>');
   }
 
-  if (S.period === "fy" && !notes.length && !CTY_LABELS) { el.classList.remove("on"); return; }
+  if ((S.period === "fy" || yqTab) && !notes.length && !CTY_LABELS) { el.classList.remove("on"); return; }
   el.innerHTML = '<span class="ctx-lbl">📍 Viewing</span>' + chips.join("") + notes.join("");
   el.classList.add("on");
 }
@@ -6177,10 +7056,12 @@ var GS = { items:[], filtered:[], sel:0 };
 function buildSearchIndex(){
   var items = [];
   // tabs
-  [["ov","📊","Overview","Dashboard home"],["seg","📦","By Segment","Dental / Surgical / Eyeless / MMG"],
+  [["yr","📅","Year view","FY → Quarter → Month · groups · distributors · explanations"],
+   ["qm","🗓","Quarter · Month view","Single + Cumulative · lookup by item"],
+   ["ov","📊","Overview","Dashboard home"],["seg","📦","By Segment","Dental / Surgical / Eyeless / MMG"],
    ["cty","🌏","By Country","Thailand · Viet Nam"],["dist","🏢","By Distributor","All distributors"],
    ["gap","🔍","GAP Analysis","Above / below budget"],
-   ["cmp","⚖️","Comparison","So sánh Segment / Country / Distributor"],
+   ["cmp","⚖️","Comparison","Compare Segment / Country / Distributor side by side"],
    ["exp","📋","Explanations","Version history"]
   ].forEach(function(t){ items.push({type:"tab",id:t[0],ic:t[1],nm:t[2],sub:t[3]}); });
   // segments
@@ -6762,7 +7643,7 @@ function hexA(hex, a){
 
 // ── (12) BOTTOM-NAV active-state sync ───────────────────────────────
 function syncBottomNav(tab){
-  var map={ov:"ov",seg:"seg",cty:"seg",dist:"seg",gap:"gap",yoy:"gap",cmp:"cmp",exp:"exp"};
+  var map={yr:"yr",qm:"qm",ov:"ov",seg:"ov",cty:"ov",dist:"ov",gap:"gap",yoy:"gap",cmp:"gap",exp:"exp"};
   var active=map[tab]||"ov";
   document.querySelectorAll(".btmnav .bn").forEach(function(b){
     b.classList.toggle("on", b.id==="bn-"+active);
@@ -6785,6 +7666,8 @@ window.onload = function() {
   } catch(e){ S.fy = ""; }
   fyApply(fyInfoLocal("FY67"));       // matches the embedded snapshot until live data arrives
   applyCtyLabels();
+  // ⭐ v8 — reopen the last tab used (first visit: the new Year view)
+  try { var lt = localStorage.getItem("mmh_tab"); goTab(lt && document.getElementById("sec-" + lt) ? lt : "yr"); } catch(e){ goTab("yr"); }
 
   // restore saved theme + currency + dataMode
   try {
