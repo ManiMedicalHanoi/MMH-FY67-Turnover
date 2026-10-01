@@ -1451,6 +1451,59 @@ html:not([data-theme="dark"]) .exp-row.exp-gt .ex-txt { color:#3A4A5A !important
 .logo-img { height:36px; width:auto; display:block; border-radius:3px; flex-shrink:0; }
 @media (max-width:640px) { .logo-img { height:30px; } }
 html[data-theme="dark"] .nt.on { color:var(--Y); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v9.3 GAP FIRST · Single | Cumulative side by side in framed halves
+   ═══════════════════════════════════════════════════════════════════ */
+.yq3-out { grid-template-columns:minmax(240px,1.7fr) repeat(2, minmax(120px,1fr)); }
+.yq3-sm .s.m { font-size:14px; font-weight:800; margin-top:3px; font-variant-numeric:tabular-nums; }
+.yq3-out.in { border:none; box-shadow:none; border-radius:0; margin:0; padding:14px 18px 12px; grid-template-columns:minmax(170px,1.5fr) repeat(2, minmax(100px,1fr)); }
+.yq3-out.in .big { font-size:30px; }
+.yq3-out.in .yq3-sm .v { font-size:20px; }
+
+.yq3-split { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; margin-bottom:12px; align-items:stretch; }
+.yq3-split.pad { padding:12px; margin-bottom:0; }
+.yq3-half { background:var(--sf); border:1.5px solid; border-radius:12px; overflow:hidden; min-width:0; display:flex; flex-direction:column; }
+.yq3-half.s { border-color:#A9C4DF; }
+.yq3-half.c { border-color:#E9CF6E; }
+.yq3-half > .hh { display:flex; align-items:center; gap:10px; padding:8px 14px; font-size:13px; color:var(--N); border-bottom:1px solid; }
+.yq3-half.s > .hh { background:#EAF1F8; border-bottom-color:#C9DAEC; }
+.yq3-half.c > .hh { background:#FFF6D9; border-bottom-color:#F1DFA0; }
+.yq3-half > .hh .tg { font-size:10.5px; font-weight:900; letter-spacing:.8px; padding:2px 8px; border-radius:5px; background:#fff; }
+.yq3-half.s > .hh .tg { color:#4A77A6; box-shadow:inset 0 0 0 1px #A9C4DF; }
+.yq3-half.c > .hh .tg { color:#8A6A1C; box-shadow:inset 0 0 0 1px #E9CF6E; }
+.yq3-half .yq3-drv { flex:1; }
+.yq3-half .yq3-dr { grid-template-columns:minmax(120px,1.3fr) minmax(70px,1.4fr) 62px 46px; gap:8px; }
+.yq3-half .tw { border-radius:0; }
+.yq3-wrap > .yq3-split.pad { background:var(--P); }
+@media (max-width:980px) { .yq3-split { grid-template-columns:1fr; } }
+html[data-theme="dark"] .yq3-half.s > .hh { background:rgba(91,135,184,.14); border-bottom-color:rgba(91,135,184,.3); }
+html[data-theme="dark"] .yq3-half.c > .hh { background:rgba(239,203,74,.1); border-bottom-color:rgba(239,203,74,.25); }
+html[data-theme="dark"] .yq3-half > .hh { color:var(--t1); }
+html[data-theme="dark"] .yq3-half > .hh .tg { background:transparent; }
+html[data-theme="dark"] .yq3-wrap > .yq3-split.pad { background:transparent; }
+
+/* tables: gap % column + quiet progress bar */
+.yq3-t td.gp { font-weight:800; font-size:12.5px; }
+.yq3-t td.ac small { font-size:11px; font-weight:700; color:var(--t3); margin-left:6px; }
+.yq3-t .yq-bar { width:64px; height:6px; }
+.yq3-half .yq3-t td, .yq3-half .yq3-t th { padding-left:8px; padding-right:8px; }
+.yq3-half .yq3-t td.nm { max-width:200px; }
+.yq3-dr .bx .l i { background:#E2A29E; opacity:1; }
+.yq3-dr .bx .r i { background:#86BFA3; opacity:1; }
+html[data-theme="dark"] .yq3-seg { background:rgba(255,255,255,.06); }
+html[data-theme="dark"] .yq3-seg button { color:var(--t2); }
+@media (max-width:900px) {
+  .yq3-out.in { grid-template-columns:1fr 1fr; }
+  .yq3-out.in .yq3-main { grid-column:1 / -1; }
+  .yq3-out.in .yq3-sm:nth-child(2) { border-left:none; padding-left:0; }
+}
+@media (max-width:640px) {
+  .yq3-split.pad { padding:6px; }
+  .yq3-half .yq3-dr { grid-template-columns:minmax(0,1.5fr) minmax(40px,.7fr) 52px 44px; gap:6px; }
+  .yq3-half .yq3-drv { padding:6px 8px 2px; }
+  .yq3-out.in { padding:12px; }
+}
 </style>
 </head>
 <body>
@@ -1474,7 +1527,7 @@ html[data-theme="dark"] .nt.on { color:var(--Y); }
   <div class="hdr-top">
     <a class="logo" href="https://docs.google.com/spreadsheets/d/1bujnLrxerjUM1gR3aOoy3r4gvTp4pNyPwJM-ra5iFe8/edit?gid=488446085#gid=488446085" target="_blank" rel="noopener" title="Open data source" style="text-decoration:none;cursor:pointer">
       <img class="logo-img" alt="MANI" src="data:image/png;base64,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">
-      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v9.2 · 🔗 Open Sheet</div></div>
+      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v9.3 · 🔗 Open Sheet</div></div>
     </a>
     <div class="hdr-mid">
       <select class="fy-sel" id="fy-sel" onchange="setFY(this.value)" title="Fiscal year"><option>FY67</option></select>
@@ -1508,15 +1561,9 @@ html[data-theme="dark"] .nt.on { color:var(--Y); }
     <button class="btn-r" onclick="manualRefresh()" title="Refresh now (Ctrl+R)" id="btn-refresh">↻</button>
   </div>
   <div class="nav">
-    <div class="nt" id="nt-yr" onclick="goTab('yr')">📅 Year</div>
-    <div class="nt" id="nt-qm" onclick="goTab('qm')">🗓 Quarter · Month</div>
-    <div class="nt on" id="nt-ov"   onclick="goTab('ov')">📊 Overview</div>
-    <div class="nt"    id="nt-seg"  onclick="goTab('seg')">📦 By Segment</div>
-    <div class="nt"    id="nt-cty"  onclick="goTab('cty')">🌏 By Country</div>
-    <div class="nt"    id="nt-dist" onclick="goTab('dist')">🏢 By Distributor</div>
+    <div class="nt on" id="nt-yr" onclick="goTab('yr')">📊 Overview</div>
+    <div class="nt" id="nt-qm" onclick="goTab('qm')">🧭 Segment · Country · Distributor</div>
     <div class="nt"    id="nt-gap"  onclick="goTab('gap')">🔍 GAP Analysis</div>
-    <div class="nt"    id="nt-yoy"  onclick="goTab('yoy')">📈 vs Last Year</div>
-    <div class="nt"    id="nt-cmp"  onclick="goTab('cmp')">⚖️ Comparison</div>
     <div class="nt"    id="nt-exp"  onclick="goTab('exp')">📋 Explanations</div>
   </div>
   <div class="mc-bar" id="mc-bar"></div>
@@ -1531,17 +1578,17 @@ html[data-theme="dark"] .nt.on { color:var(--Y); }
 
 <div class="main">
 <div class="ctx-banner" id="ctx-banner"></div>
-<div class="sec" id="sec-yr">
-  <div class="sh"><div class="sl">Year view</div><div class="sp" id="sp-yr"></div></div>
+<div class="sec on" id="sec-yr">
+  <div class="sh"><div class="sl">Overview</div><div class="sp" id="sp-yr"></div></div>
   <div id="yr-body"></div>
 </div>
 
 <div class="sec" id="sec-qm">
-  <div class="sh"><div class="sl">Quarter · Month view</div><div class="sp" id="sp-qm"></div></div>
+  <div class="sh"><div class="sl">Segment · Country · Distributor</div><div class="sp" id="sp-qm"></div></div>
   <div id="qm-body"></div>
 </div>
 
-<div class="sec on" id="sec-ov">
+<div class="sec" id="sec-ov">
   <div class="sh"><div class="sl">Overview</div><div class="sp" id="sp-ov"></div></div>
   <div class="kr" id="kr-ov"></div>
   <div id="ov-sc"></div>
@@ -1653,9 +1700,8 @@ html[data-theme="dark"] .nt.on { color:var(--Y); }
 
 <!-- (12) MOBILE BOTTOM NAV -->
 <nav class="btmnav" id="btmnav">
-  <button class="bn"    id="bn-yr"   onclick="goTab('yr')"><span class="bn-ic">📅</span><span class="bn-tx">Year</span></button>
-  <button class="bn"    id="bn-qm"   onclick="goTab('qm')"><span class="bn-ic">🗓</span><span class="bn-tx">Q · Month</span></button>
-  <button class="bn on" id="bn-ov"   onclick="goTab('ov')"><span class="bn-ic">📊</span><span class="bn-tx">Overview</span></button>
+  <button class="bn on" id="bn-yr"   onclick="goTab('yr')"><span class="bn-ic">📊</span><span class="bn-tx">Overview</span></button>
+  <button class="bn"    id="bn-qm"   onclick="goTab('qm')"><span class="bn-ic">🧭</span><span class="bn-tx">Seg · Cty · Dist</span></button>
   <button class="bn"    id="bn-gap"  onclick="goTab('gap')"><span class="bn-ic">🔍</span><span class="bn-tx">GAP</span></button>
   <button class="bn"    id="bn-exp"  onclick="goTab('exp')"><span class="bn-ic">📋</span><span class="bn-tx">Notes</span></button>
 </nav>
@@ -5314,7 +5360,6 @@ function yqP(p){
   return '<span class="' + (p >= 0 ? "vp" : "vn") + '">' + (p >= 0 ? "+" : "−") + Math.abs(p).toFixed(1) + "%</span>";
 }
 function yqBig(n){ if (n == null || isNaN(n)) return "—"; return IS_JIZAI() ? fmtCount(n, "k") : CUR.s() + fK(n); }
-function yqAchCol(a){ if (a == null) return "var(--t3)"; return a >= 100 ? "#3E8E6B" : (a >= 90 ? "#D9981F" : "#C0504D"); }
 function yqBarHTML(m){
   if (m.ach == null) return '<span class="arr-e">—</span>';
   var w = Math.max(0, Math.min(100, m.ach));
@@ -5469,68 +5514,74 @@ function yqToolbar(P, extra){
 }
 
 // ════════════════════════════════════════════════════════════════════
-// v9.1 — ANALYST LAYOUT (less numbers on screen, same information)
-//   1 Key message   — one sentence: where we land, what drives the gap
-//   2 Outlook card  — one big number, three supporting numbers, one bar
-//                     (actual closed solid · forecast hatched · budget line)
-//   3 Gap drivers   — variance vs budget ranked, diverging bars
-//   4 Trend / period picker
-//   5 Detail table  — 5 columns, can be folded away
+// v9.3 — GAP FIRST
+//   Every headline figure is the GAP vs Budget Mani (% and money), not the
+//   achievement %. Achievement stays only as the progress bar in tables.
+//   OVERVIEW: key message · outlook · gap drivers · month by month · detail
+//   SEGMENT · COUNTRY · DISTRIBUTOR: SINGLE | CUMULATIVE side by side, each
+//   half in its own frame (blue = single, cream = cumulative).
 // ════════════════════════════════════════════════════════════════════
-function yqSetBasis(b){ S.yq.basis = b; yqSave(); yqRerender(); }
 function yqSetDrv(d){ S.yq.drv = d; yqSave(); yqRerender(); }
 function yqToggleDet(){ S.yq.det = !S.yq.det; yqSave(); yqRerender(); }
 function yqSetLy(){ S.yq.showLy = !S.yq.showLy; yqSave(); yqRerender(); }
 
-function yqPctTxt(a){ return a == null ? "—" : Math.round(a) + "%"; }
+// soft colours: bars (fills) and text
+var YQ_FILL = {pos:"#86BFA3", amb:"#E6BC6A", neg:"#E2A29E"};
+var YQ_TXT  = {pos:"#3E8E6B", amb:"#A87514", neg:"#C0504D"};
+function yqLevel(gp){ return gp == null ? "" : (gp >= 0 ? "pos" : (gp >= -10 ? "amb" : "neg")); }
+function yqAchCol(a){ return a == null ? "#C9D2DC" : YQ_FILL[a >= 100 ? "pos" : (a >= 90 ? "amb" : "neg")]; }   // progress fill
+function yqGapCol(gp){ var l = yqLevel(gp); return l ? YQ_TXT[l] : "var(--t3)"; }                            // gap text
+function yqGapDot(gp){ var l = yqLevel(gp); return l ? YQ_FILL[l] : "#C9D2DC"; }
+function yqGpTxt(gp, dec){ return gp == null || isNaN(gp) ? "—" : yqSign(gp) + Math.abs(gp).toFixed(dec == null ? 1 : dec) + "%"; }
 function yqMoney(n){ return n == null || isNaN(n) ? "—" : yqSign(n) + yqBig(Math.abs(n)); }
+function yqPctTxt(a){ return a == null ? "—" : Math.round(a) + "%"; }
 
-// ── 1. key message (facts only, built from the numbers on screen) ──
-function yqKeyMsg(P, M, drv, periodTxt, empty){
-  var who = yqScopeLabel();
-  var verdict = M.ach == null ? "has no budget" : (M.ach >= 100 ? "is on budget" : (M.ach >= 90 ? "is slightly below budget" : "is below budget"));
-  var t = '<b>' + esc(who) + '</b> ' + esc(periodTxt) + ' ' + verdict;
-  if (M.ach != null) t += ': <b>' + yqBig(M.fc) + '</b> vs ' + yqBig(M.bm) + ' (<b style="color:' + yqAchCol(M.ach) + '">' + yqPctTxt(M.ach) + '</b>)';
+// ── key message (facts only, built from the numbers on screen) ─────
+function yqVerdict(M){ return M.gp == null ? "has no budget" : (M.gp >= 0 ? "is on or above budget" : (M.gp >= -10 ? "is slightly below budget" : "is below budget")); }
+function yqGapPhrase(M){
+  return '<b>' + yqBig(M.fc) + '</b> vs ' + yqBig(M.bm) + ', gap <b style="color:' + yqGapCol(M.gp) + '">' + yqGpTxt(M.gp) + ' (' + yqMoney(M.gap) + ')</b>';
+}
+function yqDrvPhrase(drv){
+  var t = "";
   var neg = drv.filter(function(d){ return d.m.gap < 0; }).slice(0, 2);
   if (neg.length > 1 && Math.abs(neg[1].m.gap) < 0.25 * Math.abs(neg[0].m.gap)) neg = neg.slice(0, 1);
   var pos = drv.filter(function(d){ return d.m.gap > 0; }).sort(function(a, b){ return b.m.gap - a.m.gap; }).slice(0, 1);
   if (neg.length) t += '. Largest shortfall: ' + neg.map(function(d){ return esc(d.short) + ' <span class="vn">' + yqMoney(d.m.gap) + '</span>'; }).join(", ");
   if (pos.length) t += '. Best: ' + esc(pos[0].short) + ' <span class="vp">' + yqMoney(pos[0].m.gap) + '</span>';
+  return t;
+}
+function yqKeyBox(t, empty){
   if (empty) t += '. <span class="yq3-warn">⏳ ' + empty + ' month' + (empty > 1 ? "s" : "") + ' not fully forecast yet</span>';
   return '<div class="yq3-key"><span class="tg">KEY MESSAGE</span><span class="tx">' + t + '.</span></div>';
 }
 
-// ── 2. outlook card ─────────────────────────────────────────────────
-// o = {title, M, act (metrics of actual-closed part or null), ly:true/false, nClosed, nAll, foot}
+// ── outlook card: F/A of budget · GAP (% + money) · vs LY · one bar ──
+// o = {title, M, act, nClosed, nAll, lyName, lyLoading, foot, inner}
 function yqOutlook(o){
   var M = o.M, a = o.act;
   var actV = a ? a.fc : 0, fcV = Math.max(0, M.fc - actV);
   var scale = Math.max(M.bm, M.fc, 1);
-  var wA = actV / scale * 100, wF = fcV / scale * 100, mk = M.bm / scale * 100;
-  var col = yqAchCol(M.ach), bc = "#5B87B8";
+  var wA = actV / scale * 100, wF = fcV / scale * 100, mk = M.bm / scale * 100, bc = "#5B87B8";
   var leg = o.nClosed === 0 ? '<span><i class="f" style="--c:' + bc + '"></i>All forecast · no month closed yet</span>'
     : (o.nClosed === o.nAll ? '<span><i class="a" style="background:' + bc + '"></i>All actual · ' + o.nAll + ' month' + (o.nAll > 1 ? "s" : "") + ' closed</span>'
     : '<span><i class="a" style="background:' + bc + '"></i>Actual closed <b>' + yqBig(actV) + '</b> · ' + o.nClosed + ' of ' + o.nAll + ' months</span>'
       + '<span><i class="f" style="--c:' + bc + '"></i>Forecast <b>' + yqBig(fcV) + '</b></span>');
-  var h = '<div class="yq3-out">'
+  var gc = yqGapCol(M.gp);
+  return '<div class="yq3-out' + (o.inner ? " in" : "") + '">'
     + '<div class="yq3-main"><div class="lb">' + o.title + '</div>'
     + '<div class="big">' + yqBig(M.fc) + '<span class="of">of ' + yqBig(M.bm) + ' budget</span></div></div>'
-    + '<div class="yq3-sm"><div class="lb">Achieved</div><div class="v" style="color:' + col + '">' + yqPctTxt(M.ach) + '</div></div>'
-    + '<div class="yq3-sm"><div class="lb">Vs. budget</div><div class="v ' + (M.gap >= 0 ? "vp" : "vn") + '">' + yqMoney(M.gap) + '</div><div class="s">' + yqPct(M.gp) + '</div></div>'
+    + '<div class="yq3-sm"><div class="lb">Gap vs budget</div><div class="v" style="color:' + gc + '">' + yqGpTxt(M.gp) + '</div>'
+    +   '<div class="s m" style="color:' + gc + '">' + yqMoney(M.gap) + '</div></div>'
     + '<div class="yq3-sm"><div class="lb">Vs. ' + esc(o.lyName) + '</div>' + (M.yp == null ? '<div class="v na">—</div><div class="s">' + (o.lyLoading ? "loading…" : "no data") + '</div>'
         : '<div class="v ' + (M.yp >= 0 ? "vp" : "vn") + '">' + yqPct(M.yp) + '</div><div class="s">' + esc(o.lyName) + ' ' + yqBig(M.ly) + '</div>') + '</div>'
     + '<div class="yq3-bar"><div class="trk">'
     + (wA > 0 ? '<i class="a" style="width:' + wA.toFixed(2) + '%;background:' + bc + '"></i>' : '')
     + (wF > 0 ? '<i class="f" style="left:' + wA.toFixed(2) + '%;width:' + wF.toFixed(2) + '%;--c:' + bc + '"></i>' : '')
     + '<b class="mk" style="left:' + Math.min(100, mk).toFixed(2) + '%"><span>Budget</span></b></div></div>'
-    + '<div class="yq3-leg">'
-    + leg
-    + (o.foot ? '<span class="r">' + o.foot + '</span>' : '')
-    + '</div></div>';
-  return h;
+    + '<div class="yq3-leg">' + leg + (o.foot ? '<span class="r">' + o.foot + '</span>' : '') + '</div></div>';
 }
 
-// ── 3. gap drivers: variance vs budget, ranked ─────────────────────
+// ── gap drivers: variance vs budget, ranked ────────────────────────
 function yqDrvList(P, scope, idxs, mode){
   var out = [], all = P.cur.concat(P.ly || []);
   if (mode === "seg") {
@@ -5554,7 +5605,12 @@ function yqDrvList(P, scope, idxs, mode){
   out.sort(function(a, b){ return a.m.gap - b.m.gap; });
   return out;
 }
-function yqDrivers(list, mode, ft, sc, sub){
+function yqDrvSwitch(mode){
+  return '<div class="yq3-seg">' + [["grp","Group"],["seg","Segment"],["dist","Distributor"]].map(function(x){
+    return '<button class="' + (mode === x[0] ? "on" : "") + '" onclick="yqSetDrv(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join("") + '</div>';
+}
+// rows of the ranked list + footer (no card around it)
+function yqDrvBody(list, mode, ft, sc){
   var max = 1; list.forEach(function(d){ max = Math.max(max, Math.abs(d.m.gap)); });
   var shown = list, more = 0;
   if (mode === "dist" && list.length > 10) {                        // biggest 7 shortfalls + biggest 3 overs
@@ -5562,25 +5618,67 @@ function yqDrivers(list, mode, ft, sc, sub){
     shown = neg.slice(0, 7).concat(pos.slice(-3)); more = list.length - shown.length;
   }
   var tot = 0; list.forEach(function(d){ tot += d.m.gap; });
-  var h = '<div class="card yq3-card"><div class="yq3-hd"><b>Where the gap comes from</b><span class="s">' + esc(sub) + ' · vs. budget, biggest shortfall first</span>'
-    + '<span class="yq-fill"></span><div class="yq3-seg">'
-    + [["grp","Group"],["seg","Segment"],["dist","Distributor"]].map(function(x){ return '<button class="' + (mode === x[0] ? "on" : "") + '" onclick="yqSetDrv(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join("")
-    + '</div></div><div class="yq3-drv">';
+  var h = '<div class="yq3-drv">';
   if (!shown.length) h += '<div class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' here.</div>';
   shown.forEach(function(d){
     var id = ++YQ_RID, ex = yqExList(d.slots, ft, sc);
     if (ex.n) YQ_TIPS[id] = '<div class="t">' + esc(d.name) + '</div>' + ex.html;
     var w = Math.abs(d.m.gap) / max * 100, neg = d.m.gap < 0;
+    var zero = yqF(Math.abs(d.m.gap)) === "0";
     h += '<div class="yq3-dr" onclick="yqTipHide();' + d.click + '" title="Budget ' + yqF(d.m.bm) + ' · F/A ' + yqF(d.m.fc) + ' ' + yqUnit() + ' · click to view only this item"'
       + (ex.n ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '') + '>'
       + '<div class="nm">' + esc(d.name) + (ex.n ? '<span class="yq-ic">💬</span>' : '') + (d.sub ? '<small>' + esc(d.sub) + '</small>' : '') + '</div>'
       + '<div class="bx"><div class="l">' + (neg ? '<i style="width:' + w.toFixed(1) + '%"></i>' : '') + '</div><div class="r">' + (!neg ? '<i style="width:' + w.toFixed(1) + '%"></i>' : '') + '</div></div>'
-      + (yqF(Math.abs(d.m.gap)) === "0" ? '<div class="gv arr-e">0</div>' : '<div class="gv ' + (neg ? "vn" : "vp") + '">' + yqSign(d.m.gap) + yqF(Math.abs(d.m.gap)) + '</div>')
-      + '<div class="ap" style="color:' + yqAchCol(d.m.ach) + '">' + yqPctTxt(d.m.ach) + '</div></div>';
+      + (zero ? '<div class="gv arr-e">0</div>' : '<div class="gv ' + (neg ? "vn" : "vp") + '">' + yqSign(d.m.gap) + yqF(Math.abs(d.m.gap)) + '</div>')
+      + '<div class="ap" style="color:' + yqGapCol(d.m.gp) + '">' + yqGpTxt(d.m.gp, 0) + '</div></div>';
   });
-  h += '</div><div class="yq3-ft"><span>' + yqUnit() + ' · % = achievement of budget' + (more ? ' · ' + more + ' smaller distributor(s) not shown' : '') + '</span>'
-    + '<span>Total gap <b class="' + (tot >= 0 ? "vp" : "vn") + '">' + yqSign(tot) + yqF(Math.abs(tot)) + '</b></span></div></div>';
-  return h;
+  return h + '</div><div class="yq3-ft"><span>' + yqUnit() + ' · % = gap vs budget' + (more ? ' · ' + more + ' smaller distributor(s) not shown' : '') + '</span>'
+    + '<span>Total gap <b class="' + (tot >= 0 ? "vp" : "vn") + '">' + yqSign(tot) + yqF(Math.abs(tot)) + '</b></span></div>';
+}
+function yqDrivers(list, mode, ft, sc, sub){
+  return '<div class="card yq3-card"><div class="yq3-hd"><b>Where the gap comes from</b><span class="s">' + esc(sub) + ' · biggest shortfall first</span>'
+    + '<span class="yq-fill"></span>' + yqDrvSwitch(mode) + '</div>' + yqDrvBody(list, mode, ft, sc) + '</div>';
+}
+
+// ── detail table: Budget · F/A · Gap · Gap % · Progress (· YoY) ─────
+var YQ_RID = 0;
+function yqAchCell(m){
+  if (m.ach == null) return '<td class="ac"><span class="arr-e">—</span></td>';
+  return '<td class="ac"><span class="yq-bar"><i style="width:' + Math.min(100, Math.max(0, m.ach)).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><small>' + Math.round(m.ach) + '%</small></td>';
+}
+// rows: {label, m, cls, click, ex:{n,html}} · opt.noYoy for the split tables
+function yqTable(rows, first, opt){
+  opt = opt || {};
+  var nc = opt.noYoy ? 6 : 7;
+  var H = '<div class="tw yq-t2 yq3-t"><table><thead><tr><th>' + esc(first) + '</th><th>Budget</th><th>F/A</th><th>Gap</th><th>Gap %</th><th class="ac">Progress</th>'
+    + (opt.noYoy ? '' : '<th>YoY</th>') + '</tr></thead><tbody>';
+  if (!rows.length) H += '<tr><td colspan="' + nc + '" class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' in this view · try another tab, period or item.</td></tr>';
+  rows.forEach(function(r){
+    var id = ++YQ_RID, tip = r.ex && r.ex.n ? r.ex.html : "";
+    if (tip) YQ_TIPS[id] = '<div class="t">' + r.label + '</div>' + tip;
+    var ev = tip ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '';
+    var ic = tip ? '<span class="yq-ic" title="Forecast explanation · hover the row" onclick="event.stopPropagation();yqTipShow(event,' + id + ',true)">💬</span>' : '';
+    var m = r.m;
+    H += '<tr class="yq-row ' + (r.cls || "") + (r.click ? " go" : "") + '"' + (r.click ? ' onclick="yqTipHide();' + r.click + '" title="Click to open"' : '') + ev + '>'
+      + '<td class="nm">' + r.label + ic + '</td><td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td>'
+      + '<td class="gp" style="color:' + yqGapCol(m.gp) + '">' + yqGpTxt(m.gp) + '</td>' + yqAchCell(m)
+      + (opt.noYoy ? '' : '<td class="yy" title="' + (m.yoy == null ? "" : esc(yqLyName()) + " " + yqF(m.ly)) + '">' + (m.yoy == null ? '<span class="arr-e">—</span>' : yqP(m.yp)) + '</td>') + '</tr>';
+  });
+  return H + '</tbody></table></div>';
+}
+function yqDetailHead(view, tab, list, caption, hidden){
+  var open = S.yq.det !== false;
+  var h = '<div class="yq3-hd yq3-click" onclick="yqToggleDet()"><b>' + (open ? "▾" : "▸") + ' Detail table</b><span class="s">' + esc(caption) + '</span>'
+    + '<span class="yq-fill"></span><span class="s">' + (open ? "hide" : "show") + '</span></div>';
+  if (!open) return h;
+  return h + '<div class="yq-tabs">' + list.map(function(t){
+      return '<button class="' + (tab === t[0] ? "on" : "") + '" onclick="yqSetTab(\'' + view + '\',\'' + t[0] + '\')">' + t[1] + '</button>'; }).join("")
+    + '<span class="h">💬 hover = explanation · click a row = open it' + (hidden ? " · " + hidden + " inactive distributor(s) hidden" : "") + '</span></div>';
+}
+function yqStatusTag(st){
+  if (st === "actual") return '<span class="yq3-st a" title="Actual closed">actual</span>';
+  if (st === "empty")  return '<span class="yq3-st e" title="Forecast not fully entered yet">⏳</span>';
+  return '';
 }
 
 // ── explanations: hover card (rows with 💬) ─────────────────────────
@@ -5605,44 +5703,6 @@ function yqTipMove(e, force){
 }
 function yqTipHide(){ var t = document.getElementById("yq-tip"); if (t) t.classList.remove("on", "sticky"); }
 document.addEventListener("click", function(e){ if (!e.target.closest || !e.target.closest(".yq-ic")) yqTipHide(); });
-
-// ── 5. detail table (5 columns) ─────────────────────────────────────
-var YQ_RID = 0;
-function yqAchCell(m){
-  if (m.ach == null) return '<td class="ac"><span class="arr-e">—</span></td>';
-  return '<td class="ac"><span class="yq-bar"><i style="width:' + Math.min(100, Math.max(0, m.ach)).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><b style="color:' + yqAchCol(m.ach) + '">' + Math.round(m.ach) + '%</b></td>';
-}
-// rows: {label, m, cls, click, ex:{n,html}}
-function yqTable(rows, first){
-  var H = '<div class="tw yq-t2 yq3-t"><table><thead><tr><th>' + esc(first) + '</th><th>Budget</th><th>F/A</th><th>Vs. budget</th><th class="ac">Achievement</th><th>YoY</th></tr></thead><tbody>';
-  if (!rows.length) H += '<tr><td colspan="6" class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' in this view · try another tab, period or item.</td></tr>';
-  rows.forEach(function(r){
-    var id = ++YQ_RID, tip = r.ex && r.ex.n ? r.ex.html : "";
-    if (tip) YQ_TIPS[id] = '<div class="t">' + r.label + '</div>' + tip;
-    var ev = tip ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '';
-    var ic = tip ? '<span class="yq-ic" title="Forecast explanation · hover the row" onclick="event.stopPropagation();yqTipShow(event,' + id + ',true)">💬</span>' : '';
-    var m = r.m;
-    H += '<tr class="yq-row ' + (r.cls || "") + (r.click ? " go" : "") + '"' + (r.click ? ' onclick="yqTipHide();' + r.click + '" title="Click to open"' : '') + ev + '>'
-      + '<td class="nm">' + r.label + ic + '</td><td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td>' + yqAchCell(m)
-      + '<td class="yy" title="' + (m.yoy == null ? "" : esc(yqLyName()) + " " + yqF(m.ly)) + '">' + (m.yoy == null ? '<span class="arr-e">—</span>' : yqP(m.yp)) + '</td></tr>';
-  });
-  return H + '</tbody></table></div>';
-}
-function yqDetail(view, tab, list, rows, first, caption){
-  var open = S.yq.det !== false;
-  var h = '<div class="card yq3-card"><div class="yq3-hd yq3-click" onclick="yqToggleDet()"><b>' + (open ? "▾" : "▸") + ' Detail table</b><span class="s">' + esc(caption) + '</span>'
-    + '<span class="yq-fill"></span><span class="s">' + (open ? "hide" : "show") + '</span></div>';
-  if (!open) return h + '</div>';
-  h += '<div class="yq-tabs">' + list.map(function(t){
-      return '<button class="' + (tab === t[0] ? "on" : "") + '" onclick="yqSetTab(\'' + view + '\',\'' + t[0] + '\')">' + t[1] + '</button>'; }).join("")
-    + '<span class="h">💬 hover = explanation · click a row = open it' + (rows.hidden ? " · " + rows.hidden + " inactive distributor(s) hidden" : "") + '</span></div>';
-  return h + yqTable(rows, first) + '</div>';
-}
-function yqStatusTag(st){
-  if (st === "actual") return '<span class="yq3-st a" title="Actual closed">actual</span>';
-  if (st === "empty")  return '<span class="yq3-st e" title="Forecast not fully entered yet">⏳</span>';
-  return '';
-}
 
 // Rows for Segment / Groups / Distributors / Country report (shared by both views)
 function yqSectionRows(P, scope, mk){
@@ -5706,22 +5766,22 @@ function yqTabRows(SR, tab, ex){
   return out;
 }
 
-// quarter chips (Year view) — one line, click opens the quarter
-function yqQChips(P, scope, fnName, sel){
+
+// quarter chips (Overview) — gap % of each quarter, click opens it
+function yqQChips(P, scope, fnName){
   var st = P.status;
   return '<div class="yq3-qs">' + [0,1,2,3].map(function(q){
     var m = yqM(P, scope, yqQIdx(q)), s = st.slice(q*3, q*3+3);
     var tag = s.some(function(x){ return x === "empty"; }) ? '<span class="yq3-st e" title="Forecast not fully entered">⏳</span>' : '';
-    var on = sel && sel.k === "q" && sel.i === q;
-    return '<button class="yq3-q' + (on ? " on" : "") + '" onclick="' + fnName + '(\'q\',' + q + ')" title="Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + '">'
+    return '<button class="yq3-q" onclick="' + fnName + '(\'q\',' + q + ')" title="Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' · gap ' + yqG(m.gap).replace(/<[^>]+>/g, "") + ' ' + yqUnit() + '">'
       + '<span class="t">Q' + (q+1) + ' <small>' + yqMonLbl(q*3).slice(0,3) + '-' + yqMonLbl(q*3+2).slice(0,3) + '</small>' + tag + '</span>'
-      + '<b style="color:' + yqAchCol(m.ach) + '">' + yqPctTxt(m.ach) + '</b>'
+      + '<b style="color:' + yqGapCol(m.gp) + '">' + yqGpTxt(m.gp, 0) + '</b>'
       + '<span class="mb"><i style="width:' + Math.min(100, m.ach || 0).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span></button>';
   }).join("") + '</div>';
 }
 
 // ════════════════════════════════════════════════════════════════════
-// YEAR VIEW
+// OVERVIEW (former "Year")
 // ════════════════════════════════════════════════════════════════════
 function rYR(){
   var body = document.getElementById("yr-body"); if (!body) return;
@@ -5737,15 +5797,15 @@ function rYR(){
   var drvMode = S.yq.drv || "grp";
   var drv = yqDrvList(P, scope, YQ_ALL12, drvMode);
 
+  var key = yqKeyBox('<b>' + esc(yqScopeLabel()) + '</b> ' + esc(fy) + ' full year ' + yqVerdict(M) + ': ' + yqGapPhrase(M) + yqDrvPhrase(drv), empty);
   var out = yqOutlook({title:esc(fy) + " outlook · actual + forecast", M:M, act:Ma, nClosed:P.closed.length, nAll:12,
     lyName:P.lyName, lyLoading:P.lyStatus === "loading",
-    foot:Ma.bm > 0 || P.closed.length ? 'Closed months: <b>' + yqPctTxt(Ma.bm > 0 ? Ma.fc / Ma.bm * 100 : null) + '</b> of their budget' : ''});
+    foot:P.closed.length ? 'Closed months: gap <b style="color:' + yqGapCol(Ma.gp) + '">' + yqGpTxt(Ma.gp) + '</b> (' + yqMoney(Ma.gap) + ')' : ''});
 
-  var trend = '<div class="card yq3-card"><div class="yq3-hd"><b>Month by month</b><span class="s">click a quarter or a bar to open it</span><span class="yq-fill"></span>'
+  var trend = '<div class="card yq3-card"><div class="yq3-hd"><b>Month by month</b><span class="s">% = gap vs budget · click a quarter or a bar to open it</span><span class="yq-fill"></span>'
     + '<label class="yq3-chk"><input type="checkbox"' + (S.yq.showLy ? " checked" : "") + ' onchange="yqSetLy()"> show ' + esc(yqLyName()) + '</label></div>'
-    + '<div class="yq3-pad">' + yqQChips(P, scope, "yqOpenPer", null) + '<div class="cw" style="margin-top:8px"><canvas id="c-yr-m"></canvas></div></div></div>';
+    + '<div class="yq3-pad">' + yqQChips(P, scope, "yqOpenPer") + '<div class="cw" style="margin-top:8px"><canvas id="c-yr-m"></canvas></div></div></div>';
 
-  // detail
   var tab = S.yq.tabY || "qm", rows, first;
   var dimCountry = S.yq.dim === "cty" && S.yq.item, exSlots = dimCountry ? [] : yqSlotsScope(P);
   if (tab === "qm") {
@@ -5764,18 +5824,18 @@ function rYR(){
     rows = yqTabRows(SR, tab, function(r){ r.ex = yqExList(r.slots, null, "Single"); return r; });
     first = {seg:"Segment", grp:"Segment × Country group", dist:"Group / Distributor", rep:"Country report / Segment"}[tab];
   }
-  var det = yqDetail("yr", tab, [["qm","Quarter & month"],["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"]], rows, first,
-                     fy + " full year · " + yqUnit());
+  var det = '<div class="card yq3-card">' + yqDetailHead("yr", tab, [["qm","Quarter & month"],["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"]],
+               fy + " full year · " + yqUnit(), rows.hidden) + (S.yq.det !== false ? yqTable(rows, first) : '') + '</div>';
 
-  body.innerHTML = yqToolbar(P) + yqLyNote(P) + yqKeyMsg(P, M, drv, fy + " full year", empty) + out
+  body.innerHTML = yqToolbar(P) + yqLyNote(P) + key + out
     + '<div class="yq3-g2">' + yqDrivers(drv, drvMode, null, "Single", fy + " full year") + trend + '</div>' + det
-    + '<div class="yq-note">Unit ' + yqUnit() + ' · Achievement = Forecast/Actual ÷ Budget Mani · YoY vs the same months of ' + esc(P.lyName) + ' · ' + esc(RULE_TEXT || "") + '</div>';
+    + '<div class="yq-note">Unit ' + yqUnit() + ' · Gap = Forecast/Actual − Budget Mani · Gap % = Gap ÷ Budget Mani · Progress bar = Forecast/Actual ÷ Budget · YoY vs the same months of ' + esc(P.lyName) + ' · ' + esc(RULE_TEXT || "") + '</div>';
   yqChartMonthly("c-yr-m", mm, P, -1, null, 280);
 }
 function yqOpenPer(k, i){ S.yq.per = {k:k, i:i}; yqSave(); TAB_DIRTY.qm = true; goTab("qm"); }
 
 // ════════════════════════════════════════════════════════════════════
-// QUARTER · MONTH VIEW
+// SEGMENT · COUNTRY · DISTRIBUTOR (former "Quarter · Month")
 // ════════════════════════════════════════════════════════════════════
 function yqDefaultPer(){
   var now = new Date(), key = now.getFullYear() + ("0" + (now.getMonth() + 1)).slice(-2);
@@ -5793,21 +5853,28 @@ function yqStepPer(d){
   var p = yqPerInfo(), max = p.k === "q" ? 3 : 11;
   yqSetPer(p.k, Math.max(0, Math.min(max, p.i + d)));
 }
-// period picker: Q1..Q4 | 12 month chips with a status dot (numbers on hover)
+// period picker: Q1..Q4 | 12 month chips, dot colour = gap level (numbers on hover)
 function yqPerPicker(P, scope, per){
   var st = P.status;
   var chip = function(k, i, lbl, m, stt){
     var on = per.k === k && per.i === i;
-    return '<button class="yq3-pc' + (on ? " on" : "") + (k === "q" ? " q" : "") + (stt === "empty" ? " pe" : "") + '" onclick="yqSetPer(\'' + k + '\',' + i + ')" title="' + esc(lbl) + ' · ' + yqPctTxt(m.ach)
-      + ' of budget (Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + ')' + (stt === "empty" ? " · forecast not fully entered" : (stt === "actual" ? " · actual" : "")) + '">'
-      + '<i style="background:' + yqAchCol(m.ach) + '"></i>' + esc(lbl) + (stt === "actual" ? '<em class="a">✓</em>' : '') + '</button>';
+    return '<button class="yq3-pc' + (on ? " on" : "") + (k === "q" ? " q" : "") + (stt === "empty" ? " pe" : "") + '" onclick="yqSetPer(\'' + k + '\',' + i + ')" title="' + esc(lbl)
+      + ' · gap ' + yqGpTxt(m.gp) + ' (Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + ')' + (stt === "empty" ? " · forecast not fully entered" : (stt === "actual" ? " · actual" : "")) + '">'
+      + '<i style="background:' + yqGapDot(m.gp) + '"></i>' + esc(lbl) + (stt === "actual" ? '<em class="a">✓</em>' : '') + '</button>';
   };
   var qStat = function(q){ var s = st.slice(q*3, q*3+3); return s.every(function(x){ return x === "actual"; }) ? "actual" : (s.some(function(x){ return x === "empty"; }) ? "empty" : ""); };
   var h = '<div class="yq3-pick"><div class="row">';
   for (var q = 0; q < 4; q++) h += chip("q", q, "Q" + (q+1), yqM(P, scope, yqQIdx(q)), qStat(q));
   h += '<span class="sep"></span>';
   for (var i = 0; i < 12; i++) h += chip("m", i, yqMonLbl(i), yqM(P, scope, [i]), st[i]);
-  return h + '</div><div class="lg"><span><i style="background:#3E8E6B"></i>≥ 100% of budget</span><span><i style="background:#D9981F"></i>90-99%</span><span><i style="background:#C0504D"></i>&lt; 90%</span><span>✓ actual</span><span><b class="pe-k"></b>dashed = forecast not fully entered</span><span>hover a chip for its numbers</span></div></div>';
+  return h + '</div><div class="lg"><span><i style="background:' + YQ_FILL.pos + '"></i>on or above budget</span><span><i style="background:' + YQ_FILL.amb + '"></i>gap 0 to −10%</span><span><i style="background:' + YQ_FILL.neg + '"></i>gap below −10%</span>'
+    + '<span>✓ actual</span><span><b class="pe-k"></b>dashed = forecast not fully entered</span><span>hover a chip for its numbers</span></div></div>';
+}
+// two framed halves: Single (blue) | Cumulative (cream)
+function yqSplit(sHead, sBody, cHead, cBody, cls){
+  return '<div class="yq3-split' + (cls ? " " + cls : "") + '">'
+    + '<div class="yq3-half s"><div class="hh"><span class="tg">SINGLE</span>' + sHead + '</div>' + sBody + '</div>'
+    + '<div class="yq3-half c"><div class="hh"><span class="tg">CUMULATIVE</span>' + cHead + '</div>' + cBody + '</div></div>';
 }
 
 function rQM(){
@@ -5817,7 +5884,6 @@ function rQM(){
   YQ_RID = 0; YQ_TIPS = {}; yqTipHide();
   var per = yqPerInfo(), scope = yqScopeFn(), fy = FYN(), st = P.status;
   var cumIdx = yqRange(0, per.end);
-  var basis = S.yq.basis === "c" ? "c" : "s";
   document.getElementById("sp-qm").textContent = per.lbl + " · " + fy + " · " + yqUnit();
   var sTxt = per.lbl, cTxt = "YTD " + yqMonLbl(0) + " → " + yqMonLbl(per.end);
 
@@ -5825,49 +5891,57 @@ function rQM(){
     + esc(per.lbl) + '</b><button class="yq-x1" onclick="yqStepPer(1)" title="Next">▶</button>');
 
   var Ms = yqM(P, scope, per.idxs), Mc = yqM(P, scope, cumIdx), Mfy = yqM(P, scope, YQ_ALL12);
-  var idxB = basis === "c" ? cumIdx : per.idxs, MB = basis === "c" ? Mc : Ms;
-  var ftB = basis === "c" ? per.ftC : per.ftS, scB = basis === "c" ? "Cumulative" : "Single", txtB = basis === "c" ? cTxt : sTxt;
-  var actIdx = idxB.filter(function(i){ return st[i] === "actual"; });
-  var emptyB = idxB.filter(function(i){ return st[i] === "empty"; }).length;
+  var actS = per.idxs.filter(function(i){ return st[i] === "actual"; }), actC = cumIdx.filter(function(i){ return st[i] === "actual"; });
+  var emptyC = cumIdx.filter(function(i){ return st[i] === "empty"; }).length;
   var drvMode = S.yq.drv || "grp";
-  var drv = yqDrvList(P, scope, idxB, drvMode);
+  var drvS = yqDrvList(P, scope, per.idxs, drvMode), drvC = yqDrvList(P, scope, cumIdx, drvMode);
 
-  var bswitch = '<div class="yq3-basis"><span class="lb">Show</span><div class="yq3-seg big">'
-    + '<button class="' + (basis === "s" ? "on" : "") + '" onclick="yqSetBasis(\'s\')">' + esc(sTxt) + ' <small>single</small></button>'
-    + '<button class="' + (basis === "c" ? "on" : "") + '" onclick="yqSetBasis(\'c\')">' + esc(cTxt) + ' <small>cumulative</small></button></div>'
-    + '<span class="o">The other one: <b>' + (basis === "c" ? esc(sTxt) + ' ' + yqBig(Ms.fc) + ' · ' + yqPctTxt(Ms.ach) : esc(cTxt) + ' ' + yqBig(Mc.fc) + ' · ' + yqPctTxt(Mc.ach)) + '</b></span></div>';
+  var key = yqKeyBox('<b>' + esc(yqScopeLabel()) + '</b> · ' + esc(sTxt) + ': ' + yqGapPhrase(Ms) + ' · ' + esc(cTxt) + ': ' + yqGapPhrase(Mc) + yqDrvPhrase(drvC).replace('. Largest shortfall', '. Largest YTD shortfall'), emptyC);
 
-  var ytd = Mfy.bm > 0 ? Mc.fc / Mfy.bm * 100 : null, plan = Mfy.bm > 0 ? Mc.bm / Mfy.bm * 100 : 0;
-  var out = yqOutlook({title:esc(txtB), M:MB, act:yqM(P, scope, actIdx), nClosed:actIdx.length, nAll:idxB.length,
-    lyName:P.lyName, lyLoading:P.lyStatus === "loading",
-    foot:'Full year: YTD = <b>' + (ytd == null ? "—" : ytd.toFixed(0) + "%") + '</b> of ' + esc(fy) + ' budget (plan ' + plan.toFixed(0) + '%) · still to go <b>' + yqBig(Math.max(0, Mfy.bm - Mc.fc)) + '</b>'});
+  var ly = {lyName:P.lyName, lyLoading:P.lyStatus === "loading", inner:true};
+  var oS = yqOutlook(Object.assign({title:esc(sTxt), M:Ms, act:yqM(P, scope, actS), nClosed:actS.length, nAll:per.idxs.length}, ly));
+  var fyGap = Mc.fc - Mfy.bm, fyGp = Mfy.bm ? fyGap / Mfy.bm * 100 : null;
+  var oC = yqOutlook(Object.assign({title:esc(cTxt), M:Mc, act:yqM(P, scope, actC), nClosed:actC.length, nAll:cumIdx.length,
+    foot:'vs full-year budget ' + yqBig(Mfy.bm) + ': gap <b style="color:' + yqGapCol(fyGp) + '">' + yqGpTxt(fyGp) + '</b> (' + yqMoney(fyGap) + ')'}, ly));
+  var outs = yqSplit('<b>' + esc(sTxt) + '</b>', oS, '<b>' + esc(cTxt) + '</b>', oC);
 
-  var tab = S.yq.tabQ || "grp", rows, first;
+  var drvCard = '<div class="card yq3-card yq3-wrap"><div class="yq3-hd"><b>Where the gap comes from</b><span class="s">biggest shortfall first · % = gap vs budget</span>'
+    + '<span class="yq-fill"></span>' + yqDrvSwitch(drvMode) + '</div>'
+    + yqSplit('<b>' + esc(sTxt) + '</b>', yqDrvBody(drvS, drvMode, per.ftS, "Single"), '<b>' + esc(cTxt) + '</b>', yqDrvBody(drvC, drvMode, per.ftC, "Cumulative"), "pad") + '</div>';
+
+  // detail tables (same rows, single on the left, cumulative on the right)
+  var tab = S.yq.tabQ || "grp", rowsS, rowsC, first;
   var dimCountry = S.yq.dim === "cty" && S.yq.item, exS = dimCountry ? [] : yqSlotsScope(P);
-  var pick = function(s, c){ return basis === "c" ? c : s; };
   if (tab === "qm") {
-    first = "Period";
-    rows = [{cls:"fy", label:"Full year " + esc(fy), m:Mfy, ex:yqExList(exS, pick(fy, FYC.keys[11]), scB)}];
+    first = "Period"; rowsS = []; rowsC = [];
+    rowsS.push({cls:"fy", label:"Full year " + esc(fy), m:Mfy, ex:yqExList(exS, fy, "Single")});
+    rowsC.push({cls:"fy", label:"Full year " + esc(fy), m:Mfy, ex:yqExList(exS, FYC.keys[11], "Cumulative")});
     for (var q = 0; q < 4; q++) {
-      var qi = yqQIdx(q);
-      rows.push({cls:"q" + (per.k==="q" && per.i===q ? " hl" : ""), label:"Q" + (q+1) + ' <span class="cty">' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + '</span>',
-        m:pick(yqM(P, scope, qi), yqM(P, scope, yqRange(0, qi[2]))), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, pick("Q" + (q+1), FYC.keys[qi[2]]), scB)});
+      var qi = yqQIdx(q), hq = per.k === "q" && per.i === q ? " hl" : "";
+      var ql = "Q" + (q+1) + ' <span class="cty">' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + '</span>';
+      rowsS.push({cls:"q" + hq, label:ql, m:yqM(P, scope, qi), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, "Q" + (q+1), "Single")});
+      rowsC.push({cls:"q" + hq, label:ql, m:yqM(P, scope, yqRange(0, qi[2])), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, FYC.keys[qi[2]], "Cumulative")});
       qi.forEach(function(i){
-        rows.push({cls:"d" + (per.k==="m" && per.i===i ? " hl" : ""), label:yqMonLbl(i) + yqStatusTag(st[i]), m:pick(yqM(P, scope, [i]), yqM(P, scope, yqRange(0, i))),
-          click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], scB)});
+        var hm = per.k === "m" && per.i === i ? " hl" : "", ml = yqMonLbl(i) + yqStatusTag(st[i]);
+        rowsS.push({cls:"d" + hm, label:ml, m:yqM(P, scope, [i]), click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], "Single")});
+        rowsC.push({cls:"d" + hm, label:ml, m:yqM(P, scope, yqRange(0, i)), click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], "Cumulative")});
       });
     }
   } else {
-    var SR = yqSectionRows(P, scope, function(pred){ var m = yqM(P, pred, idxB); return {m:m, zero:yqIsZero(m)}; });
-    rows = yqTabRows(SR, tab, function(r){ r.ex = yqExList(r.slots, ftB, scB); return r; });
-    first = {seg:"Segment", grp:"Segment × Country group", dist:"Group / Distributor", rep:"Country report / Segment"}[tab];
+    var mk = function(idx){ return function(pred){ var m = yqM(P, pred, idx); return {m:m, zero:yqIsZero(m)}; }; };
+    var SRs = yqSectionRows(P, scope, mk(per.idxs)), SRc = yqSectionRows(P, scope, mk(cumIdx));
+    rowsS = yqTabRows(SRs, tab, function(r){ r.ex = yqExList(r.slots, per.ftS, "Single"); return r; });
+    rowsC = yqTabRows(SRc, tab, function(r){ r.ex = yqExList(r.slots, per.ftC, "Cumulative"); return r; });
+    first = {seg:"Segment", grp:"Group", dist:"Group / Distributor", rep:"Country report / Segment"}[tab];
+    if (tab === "grp") [rowsS, rowsC].forEach(function(L){ L.forEach(function(r){ r.label = r.label.replace(/ <span class="cty">[^<]*<\/span>$/, ""); }); });
   }
-  var det = yqDetail("qm", tab, [["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"],["qm","All quarters & months"]], rows, first,
-                     txtB + " (" + (basis === "c" ? "cumulative" : "single") + ") · " + yqUnit());
+  var open = S.yq.det !== false;
+  var det = '<div class="card yq3-card yq3-wrap">' + yqDetailHead("qm", tab, [["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"],["qm","All quarters & months"]],
+      "Single and Cumulative side by side · " + yqUnit(), rowsS.hidden)
+    + (open ? yqSplit('<b>' + esc(sTxt) + '</b>', yqTable(rowsS, first, {noYoy:true}), '<b>' + esc(cTxt) + '</b>', yqTable(rowsC, first, {noYoy:true}), "pad") : '') + '</div>';
 
-  body.innerHTML = tb + yqLyNote(P) + yqPerPicker(P, scope, per) + bswitch + yqKeyMsg(P, MB, drv, txtB, emptyB) + out
-    + yqDrivers(drv, drvMode, ftB, scB, txtB) + det
-    + '<div class="yq-note">Unit ' + yqUnit() + ' · Single = the chosen period · Cumulative (YTD) = from ' + esc(yqMonLbl(0)) + ' to the end of the chosen period · ' + esc(RULE_TEXT || "") + '</div>';
+  body.innerHTML = tb + yqLyNote(P) + yqPerPicker(P, scope, per) + key + outs + drvCard + det
+    + '<div class="yq-note">Unit ' + yqUnit() + ' · SINGLE = the chosen quarter / month · CUMULATIVE (YTD) = from ' + esc(yqMonLbl(0)) + ' to the end of the chosen period · Gap = Forecast/Actual − Budget Mani · ' + esc(RULE_TEXT || "") + '</div>';
 }
 
 // monthly chart: budget bars + F/A bars (solid = actual, hatched = forecast), LY line optional
@@ -5877,14 +5951,14 @@ function yqChartMonthly(id, mm, P, selIdx, selArr, h){
   chartH(cv, h || 300);
   var st = P.status, hatch = hatchFill("rgba(91,135,184,.85)");
   var ds = [
-    {type:"bar", label:"Budget Mani", data:mm.map(function(m){ return m.bm; }), backgroundColor:"rgba(221,227,234,1)",
+    {type:"bar", label:"Budget Mani", data:mm.map(function(m){ return m.bm; }), backgroundColor:"rgba(206,216,227,1)",
      borderRadius:3, barPercentage:.85, categoryPercentage:.7, order:2, datalabels:{display:false}},
     {type:"bar", label:"Forecast / Actual", data:mm.map(function(m){ return m.fc; }),
      backgroundColor:mm.map(function(m, i){ return st[i] === "actual" ? "rgba(91,135,184,.92)" : hatch; }),
      borderColor:"rgba(91,135,184,.9)", borderWidth:function(c){ return st[c.dataIndex] === "actual" ? 0 : 1.2; },
      borderRadius:3, barPercentage:.85, categoryPercentage:.7, order:2, datalabels:{display:false}}
   ];
-  if (P.ly && S.yq.showLy) ds.push({type:"line", label:yqLyName(), data:mm.map(function(m){ return m.ly; }), borderColor:"#EFCB4A", backgroundColor:"#EFCB4A",
+  if (P.ly && S.yq.showLy) ds.push({type:"line", label:yqLyName(), data:mm.map(function(m){ return m.ly; }), borderColor:"#E0B43C", backgroundColor:"#E0B43C",
                      borderWidth:2, pointRadius:2, tension:.25, order:1, datalabels:{display:false}});
   S.charts[id] = new Chart(cv, {
     data:{labels:MONTHLY_GRAND.map(function(m){ return m.lbl; }), datasets:ds},
@@ -5893,7 +5967,7 @@ function yqChartMonthly(id, mm, P, selIdx, selArr, h){
       plugins:{datalabels:{display:false}, legend:{position:"bottom", labels:{font:{family:FF, size:11.5}, boxWidth:11, color:"#6E8095"}},
         tooltip:{callbacks:{label:function(c){ return " " + c.dataset.label + ": " + yqF(c.raw) + " " + yqUnit(); },
           afterBody:function(items){ var i = items[0].dataIndex, m = mm[i];
-            return ["Achievement: " + yqPctTxt(m.ach) + " · Vs. budget " + (m.gap >= 0 ? "+" : "−") + yqF(Math.abs(m.gap)),
+            return ["Gap vs budget: " + (m.gap >= 0 ? "+" : "−") + yqF(Math.abs(m.gap)) + " (" + yqGpTxt(m.gp) + ")",
                     "Status: " + (st[i] === "actual" ? "Actual" : (st[i] === "empty" ? "Forecast partly entered" : "Forecast"))]; }}}},
       scales:{x:{grid:{display:false}, ticks:{autoSkip:true, maxRotation:0, color:"#6E8095", font:{family:FF, size:11, weight:"700"}}},
         y:{beginAtZero:true, grace:"8%", ticks:{maxTicksLimit:5, callback:function(v){ return fKS(v); }, color:"#8A97A6", font:{family:FF, size:10.5}}, grid:{color:"rgba(148,163,184,.15)"}, border:{display:false}}},
@@ -5926,7 +6000,7 @@ function pptBuildYQ(c, tab){
   var idxs = YQ_ALL12, cum = null;
   if (tab === "qm") { var per = yqPerInfo(); idxs = per.idxs; cum = yqRange(0, per.end); }
   // slide 1: totals by quarter / month (Year) or single vs cumulative (QM)
-  var s1 = pptContentSlide(c.pptx, tab === "qm" ? "Quarter · Month" : "Year view", yqPptLabel(tab) + " · " + unit, c.nextPage());
+  var s1 = pptContentSlide(c.pptx, tab === "qm" ? "Segment · Country · Distributor" : "Overview", yqPptLabel(tab) + " · " + unit, c.nextPage());
   var rows = [head("Period")];
   if (tab === "qm") {
     rows.push(line("SINGLE · " + yqPerInfo().lbl, yqM(P, scope, idxs), "bold"));
@@ -6029,6 +6103,7 @@ function setDistSeg(sg) { S.distSeg=sg; rDIST(computeD());
   },30);
 }
 function goTab(t) {
+  if ({ov:1, seg:1, cty:1, dist:1, yoy:1, cmp:1}[t]) t = "yr";      // ⭐ v9.3 — these tabs were removed
   S.tab = t;
   document.body.classList.toggle("yq-on", t === "yr" || t === "qm");     // ⭐ v8 — these views have their own period controls
   try { localStorage.setItem("mmh_tab", t); } catch(e){}
@@ -6374,11 +6449,11 @@ function pptTabMeta(tab){
     dist: { name:"By Distributor", deck:seg+" by Distributor",        file:seg+"_by_Distributor" },
     gap:  { name:"GAP Analysis",   deck:seg+" — GAP Analysis",        file:seg+"_GAP_Analysis" },
     cmp:  { name:"Comparison",     deck:seg+" — Comparison",          file:seg+"_Comparison" },
-    yr:   { name:"Year view",      deck:seg+" — Year view",           file:seg+"_Year_view" },
-    qm:   { name:"Quarter · Month",deck:seg+" — Quarter / Month",     file:seg+"_Quarter_Month" },
+    yr:   { name:"Overview",       deck:seg+" — Overview",            file:seg+"_Overview" },
+    qm:   { name:"Segment · Country · Distributor", deck:seg+" — Segment · Country · Distributor", file:seg+"_Segment_Country_Distributor" },
     exp:  { name:"Explanations",   deck:seg+" — Explanations",        file:seg+"_Explanations" }
   };
-  return M[tab] || M.ov;
+  return M[tab] || M.yr;
 }
 
 function exportPPT() {
@@ -7019,7 +7094,7 @@ function fetchEditLog() {
 // numbers are fetched again quietly and the page redraws — near real time without
 // polling the full data set.
 var LIVE_SYNC_BUSY = false, LIVE_SYNC_LAST = 0;
-var LIVE_SYNC_SKIP = /^(YEAR|QUARTER-MONTH|DASHBOARD|DASHBOARD_new|EditLog)$|^_/;
+var LIVE_SYNC_SKIP = /^(YEAR|QUARTER-MONTH|OVERVIEW|SEGMENT-COUNTRY-DISTRIBUTOR|DASHBOARD|DASHBOARD_new|EditLog)$|^_/;
 function liveSyncCheck(entries){
   if (!ENABLE_LIVE_SYNC || !LAST_FETCH_TS || LIVE_SYNC_BUSY || DATA_IS_SNAPSHOT) return;
   var fresh = (entries || []).filter(function(e){ return e.ts > LAST_FETCH_TS + 1500 && !LIVE_SYNC_SKIP.test(String(e.sheet || "")); });
@@ -7602,12 +7677,9 @@ var GS = { items:[], filtered:[], sel:0 };
 function buildSearchIndex(){
   var items = [];
   // tabs
-  [["yr","📅","Year view","FY → Quarter → Month · groups · distributors · explanations"],
-   ["qm","🗓","Quarter · Month view","Single + Cumulative · lookup by item"],
-   ["ov","📊","Overview","Dashboard home"],["seg","📦","By Segment","Dental / Surgical / Eyeless / MMG"],
-   ["cty","🌏","By Country","Thailand · Viet Nam"],["dist","🏢","By Distributor","All distributors"],
+  [["yr","📊","Overview","FY outlook · gap vs budget · month by month · detail"],
+   ["qm","🧭","Segment · Country · Distributor","Single and Cumulative side by side"],
    ["gap","🔍","GAP Analysis","Above / below budget"],
-   ["cmp","⚖️","Comparison","Compare Segment / Country / Distributor side by side"],
    ["exp","📋","Explanations","Version history"]
   ].forEach(function(t){ items.push({type:"tab",id:t[0],ic:t[1],nm:t[2],sub:t[3]}); });
   // segments
