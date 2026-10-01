@@ -1285,6 +1285,156 @@ html[data-theme="dark"] .hdr { background:#101B2E; border-top:3px solid #FFE100;
 html[data-theme="dark"] .upd-banner { background:#16203A; border:1px solid var(--br); }
 html[data-theme="dark"] .drill-hd { background:#16203A; }
 html[data-theme="dark"] .btmnav { background:#101B2E !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v9.1 ANALYST LAYOUT — Year / Quarter · Month (fewer numbers, clear order)
+   ═══════════════════════════════════════════════════════════════════ */
+.yq3-card { margin-bottom:12px; }
+.yq3-hd { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:11px 16px 9px; border-bottom:1px solid var(--br); }
+.yq3-hd > b { font-size:12.5px; font-weight:800; color:var(--N); text-transform:uppercase; letter-spacing:.5px; }
+.yq3-hd .s { font-size:11.5px; color:var(--t3); }
+.yq3-click { cursor:pointer; user-select:none; }
+.yq3-click:hover { background:var(--P); }
+.yq3-pad { padding:12px 16px 14px; }
+.yq3-g2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; align-items:start; }
+@media (max-width:1100px) { .yq3-g2 { grid-template-columns:1fr; } }
+
+/* key message (template "KEY MESSAGE" box) */
+.yq3-key { display:flex; gap:12px; align-items:baseline; background:var(--cream,#FFF6D9); border:1px solid var(--creamLine,#EFCB4A); border-radius:10px; padding:10px 16px; margin-bottom:12px; }
+.yq3-key .tg { flex-shrink:0; font-size:10.5px; font-weight:900; letter-spacing:.8px; color:var(--N); }
+.yq3-key .tx { font-size:14px; line-height:1.55; color:#3A4A5A; }
+.yq3-key .tx b { color:var(--N); }
+.yq3-warn { color:#8A6A1C; font-weight:700; white-space:nowrap; }
+html[data-theme="dark"] .yq3-key { background:rgba(239,203,74,.08); border-color:rgba(239,203,74,.35); }
+html[data-theme="dark"] .yq3-key .tx { color:var(--t1); }
+
+/* outlook card */
+.yq3-out { display:grid; grid-template-columns:minmax(260px,1.6fr) repeat(3, minmax(110px,1fr)); gap:6px 22px; align-items:end;
+  background:var(--sf); border:1px solid var(--br); border-radius:12px; padding:16px 20px 12px; margin-bottom:12px; box-shadow:var(--sh); }
+.yq3-out .lb { font-size:10.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--t3); margin-bottom:3px; }
+.yq3-main .big { font-size:36px; font-weight:900; color:var(--N); line-height:1.05; letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+.yq3-main .of { font-size:14px; font-weight:600; color:var(--t2); margin-left:10px; letter-spacing:0; }
+.yq3-sm { border-left:1px solid var(--br); padding-left:16px; }
+.yq3-sm .v { font-size:22px; font-weight:900; line-height:1.1; font-variant-numeric:tabular-nums; }
+.yq3-sm .v.na { color:var(--t3); }
+.yq3-sm .s { font-size:11.5px; color:var(--t2); margin-top:2px; }
+.yq3-bar { grid-column:1 / -1; margin-top:12px; }
+.yq3-bar .trk { position:relative; height:14px; background:#EEF1F5; border-radius:7px; }
+.yq3-bar .trk i { position:absolute; top:0; bottom:0; left:0; border-radius:7px; }
+.yq3-bar .trk i.f { background:repeating-linear-gradient(135deg, var(--c), var(--c) 4px, transparent 4px, transparent 8px); opacity:.55; box-shadow:inset 0 0 0 1.5px var(--c); }
+.yq3-bar .trk .mk { position:absolute; top:-5px; bottom:-5px; width:2px; background:var(--N); transform:translateX(-1px); border-radius:1px; }
+.yq3-bar .trk .mk span { position:absolute; top:-15px; right:0; font-size:10px; font-weight:800; color:var(--N); white-space:nowrap; }
+.yq3-leg { grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:6px 18px; font-size:12px; color:var(--t2); margin-top:4px; }
+.yq3-leg i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+.yq3-leg i.f { background:repeating-linear-gradient(135deg, var(--c), var(--c) 2px, transparent 2px, transparent 4px); box-shadow:inset 0 0 0 1px var(--c); }
+.yq3-leg b { color:var(--N); }
+.yq3-leg .r { margin-left:auto; }
+html[data-theme="dark"] .yq3-bar .trk { background:rgba(255,255,255,.08); }
+html[data-theme="dark"] .yq3-main .big, html[data-theme="dark"] .yq3-leg b { color:var(--t1); }
+@media (max-width:900px) {
+  .yq3-out { grid-template-columns:1fr 1fr 1fr; }
+  .yq3-main { grid-column:1 / -1; }
+  .yq3-sm:nth-child(2) { border-left:none; padding-left:0; }
+  .yq3-main .big { font-size:30px; }
+  .yq3-leg .r { margin-left:0; }
+}
+
+/* segmented buttons */
+.yq3-seg { display:inline-flex; background:var(--soft,#F3F5F8); border:1px solid var(--br); border-radius:8px; padding:2px; gap:2px; }
+.yq3-seg button { border:none; background:transparent; font:700 12px var(--ff); color:var(--t2); padding:4px 11px; border-radius:6px; cursor:pointer; }
+.yq3-seg button:hover { color:var(--N); }
+.yq3-seg button.on { background:#fff; color:var(--N); box-shadow:0 1px 3px rgba(53,80,107,.15); }
+.yq3-seg.big button { font-size:13px; padding:6px 14px; }
+.yq3-seg button small { font-weight:600; color:var(--t3); margin-left:4px; }
+html[data-theme="dark"] .yq3-seg button.on { background:var(--B); color:#fff; }
+
+/* gap drivers */
+.yq3-drv { padding:8px 16px 4px; }
+.yq3-dr { display:grid; grid-template-columns:minmax(150px,1.3fr) minmax(120px,2fr) 70px 48px; gap:12px; align-items:center; padding:7px 4px; border-bottom:1px solid #EEF1F5; cursor:pointer; border-radius:6px; }
+.yq3-dr:last-child { border-bottom:none; }
+.yq3-dr:hover { background:var(--P); }
+.yq3-dr .nm { font-size:13px; font-weight:700; color:var(--N); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.yq3-dr .nm small { display:block; font-size:10.5px; font-weight:600; color:var(--t3); overflow:hidden; text-overflow:ellipsis; }
+.yq3-dr .bx { display:grid; grid-template-columns:1fr 1fr; height:14px; }
+.yq3-dr .bx .l { display:flex; justify-content:flex-end; border-right:1.5px solid #A7B3C0; }
+.yq3-dr .bx .r { display:flex; justify-content:flex-start; }
+.yq3-dr .bx i { display:block; height:100%; min-width:2px; }
+.yq3-dr .bx .l i { background:#C0504D; opacity:.8; border-radius:3px 0 0 3px; }
+.yq3-dr .bx .r i { background:#3E8E6B; opacity:.8; border-radius:0 3px 3px 0; }
+.yq3-dr .gv { text-align:right; font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; }
+.yq3-dr .ap { text-align:right; font-size:12px; font-weight:800; }
+.yq3-ft { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:8px 20px 11px; font-size:11.5px; color:var(--t3); border-top:1px solid var(--br); }
+html[data-theme="dark"] .yq3-dr { border-bottom-color:rgba(255,255,255,.06); }
+html[data-theme="dark"] .yq3-dr .nm { color:var(--t1); }
+@media (max-width:640px) { .yq3-dr { grid-template-columns:minmax(0,1.2fr) minmax(70px,1fr) 58px 40px; gap:8px; } }
+
+/* quarter chips (Year) */
+.yq3-qs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.yq3-q { display:grid; grid-template-columns:1fr auto; align-items:center; gap:2px 6px; text-align:left; background:var(--sf); border:1px solid var(--br); border-radius:9px; padding:7px 10px 8px; cursor:pointer; font-family:var(--ff); }
+.yq3-q:hover { border-color:var(--B); }
+.yq3-q.on { background:var(--cream,#FFF6D9); border-color:var(--creamLine,#EFCB4A); }
+.yq3-q .t { font-size:12px; font-weight:800; color:var(--N); }
+.yq3-q .t small { font-weight:600; color:var(--t3); font-size:10.5px; }
+.yq3-q b { font-size:16px; font-weight:900; grid-row:span 1; }
+
+.yq3-q .mb { grid-column:1 / -1; height:4px; background:#EEF1F5; border-radius:3px; overflow:hidden; }
+.yq3-q .mb i { display:block; height:100%; border-radius:3px; }
+.yq3-st { display:inline-block; font-size:10px; font-weight:800; border-radius:5px; padding:0 5px; margin-left:6px; vertical-align:1px; }
+.yq3-st.a { background:#E6F2EC; color:#2F7556; }
+.yq3-st.e { background:transparent; padding:0; }
+.yq3-chk { font-size:12px; color:var(--t2); display:flex; align-items:center; gap:5px; cursor:pointer; }
+@media (max-width:640px) { .yq3-qs { grid-template-columns:1fr 1fr; } }
+
+/* period picker (Quarter · Month) */
+.yq3-pick { background:var(--sf); border:1px solid var(--br); border-radius:12px; padding:10px 14px 8px; margin-bottom:10px; box-shadow:var(--sh); }
+.yq3-pick .row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.yq3-pick .sep { width:1px; height:20px; background:var(--br); margin:0 4px; }
+.yq3-pick .row { flex-wrap:wrap; }
+.yq3-pc { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--br); background:#fff; border-radius:14px; padding:3px 9px; font:700 12px var(--ff); color:var(--t2); cursor:pointer; }
+.yq3-pc.q { font-weight:900; color:var(--N); }
+.yq3-pc i { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.yq3-pc em { font-style:normal; font-size:10px; }
+.yq3-pc.pe { border-style:dashed; border-color:#B9C3CE; }
+.yq3-pick .lg .pe-k { display:inline-block; width:16px; height:9px; border:1px dashed #A7B3C0; border-radius:5px; margin-right:5px; vertical-align:-1px; }
+.yq3-pc em.a { color:#3E8E6B; font-weight:900; }
+.yq3-pc:hover { border-color:var(--B); color:var(--N); }
+.yq3-pc.on { background:var(--cream,#FFF6D9); border-color:var(--creamLine,#EFCB4A); color:var(--N); box-shadow:0 0 0 1px var(--creamLine,#EFCB4A); }
+.yq3-pick .lg { display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:7px; font-size:11px; color:var(--t3); }
+.yq3-pick .lg i { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; }
+html[data-theme="dark"] .yq3-pc { background:var(--sf); }
+html[data-theme="dark"] .yq3-pc.on { background:rgba(239,203,74,.15); color:var(--t1); }
+
+.yq3-basis { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.yq3-basis .lb { font-size:10.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--t3); }
+.yq3-basis .o { font-size:12px; color:var(--t3); }
+.yq3-basis .o b { color:var(--t2); font-weight:700; }
+
+/* detail table: 5 number columns, calm rows */
+.yq3-t table { font-size:13px; }
+.yq3-t td { font-weight:600; padding:7px 12px; }
+.yq3-t td.nm { font-weight:700; }
+.yq3-t td.yy { font-size:12px; }
+.yq3-t .yq-bar { width:70px; }
+
+/* dark mode: titles that use the slate colour in light mode */
+html[data-theme="dark"] .sl, html[data-theme="dark"] .seg-hd, html[data-theme="dark"] .exp-blk-ttl, html[data-theme="dark"] .sc-seg-hd { color:var(--B); }
+html[data-theme="dark"] .ct, html[data-theme="dark"] .sp, html[data-theme="dark"] .yq3-hd > b, html[data-theme="dark"] .yq3-key .tg,
+html[data-theme="dark"] .yq3-key .tx b, html[data-theme="dark"] .yq3-q .t, html[data-theme="dark"] .yq3-pc.q,
+html[data-theme="dark"] .yq3-bar .trk .mk span, html[data-theme="dark"] .yq3-out .lb { color:var(--t1); }
+html[data-theme="dark"] .yq3-bar .trk .mk { background:var(--t1); }
+html[data-theme="dark"] .seg-btn.on, html[data-theme="dark"] .cmp-pill.on, html[data-theme="dark"] .yq-pill.on, html[data-theme="dark"] .yq-tabs button.on { background:var(--B); border-color:var(--B); }
+html[data-theme="dark"] .dl-btn { background:var(--sf); color:var(--t1); box-shadow:inset 0 0 0 1px var(--br); }
+html[data-theme="dark"] .yq3-q { background:var(--sf); }
+html[data-theme="dark"] .yq3-q.on { background:rgba(239,203,74,.12); }
+html[data-theme="dark"] .yq3-q .mb { background:rgba(255,255,255,.08); }
+
+/* phones: header wraps instead of pushing the page sideways */
+@media (max-width:640px) {
+  .hdr-top { flex-wrap:wrap; height:auto; padding:6px 12px; row-gap:6px; }
+  .gs-trigger, #btn-print, .src-sep, .src-time { display:none !important; }
+  .yq3-dr { grid-template-columns:minmax(0,1.7fr) minmax(48px,.8fr) 50px 38px; gap:6px; }
+  .yq3-key { flex-direction:column; gap:2px; }
+}
 </style>
 </head>
 <body>
@@ -1308,7 +1458,7 @@ html[data-theme="dark"] .btmnav { background:#101B2E !important; }
   <div class="hdr-top">
     <a class="logo" href="https://docs.google.com/spreadsheets/d/1bujnLrxerjUM1gR3aOoy3r4gvTp4pNyPwJM-ra5iFe8/edit?gid=488446085#gid=488446085" target="_blank" rel="noopener" title="Open data source" style="text-decoration:none;cursor:pointer">
       <div class="logo-b">MMH</div>
-      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v9 · 🔗 Open Sheet</div></div>
+      <div class="logo-t">Turnover Report<div class="logo-s"><span id="logo-fy">FY67</span> · v9.1 · 🔗 Open Sheet</div></div>
     </a>
     <div class="hdr-mid">
       <select class="fy-sel" id="fy-sel" onchange="setFY(this.value)" title="Fiscal year"><option>FY67</option></select>
@@ -5013,7 +5163,7 @@ var YQ_GROUPS = [
   {code:"G5", name:"VN/LA/KH/MM MMG",    def:"MMG · Viet Nam, Lao, Cambodia, Myanmar",    rep:"VN", segs:["MMG"]},
   {code:"G6", name:"VN Eyeless",         def:"Eyeless · Viet Nam",                        rep:"VN", segs:["Eyeless"]}
 ];
-var YQ_OTHER = {code:"Other", name:"Other (outside G1–G6)", def:"Any Segment × Country not covered by G1–G6", rep:"VN", segs:[]};
+var YQ_OTHER = {code:"Other", name:"Other (outside G1-G6)", def:"Any Segment × Country not covered by G1-G6", rep:"VN", segs:[]};
 var YQ_DIMS = [["all","MMH total"],["seg","Segment"],["cty","Country"],["rep","Country report"],["grp","Segment × Country"],["dist","Distributor"]];
 var YQ_SEG_ORDER = ["Surgical","Dental","MMG","Eyeless"];
 var YQ_CTY_ORDER = ["Thailand","Myanmar","Viet Nam","Lao","Cambodia"];
@@ -5022,10 +5172,10 @@ var YQ_DIST_ORDER = ["AFTA-INNOTECH","MAHACHAK","NOVATEC","AV","DDI","DEVA","PRO
 
 S.yq = (function(){
   var d = {dim:"all", item:"", per:null, expl:"latest", closed:{}};
-  try { var j = JSON.parse(localStorage.getItem("mmh_yq") || "null"); if (j) { d.dim = j.dim || "all"; d.item = j.item || ""; d.expl = j.expl || "latest"; d.per = j.per || null; d.tabY = j.tabY || "qm"; d.tabQ = j.tabQ || "grp"; } } catch(e){}
+  try { var j = JSON.parse(localStorage.getItem("mmh_yq") || "null"); if (j) { d.dim = j.dim || "all"; d.item = j.item || ""; d.expl = j.expl || "latest"; d.per = j.per || null; d.tabY = j.tabY || "qm"; d.tabQ = j.tabQ || "grp"; d.basis = j.basis || "s"; d.drv = j.drv || "grp"; d.det = j.det !== false; d.showLy = !!j.showLy; } } catch(e){}
   return d;
 })();
-function yqSave(){ try { localStorage.setItem("mmh_yq", JSON.stringify({dim:S.yq.dim, item:S.yq.item, expl:S.yq.expl, per:S.yq.per, tabY:S.yq.tabY, tabQ:S.yq.tabQ})); } catch(e){} }
+function yqSave(){ try { localStorage.setItem("mmh_yq", JSON.stringify({dim:S.yq.dim, item:S.yq.item, expl:S.yq.expl, per:S.yq.per, tabY:S.yq.tabY, tabQ:S.yq.tabQ, basis:S.yq.basis, drv:S.yq.drv, det:S.yq.det, showLy:S.yq.showLy})); } catch(e){} }
 
 // same rule as the Sheet (_YQ_Key column A)
 function yqGroupOf(seg, cty){
@@ -5136,11 +5286,11 @@ function yqF(n){
   if (n == null || isNaN(n)) return "—";
   if (IS_JIZAI()) return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n);
   if (CUR.code === "VND") return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n * CUR.rate / 1e6);
-  return new Intl.NumberFormat("en-US", {minimumFractionDigits:1, maximumFractionDigits:1}).format(n / 1000);
+  return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(n / 1000);
 }
 function yqG(n){
   if (n == null || isNaN(n)) return "—";
-  var t = yqF(Math.abs(n)); if (t === "0.0" || t === "0") return '<span class="arr-e">0</span>';
+  var t = yqF(Math.abs(n)); if (t === "0.0" || t === "0" || t === "-0") return '<span class="arr-e">0</span>';
   return '<span class="' + (n >= 0 ? "vp" : "vn") + '">' + (n >= 0 ? "+" : "−") + t + "</span>";
 }
 function yqP(p){
@@ -5154,13 +5304,9 @@ function yqBarHTML(m){
   var w = Math.max(0, Math.min(100, m.ach));
   return '<span class="yq-bar"><i style="width:' + w.toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><b style="color:' + yqAchCol(m.ach) + '">' + Math.round(m.ach) + '%</b>';
 }
-function yqStatusTag(st){
-  if (st === "actual")   return '<span class="yq-st a" title="Actual closed">✓ ACTUAL</span>';
-  if (st === "empty")    return '<span class="yq-st e" title="Forecast not fully entered yet">⏳ PARTIAL</span>';
-  return '<span class="yq-st f" title="Forecast">FORECAST</span>';
-}
+
 function yqMonLbl(i){ return MONTHLY_GRAND[i] ? MONTHLY_GRAND[i].lbl : ""; }
-function yqQLbl(q){ return "Q" + (q+1) + " · " + yqMonLbl(q*3).slice(0,3) + "–" + yqMonLbl(q*3+2); }
+function yqQLbl(q){ return "Q" + (q+1) + " · " + yqMonLbl(q*3).slice(0,3) + "-" + yqMonLbl(q*3+2); }
 
 // ── Forecast Explanation lookups (VERSIONS_DATA of the FY in view) ──
 function yqExFind(ft, sc, fn){
@@ -5235,7 +5381,7 @@ function yqExHTML(slots, ft, sc){
           + ' <span class="mt">· ' + esc(ftLabel(p.f.ft) || "—") + (p.f.t ? " " + esc(p.f.t) : "") + ' · v' + esc(p.f.v) + '</span></span>';
       }).join("") + '</div>';
 }
-function yqExplFt(){             // Year view, sections 1.2 – 1.5
+function yqExplFt(){             // Year view, sections 1.2 - 1.5
   var e = S.yq.expl || "latest";
   if (e === "fy") return FYN();
   if (/^Q[1-4]$/.test(e)) return e;
@@ -5306,77 +5452,123 @@ function yqToolbar(P, extra){
   return h + (extra || "") + '</div>';
 }
 
-// ── KPI tile ───────────────────────────────────────────────────────
-function yqTile(o){
-  var bar = "";
-  if (o.bar != null) {
-    bar = '<div class="yq-tbar"><i data-w="' + Math.min(100, Math.max(0, o.bar)).toFixed(1) + '" style="width:' + Math.min(100, Math.max(0, o.bar)).toFixed(1) + '%;background:' + (o.barCol || yqAchCol(o.bar)) + '"></i>'
-      + (o.mark != null ? '<b style="left:' + Math.min(100, Math.max(0, o.mark)).toFixed(1) + '%" title="Plan to date"></b>' : '') + '</div>';
+// ════════════════════════════════════════════════════════════════════
+// v9.1 — ANALYST LAYOUT (less numbers on screen, same information)
+//   1 Key message   — one sentence: where we land, what drives the gap
+//   2 Outlook card  — one big number, three supporting numbers, one bar
+//                     (actual closed solid · forecast hatched · budget line)
+//   3 Gap drivers   — variance vs budget ranked, diverging bars
+//   4 Trend / period picker
+//   5 Detail table  — 5 columns, can be folded away
+// ════════════════════════════════════════════════════════════════════
+function yqSetBasis(b){ S.yq.basis = b; yqSave(); yqRerender(); }
+function yqSetDrv(d){ S.yq.drv = d; yqSave(); yqRerender(); }
+function yqToggleDet(){ S.yq.det = !S.yq.det; yqSave(); yqRerender(); }
+function yqSetLy(){ S.yq.showLy = !S.yq.showLy; yqSave(); yqRerender(); }
+
+function yqPctTxt(a){ return a == null ? "—" : Math.round(a) + "%"; }
+function yqMoney(n){ return n == null || isNaN(n) ? "—" : yqSign(n) + yqBig(Math.abs(n)); }
+
+// ── 1. key message (facts only, built from the numbers on screen) ──
+function yqKeyMsg(P, M, drv, periodTxt, empty){
+  var who = yqScopeLabel();
+  var verdict = M.ach == null ? "has no budget" : (M.ach >= 100 ? "is on budget" : (M.ach >= 90 ? "is slightly below budget" : "is below budget"));
+  var t = '<b>' + esc(who) + '</b> ' + esc(periodTxt) + ' ' + verdict;
+  if (M.ach != null) t += ': <b>' + yqBig(M.fc) + '</b> vs ' + yqBig(M.bm) + ' (<b style="color:' + yqAchCol(M.ach) + '">' + yqPctTxt(M.ach) + '</b>)';
+  var neg = drv.filter(function(d){ return d.m.gap < 0; }).slice(0, 2);
+  if (neg.length > 1 && Math.abs(neg[1].m.gap) < 0.25 * Math.abs(neg[0].m.gap)) neg = neg.slice(0, 1);
+  var pos = drv.filter(function(d){ return d.m.gap > 0; }).sort(function(a, b){ return b.m.gap - a.m.gap; }).slice(0, 1);
+  if (neg.length) t += '. Largest shortfall: ' + neg.map(function(d){ return esc(d.short) + ' <span class="vn">' + yqMoney(d.m.gap) + '</span>'; }).join(", ");
+  if (pos.length) t += '. Best: ' + esc(pos[0].short) + ' <span class="vp">' + yqMoney(pos[0].m.gap) + '</span>';
+  if (empty) t += '. <span class="yq3-warn">⏳ ' + empty + ' month' + (empty > 1 ? "s" : "") + ' not fully forecast yet</span>';
+  return '<div class="yq3-key"><span class="tg">KEY MESSAGE</span><span class="tx">' + t + '.</span></div>';
+}
+
+// ── 2. outlook card ─────────────────────────────────────────────────
+// o = {title, M, act (metrics of actual-closed part or null), ly:true/false, nClosed, nAll, foot}
+function yqOutlook(o){
+  var M = o.M, a = o.act;
+  var actV = a ? a.fc : 0, fcV = Math.max(0, M.fc - actV);
+  var scale = Math.max(M.bm, M.fc, 1);
+  var wA = actV / scale * 100, wF = fcV / scale * 100, mk = M.bm / scale * 100;
+  var col = yqAchCol(M.ach), bc = "#5B87B8";
+  var leg = o.nClosed === 0 ? '<span><i class="f" style="--c:' + bc + '"></i>All forecast · no month closed yet</span>'
+    : (o.nClosed === o.nAll ? '<span><i class="a" style="background:' + bc + '"></i>All actual · ' + o.nAll + ' month' + (o.nAll > 1 ? "s" : "") + ' closed</span>'
+    : '<span><i class="a" style="background:' + bc + '"></i>Actual closed <b>' + yqBig(actV) + '</b> · ' + o.nClosed + ' of ' + o.nAll + ' months</span>'
+      + '<span><i class="f" style="--c:' + bc + '"></i>Forecast <b>' + yqBig(fcV) + '</b></span>');
+  var h = '<div class="yq3-out">'
+    + '<div class="yq3-main"><div class="lb">' + o.title + '</div>'
+    + '<div class="big">' + yqBig(M.fc) + '<span class="of">of ' + yqBig(M.bm) + ' budget</span></div></div>'
+    + '<div class="yq3-sm"><div class="lb">Achieved</div><div class="v" style="color:' + col + '">' + yqPctTxt(M.ach) + '</div></div>'
+    + '<div class="yq3-sm"><div class="lb">Vs. budget</div><div class="v ' + (M.gap >= 0 ? "vp" : "vn") + '">' + yqMoney(M.gap) + '</div><div class="s">' + yqPct(M.gp) + '</div></div>'
+    + '<div class="yq3-sm"><div class="lb">Vs. ' + esc(o.lyName) + '</div>' + (M.yp == null ? '<div class="v na">—</div><div class="s">' + (o.lyLoading ? "loading…" : "no data") + '</div>'
+        : '<div class="v ' + (M.yp >= 0 ? "vp" : "vn") + '">' + yqPct(M.yp) + '</div><div class="s">' + esc(o.lyName) + ' ' + yqBig(M.ly) + '</div>') + '</div>'
+    + '<div class="yq3-bar"><div class="trk">'
+    + (wA > 0 ? '<i class="a" style="width:' + wA.toFixed(2) + '%;background:' + bc + '"></i>' : '')
+    + (wF > 0 ? '<i class="f" style="left:' + wA.toFixed(2) + '%;width:' + wF.toFixed(2) + '%;--c:' + bc + '"></i>' : '')
+    + '<b class="mk" style="left:' + Math.min(100, mk).toFixed(2) + '%"><span>Budget</span></b></div></div>'
+    + '<div class="yq3-leg">'
+    + leg
+    + (o.foot ? '<span class="r">' + o.foot + '</span>' : '')
+    + '</div></div>';
+  return h;
+}
+
+// ── 3. gap drivers: variance vs budget, ranked ─────────────────────
+function yqDrvList(P, scope, idxs, mode){
+  var out = [], all = P.cur.concat(P.ly || []);
+  if (mode === "seg") {
+    var segs = YQ_SEG_ORDER.slice(); all.forEach(function(r){ if (segs.indexOf(r.seg) < 0) segs.push(r.seg); });
+    segs.forEach(function(sg){ out.push({name:segLabel(sg), short:segLabel(sg), m:yqM(P, yqAnd(scope, function(r){ return r.seg === sg; }), idxs), slots:yqSlotsSeg(sg), click:"yqScope('seg','" + yqJs(sg) + "')"}); });
+  } else if (mode === "dist") {
+    var meta = {};
+    all.forEach(function(r){ if (scope(r)) meta[r.dk] = {nm:r.dist, phys:r.phys, cty:r.cty, segs:(meta[r.dk] ? meta[r.dk].segs : {})}; });
+    P.cur.forEach(function(r){ if (meta[r.dk]) meta[r.dk].segs[r.seg] = 1; });
+    Object.keys(meta).forEach(function(dk){
+      var mt = meta[dk], sl = YQ_SEG_ORDER.filter(function(s){ return mt.segs[s]; });
+      out.push({name:mt.nm, sub:mt.phys, short:mt.nm, m:yqM(P, yqAnd(scope, function(r){ return r.dk === dk; }), idxs),
+                slots:yqSlotsDist(mt.nm, mt.cty, sl.length ? sl : YQ_SEG_ORDER), click:"yqScope('dist','" + yqJs(dk) + "')"});
+    });
+  } else {
+    var groups = YQ_GROUPS.slice(); if (all.some(function(r){ return r.grp === "Other"; })) groups.push(YQ_OTHER);
+    groups.forEach(function(g){ out.push({name:(g.code === "Other" ? "" : g.code + " ") + g.name, sub:g.def, short:g.name, m:yqM(P, yqAnd(scope, function(r){ return r.grp === g.code; }), idxs),
+                                         slots:yqSlotsGrp(g.code), click:"yqScope('grp','" + g.code + "')"}); });
   }
-  return '<div class="yq-kt ' + (o.cls || "") + '"><div class="k">' + o.k + (o.tag ? '<span>' + o.tag + '</span>' : '') + '</div>'
-    + '<div class="v' + (o.vcls ? " " + o.vcls : "") + '">' + o.v + '</div>' + bar + '<div class="s">' + (o.s || "") + '</div></div>';
+  out = out.filter(function(d){ return Math.round(d.m.bm) || Math.round(d.m.fc); });
+  out.sort(function(a, b){ return a.m.gap - b.m.gap; });
+  return out;
 }
-
-// ── quarter + month tiles (also the period picker of the Quarter · Month view) ──
-function yqStrip(P, scope, sel, fnName){
-  var st = P.status;
-  var qStat = function(q){ var s = st.slice(q*3, q*3+3); return s.every(function(x){ return x==="actual"; }) ? "actual" : (s.filter(function(x){ return x==="empty"; }).length >= 2 ? "empty" : "forecast"); };
-  var tile = function(m, lbl, stt, k, i){
-    var a = m.ach, on = sel && sel.k === k && sel.i === i;
-    return '<div class="yq-pt ' + (k === "q" ? "q " : "") + "st-" + stt + (on ? " sel" : "") + '" onclick="' + fnName + '(\'' + k + '\',' + i + ')" title="' + esc(lbl)
-      + ' · Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + (m.yp == null ? "" : ' · YoY ' + yqPct(m.yp)) + '">'
-      + '<div class="a"><span>' + esc(lbl) + '</span><em>' + (stt === "actual" ? "✓" : (stt === "empty" ? "⏳" : "")) + '</em></div>'
-      + '<div class="b" style="color:' + yqAchCol(a) + '">' + (a == null ? "—" : Math.round(a) + "%") + '</div>'
-      + '<div class="c"><i style="width:' + Math.min(100, a || 0).toFixed(1) + '%;background:' + yqAchCol(a) + '"></i></div></div>';
-  };
-  var qs = [0,1,2,3].map(function(q){ return tile(yqM(P, scope, yqQIdx(q)), "Q" + (q+1) + " · " + yqMonLbl(q*3).slice(0,3) + "–" + yqMonLbl(q*3+2).slice(0,3), qStat(q), "q", q); });
-  var ms = YQ_ALL12.map(function(i){ return tile(yqM(P, scope, [i]), yqMonLbl(i), st[i], "m", i); });
-  var h = '<div class="yq-strip2">';
-  for (var q = 0; q < 4; q++) h += '<div class="yq-qcol">' + qs[q] + '<div class="yq-mrow">' + ms.slice(q*3, q*3+3).join("") + '</div></div>';
-  return h + '</div><div class="yq-legend2"><span><i style="background:#3E8E6B"></i>≥ 100% of budget</span><span><i style="background:#D9981F"></i>90–99%</span><span><i style="background:#C0504D"></i>&lt; 90%</span><span>✓ Actual closed</span><span>⏳ Forecast partly entered</span><span class="r">% = Forecast/Actual ÷ Budget</span></div>';
-}
-
-// ── breakdown table with expandable explanation rows ───────────────
-var YQ_RID = 0;
-function yqAchCell(m){
-  if (m.ach == null) return '<td class="ac"><span class="arr-e">—</span></td>';
-  return '<td class="ac"><span class="yq-bar"><i style="width:' + Math.min(100, Math.max(0, m.ach)).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><b style="color:' + yqAchCol(m.ach) + '">' + Math.round(m.ach) + '%</b></td>';
-}
-function yqNumCells(m, withLy){
-  return '<td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td>' + yqAchCell(m)
-    + (withLy ? '<td>' + (m.yoy == null ? "—" : yqF(m.ly)) + '</td>' : '') + '<td>' + (m.yoy == null ? "—" : yqP(m.yp)) + '</td>';
-}
-function yqFacts(m, lbl){
-  return '<span>' + (lbl ? '<b>' + esc(lbl) + '</b> · ' : '') + 'Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' · Vs. budget ' + yqG(m.gap) + ' (' + yqPct(m.gp) + ')'
-    + (m.yoy == null ? '' : ' · ' + esc(yqLyName()) + ' ' + yqF(m.ly) + ' · YoY ' + yqP(m.yp)) + '</span>';
-}
-// mode "Y": r = {label, m, cls, click, ex:{n,html}} · mode "Q": r = {label, s, c, cls, click, exS, exC}
-// Explanations appear only as a hover card (💬 on rows that have one)
-var YQ_TIPS = {};
-function yqTable(mode, rows, first, sLbl, cLbl){
-  var y = mode === "Y";
-  var H = '<div class="tw yq-t2"><table><thead>';
-  if (!y) H += '<tr class="blk"><th></th><th class="bs" colspan="5">' + esc(sLbl) + '</th><th class="sep"></th><th class="bc" colspan="5">' + esc(cLbl) + '</th></tr>';
-  var cols = '<th>Budget</th><th>F/A</th><th>Vs. budget</th><th class="ac">Achievement</th>' + (y ? '<th>' + esc(yqLyName()) + '</th>' : '') + '<th>YoY</th>';
-  H += '<tr><th>' + esc(first) + '</th>' + cols + (y ? '' : '<th class="sep"></th>' + cols) + '</tr></thead><tbody>';
-  var ncol = y ? 7 : 12;
-  if (!rows.length) H += '<tr><td colspan="' + ncol + '" class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' in this view' + (y ? '' : ' and period') + ' · try another tab, period or item.</td></tr>';
-  rows.forEach(function(r){
-    var id = ++YQ_RID, tip = "";
-    if (y) { if (r.ex && r.ex.n) tip = r.ex.html; }
-    else {
-      if (r.exS && r.exS.n) tip += '<div class="h">' + esc(sLbl) + '</div>' + r.exS.html;
-      if (r.exC && r.exC.n) tip += '<div class="h">' + esc(cLbl) + '</div>' + r.exC.html;
-    }
-    if (tip) YQ_TIPS[id] = '<div class="t">' + r.label + '</div>' + tip;
-    var ev = tip ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '';
-    var ic = tip ? '<span class="yq-ic" title="Forecast explanation · hover the row" onclick="event.stopPropagation();yqTipShow(event,' + id + ',true)">💬</span>' : '';
-    H += '<tr class="yq-row ' + (r.cls || "") + (r.click ? " go" : "") + '"' + (r.click ? ' onclick="yqTipHide();' + r.click + '" title="Click to view only this item"' : '') + ev + '>'
-      + '<td class="nm">' + r.label + ic + '</td>'
-      + (y ? yqNumCells(r.m, true) : yqNumCells(r.s, false) + '<td class="sep"></td>' + yqNumCells(r.c, false)) + '</tr>';
+function yqDrivers(list, mode, ft, sc, sub){
+  var max = 1; list.forEach(function(d){ max = Math.max(max, Math.abs(d.m.gap)); });
+  var shown = list, more = 0;
+  if (mode === "dist" && list.length > 10) {                        // biggest 7 shortfalls + biggest 3 overs
+    var neg = list.filter(function(d){ return d.m.gap < 0; }), pos = list.filter(function(d){ return d.m.gap >= 0; });
+    shown = neg.slice(0, 7).concat(pos.slice(-3)); more = list.length - shown.length;
+  }
+  var tot = 0; list.forEach(function(d){ tot += d.m.gap; });
+  var h = '<div class="card yq3-card"><div class="yq3-hd"><b>Where the gap comes from</b><span class="s">' + esc(sub) + ' · vs. budget, biggest shortfall first</span>'
+    + '<span class="yq-fill"></span><div class="yq3-seg">'
+    + [["grp","Group"],["seg","Segment"],["dist","Distributor"]].map(function(x){ return '<button class="' + (mode === x[0] ? "on" : "") + '" onclick="yqSetDrv(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join("")
+    + '</div></div><div class="yq3-drv">';
+  if (!shown.length) h += '<div class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' here.</div>';
+  shown.forEach(function(d){
+    var id = ++YQ_RID, ex = yqExList(d.slots, ft, sc);
+    if (ex.n) YQ_TIPS[id] = '<div class="t">' + esc(d.name) + '</div>' + ex.html;
+    var w = Math.abs(d.m.gap) / max * 100, neg = d.m.gap < 0;
+    h += '<div class="yq3-dr" onclick="yqTipHide();' + d.click + '" title="Budget ' + yqF(d.m.bm) + ' · F/A ' + yqF(d.m.fc) + ' ' + yqUnit() + ' · click to view only this item"'
+      + (ex.n ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '') + '>'
+      + '<div class="nm">' + esc(d.name) + (ex.n ? '<span class="yq-ic">💬</span>' : '') + (d.sub ? '<small>' + esc(d.sub) + '</small>' : '') + '</div>'
+      + '<div class="bx"><div class="l">' + (neg ? '<i style="width:' + w.toFixed(1) + '%"></i>' : '') + '</div><div class="r">' + (!neg ? '<i style="width:' + w.toFixed(1) + '%"></i>' : '') + '</div></div>'
+      + (yqF(Math.abs(d.m.gap)) === "0" ? '<div class="gv arr-e">0</div>' : '<div class="gv ' + (neg ? "vn" : "vp") + '">' + yqSign(d.m.gap) + yqF(Math.abs(d.m.gap)) + '</div>')
+      + '<div class="ap" style="color:' + yqAchCol(d.m.ach) + '">' + yqPctTxt(d.m.ach) + '</div></div>';
   });
-  return H + '</tbody></table></div>';
+  h += '</div><div class="yq3-ft"><span>' + yqUnit() + ' · % = achievement of budget' + (more ? ' · ' + more + ' smaller distributor(s) not shown' : '') + '</span>'
+    + '<span>Total gap <b class="' + (tot >= 0 ? "vp" : "vn") + '">' + yqSign(tot) + yqF(Math.abs(tot)) + '</b></span></div></div>';
+  return h;
 }
+
+// ── explanations: hover card (rows with 💬) ─────────────────────────
+var YQ_TIPS = {};
 function yqTipEl(){
   var t = document.getElementById("yq-tip");
   if (!t) { t = document.createElement("div"); t.id = "yq-tip"; t.className = "yq-tip"; document.body.appendChild(t);
@@ -5397,10 +5589,43 @@ function yqTipMove(e, force){
 }
 function yqTipHide(){ var t = document.getElementById("yq-tip"); if (t) t.classList.remove("on", "sticky"); }
 document.addEventListener("click", function(e){ if (!e.target.closest || !e.target.closest(".yq-ic")) yqTipHide(); });
-function yqTabs(view, cur, list, hint){
-  return '<div class="yq-tabs">' + list.map(function(t){
-    return '<button class="' + (cur === t[0] ? "on" : "") + '" onclick="yqSetTab(\'' + view + '\',\'' + t[0] + '\')">' + t[1] + '</button>'; }).join("")
-    + '<span class="h">' + (hint || "") + '</span></div>';
+
+// ── 5. detail table (5 columns) ─────────────────────────────────────
+var YQ_RID = 0;
+function yqAchCell(m){
+  if (m.ach == null) return '<td class="ac"><span class="arr-e">—</span></td>';
+  return '<td class="ac"><span class="yq-bar"><i style="width:' + Math.min(100, Math.max(0, m.ach)).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span><b style="color:' + yqAchCol(m.ach) + '">' + Math.round(m.ach) + '%</b></td>';
+}
+// rows: {label, m, cls, click, ex:{n,html}}
+function yqTable(rows, first){
+  var H = '<div class="tw yq-t2 yq3-t"><table><thead><tr><th>' + esc(first) + '</th><th>Budget</th><th>F/A</th><th>Vs. budget</th><th class="ac">Achievement</th><th>YoY</th></tr></thead><tbody>';
+  if (!rows.length) H += '<tr><td colspan="6" class="yq-none">Nothing to show for ' + esc(yqScopeLabel()) + ' in this view · try another tab, period or item.</td></tr>';
+  rows.forEach(function(r){
+    var id = ++YQ_RID, tip = r.ex && r.ex.n ? r.ex.html : "";
+    if (tip) YQ_TIPS[id] = '<div class="t">' + r.label + '</div>' + tip;
+    var ev = tip ? ' onmouseenter="yqTipShow(event,' + id + ')" onmousemove="yqTipMove(event)" onmouseleave="yqTipHide()"' : '';
+    var ic = tip ? '<span class="yq-ic" title="Forecast explanation · hover the row" onclick="event.stopPropagation();yqTipShow(event,' + id + ',true)">💬</span>' : '';
+    var m = r.m;
+    H += '<tr class="yq-row ' + (r.cls || "") + (r.click ? " go" : "") + '"' + (r.click ? ' onclick="yqTipHide();' + r.click + '" title="Click to open"' : '') + ev + '>'
+      + '<td class="nm">' + r.label + ic + '</td><td>' + yqF(m.bm) + '</td><td><b>' + yqF(m.fc) + '</b></td><td>' + yqG(m.gap) + '</td>' + yqAchCell(m)
+      + '<td class="yy" title="' + (m.yoy == null ? "" : esc(yqLyName()) + " " + yqF(m.ly)) + '">' + (m.yoy == null ? '<span class="arr-e">—</span>' : yqP(m.yp)) + '</td></tr>';
+  });
+  return H + '</tbody></table></div>';
+}
+function yqDetail(view, tab, list, rows, first, caption){
+  var open = S.yq.det !== false;
+  var h = '<div class="card yq3-card"><div class="yq3-hd yq3-click" onclick="yqToggleDet()"><b>' + (open ? "▾" : "▸") + ' Detail table</b><span class="s">' + esc(caption) + '</span>'
+    + '<span class="yq-fill"></span><span class="s">' + (open ? "hide" : "show") + '</span></div>';
+  if (!open) return h + '</div>';
+  h += '<div class="yq-tabs">' + list.map(function(t){
+      return '<button class="' + (tab === t[0] ? "on" : "") + '" onclick="yqSetTab(\'' + view + '\',\'' + t[0] + '\')">' + t[1] + '</button>'; }).join("")
+    + '<span class="h">💬 hover = explanation · click a row = open it' + (rows.hidden ? " · " + rows.hidden + " inactive distributor(s) hidden" : "") + '</span></div>';
+  return h + yqTable(rows, first) + '</div>';
+}
+function yqStatusTag(st){
+  if (st === "actual") return '<span class="yq3-st a" title="Actual closed">actual</span>';
+  if (st === "empty")  return '<span class="yq3-st e" title="Forecast not fully entered yet">⏳</span>';
+  return '';
 }
 
 // Rows for Segment / Groups / Distributors / Country report (shared by both views)
@@ -5452,7 +5677,6 @@ function yqSectionRows(P, scope, mk){
   });
   return out;
 }
-// Flatten the chosen tab into table rows; ex(r) fills the explanations
 function yqTabRows(SR, tab, ex){
   var out = [], hidden = 0;
   if (tab === "seg") SR.seg.forEach(function(r){ out.push(ex(r)); });
@@ -5464,6 +5688,20 @@ function yqTabRows(SR, tab, ex){
   if (tab === "rep") SR.rep.forEach(function(R){ R.r.cls = "g"; out.push(ex(R.r)); R.rows.forEach(function(s){ s.cls = "d"; out.push(ex(s)); }); });
   out.hidden = hidden;
   return out;
+}
+
+// quarter chips (Year view) — one line, click opens the quarter
+function yqQChips(P, scope, fnName, sel){
+  var st = P.status;
+  return '<div class="yq3-qs">' + [0,1,2,3].map(function(q){
+    var m = yqM(P, scope, yqQIdx(q)), s = st.slice(q*3, q*3+3);
+    var tag = s.some(function(x){ return x === "empty"; }) ? '<span class="yq3-st e" title="Forecast not fully entered">⏳</span>' : '';
+    var on = sel && sel.k === "q" && sel.i === q;
+    return '<button class="yq3-q' + (on ? " on" : "") + '" onclick="' + fnName + '(\'q\',' + q + ')" title="Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + '">'
+      + '<span class="t">Q' + (q+1) + ' <small>' + yqMonLbl(q*3).slice(0,3) + '-' + yqMonLbl(q*3+2).slice(0,3) + '</small>' + tag + '</span>'
+      + '<b style="color:' + yqAchCol(m.ach) + '">' + yqPctTxt(m.ach) + '</b>'
+      + '<span class="mb"><i style="width:' + Math.min(100, m.ach || 0).toFixed(1) + '%;background:' + yqAchCol(m.ach) + '"></i></span></button>';
+  }).join("") + '</div>';
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -5478,60 +5716,45 @@ function rYR(){
   var scope = yqScopeFn(), fy = FYN(), st = P.status;
   var M = yqM(P, scope, YQ_ALL12);
   var mm = YQ_ALL12.map(function(i){ return yqM(P, scope, [i]); });
-  var Mc = yqM(P, scope, P.closed);
-  var paceMark = M.bm > 0 ? Mc.bm / M.bm * 100 : 0, progress = M.bm > 0 ? Mc.fc / M.bm * 100 : null;
-  var gRows = YQ_GROUPS.map(function(g){ var m = yqM(P, yqAnd(scope, function(r){ return r.grp === g.code; }), YQ_ALL12); m.g = g; return m; })
-                .filter(function(m){ return m.bm || m.fc; });
-  var onT = gRows.filter(function(m){ return m.ach != null && m.ach >= 100; });
-  var offT = gRows.filter(function(m){ return !(m.ach != null && m.ach >= 100); });
+  var Ma = yqM(P, scope, P.closed);
+  var empty = st.filter(function(s){ return s === "empty"; }).length;
+  var drvMode = S.yq.drv || "grp";
+  var drv = yqDrvList(P, scope, YQ_ALL12, drvMode);
 
-  var tb = yqToolbar(P);
+  var out = yqOutlook({title:esc(fy) + " outlook · actual + forecast", M:M, act:Ma, nClosed:P.closed.length, nAll:12,
+    lyName:P.lyName, lyLoading:P.lyStatus === "loading",
+    foot:Ma.bm > 0 || P.closed.length ? 'Closed months: <b>' + yqPctTxt(Ma.bm > 0 ? Ma.fc / Ma.bm * 100 : null) + '</b> of their budget' : ''});
 
-  var kpis = '<div class="yq-kpis">'
-    + yqTile({k:"Forecast / Actual", tag:fy, v:yqBig(M.fc), bar:M.ach, s:'Budget ' + yqBig(M.bm) + ' · <b style="color:' + yqAchCol(M.ach) + '">' + (M.ach == null ? "—" : Math.round(M.ach) + "%") + '</b> achieved'})
-    + yqTile({k:"Vs. budget", v:yqSign(M.gap) + yqBig(Math.abs(M.gap)), vcls:M.gap >= 0 ? "pos" : "neg", s:yqPct(M.gp) + ' vs Budget Mani'})
-    + yqTile({k:"Progress to FY budget", tag:P.closed.length + "/12 closed", v:progress == null ? "—" : progress.toFixed(1) + "%", bar:progress,
-              barCol:progress != null && progress >= paceMark ? "#3E8E6B" : "#D9981F", mark:paceMark,
-              s:'Closed months: actual ' + yqBig(Mc.fc) + ' vs plan ' + yqBig(Mc.bm)})
-    + yqTile({k:"vs last year", tag:P.lyName, v:M.yp == null ? "—" : yqPct(M.yp), vcls:M.yp == null ? "" : (M.yp >= 0 ? "pos" : "neg"),
-              s:P.ly ? esc(P.lyName) + ' ' + yqBig(M.ly) + ' → ' + esc(fy) + ' ' + yqBig(M.fc) : (P.lyStatus === "loading" ? "Loading…" : "No data")})
-    + yqTile({k:"Groups on budget", tag:"≥ 100%", v:onT.length + '<small> / ' + gRows.length + '</small>',
-              s:offT.length ? 'Below: ' + offT.map(function(m){ return '<b style="color:' + yqAchCol(m.ach) + '">' + m.g.code + '</b> ' + (m.ach == null ? "—" : Math.round(m.ach) + "%"); }).join(" · ") : "All on or above budget"})
-    + '</div>';
+  var trend = '<div class="card yq3-card"><div class="yq3-hd"><b>Month by month</b><span class="s">click a quarter or a bar to open it</span><span class="yq-fill"></span>'
+    + '<label class="yq3-chk"><input type="checkbox"' + (S.yq.showLy ? " checked" : "") + ' onchange="yqSetLy()"> show ' + esc(yqLyName()) + '</label></div>'
+    + '<div class="yq3-pad">' + yqQChips(P, scope, "yqOpenPer", null) + '<div class="cw" style="margin-top:8px"><canvas id="c-yr-m"></canvas></div></div></div>';
 
-  var prog = '<div class="card yq-c"><div class="yq-ch"><b>Progress by quarter and month</b><span>' + esc(yqScopeLabel()) + ' · click a tile to open that period</span></div>'
-    + '<div class="yq-cb">' + yqStrip(P, scope, null, "yqOpenPer") + '<div class="cw t" style="margin-top:10px"><canvas id="c-yr-m"></canvas></div></div></div>';
-
-  // breakdown
-  var tab = S.yq.tabY || "qm", eft = null;
-  var dimCountry = S.yq.dim === "cty" && S.yq.item;
-  var noteC = dimCountry ? "Explanations are stored per Country report · choose View by = Country report." : "";
-  var rows, first;
+  // detail
+  var tab = S.yq.tabY || "qm", rows, first;
+  var dimCountry = S.yq.dim === "cty" && S.yq.item, exSlots = dimCountry ? [] : yqSlotsScope(P);
   if (tab === "qm") {
-    var exSlots = yqSlotsScope(P); first = "Period";
-    rows = [{cls:"fy", label:"Full year " + esc(fy), m:M, ex:yqExList(dimCountry ? [] : exSlots, fy, "Single"), noEx:noteC}];
+    first = "Period";
+    rows = [{cls:"fy", label:"Full year " + esc(fy), m:M, ex:yqExList(exSlots, fy, "Single")}];
     for (var q = 0; q < 4; q++) {
       var qi = yqQIdx(q);
       rows.push({cls:"q", label:"Q" + (q+1) + ' <span class="cty">' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + '</span>', m:yqM(P, scope, qi),
-                 ex:yqExList(dimCountry ? [] : exSlots, "Q" + (q+1), "Single"), noEx:noteC, click:"yqOpenPer('q'," + q + ")"});
+                 ex:yqExList(exSlots, "Q" + (q+1), "Single"), click:"yqOpenPer('q'," + q + ")"});
       qi.forEach(function(i){
-        rows.push({cls:"d", label:yqMonLbl(i) + yqStatusTag(st[i]), m:mm[i], ex:yqExList(dimCountry ? [] : exSlots, FYC.keys[i], "Single"), noEx:noteC, click:"yqOpenPer('m'," + i + ")"});
+        rows.push({cls:"d", label:yqMonLbl(i) + yqStatusTag(st[i]), m:mm[i], ex:yqExList(exSlots, FYC.keys[i], "Single"), click:"yqOpenPer('m'," + i + ")"});
       });
     }
   } else {
     var SR = yqSectionRows(P, scope, function(pred){ var m = yqM(P, pred, YQ_ALL12); return {m:m, zero:yqIsZero(m)}; });
-    rows = yqTabRows(SR, tab, function(r){ r.ex = yqExList(r.slots, eft, "Single"); return r; });
+    rows = yqTabRows(SR, tab, function(r){ r.ex = yqExList(r.slots, null, "Single"); return r; });
     first = {seg:"Segment", grp:"Segment × Country group", dist:"Group / Distributor", rep:"Country report / Segment"}[tab];
   }
-  var hint = "hover a row with 💬 to read its explanation · click a row to view only that item"
-    + (rows.hidden ? " · " + rows.hidden + " inactive distributor(s) hidden" : "");
-  var bd = '<div class="card yq-c">' + yqTabs("yr", tab, [["qm","Quarter & month"],["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"]], hint)
-    + yqTable("Y", rows, first) + '</div>';
+  var det = yqDetail("yr", tab, [["qm","Quarter & month"],["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"]], rows, first,
+                     fy + " full year · " + yqUnit());
 
-  body.innerHTML = tb + yqLyNote(P) + kpis + prog + bd
-    + '<div class="yq-note">Unit ' + yqUnit() + ' · Achievement = Forecast/Actual ÷ Budget Mani · YoY vs same months of ' + esc(P.lyName)
-    + ' · Progress to FY budget = actual of closed months ÷ full-year budget (marker = budget planned for those months) · ' + esc(RULE_TEXT || "") + '</div>';
-  yqChartMonthly("c-yr-m", mm, P, -1);
+  body.innerHTML = yqToolbar(P) + yqLyNote(P) + yqKeyMsg(P, M, drv, fy + " full year", empty) + out
+    + '<div class="yq3-g2">' + yqDrivers(drv, drvMode, null, "Single", fy + " full year") + trend + '</div>' + det
+    + '<div class="yq-note">Unit ' + yqUnit() + ' · Achievement = Forecast/Actual ÷ Budget Mani · YoY vs the same months of ' + esc(P.lyName) + ' · ' + esc(RULE_TEXT || "") + '</div>';
+  yqChartMonthly("c-yr-m", mm, P, -1, null, 280);
 }
 function yqOpenPer(k, i){ S.yq.per = {k:k, i:i}; yqSave(); TAB_DIRTY.qm = true; goTab("qm"); }
 
@@ -5554,6 +5777,22 @@ function yqStepPer(d){
   var p = yqPerInfo(), max = p.k === "q" ? 3 : 11;
   yqSetPer(p.k, Math.max(0, Math.min(max, p.i + d)));
 }
+// period picker: Q1..Q4 | 12 month chips with a status dot (numbers on hover)
+function yqPerPicker(P, scope, per){
+  var st = P.status;
+  var chip = function(k, i, lbl, m, stt){
+    var on = per.k === k && per.i === i;
+    return '<button class="yq3-pc' + (on ? " on" : "") + (k === "q" ? " q" : "") + (stt === "empty" ? " pe" : "") + '" onclick="yqSetPer(\'' + k + '\',' + i + ')" title="' + esc(lbl) + ' · ' + yqPctTxt(m.ach)
+      + ' of budget (Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' ' + yqUnit() + ')' + (stt === "empty" ? " · forecast not fully entered" : (stt === "actual" ? " · actual" : "")) + '">'
+      + '<i style="background:' + yqAchCol(m.ach) + '"></i>' + esc(lbl) + (stt === "actual" ? '<em class="a">✓</em>' : '') + '</button>';
+  };
+  var qStat = function(q){ var s = st.slice(q*3, q*3+3); return s.every(function(x){ return x === "actual"; }) ? "actual" : (s.some(function(x){ return x === "empty"; }) ? "empty" : ""); };
+  var h = '<div class="yq3-pick"><div class="row">';
+  for (var q = 0; q < 4; q++) h += chip("q", q, "Q" + (q+1), yqM(P, scope, yqQIdx(q)), qStat(q));
+  h += '<span class="sep"></span>';
+  for (var i = 0; i < 12; i++) h += chip("m", i, yqMonLbl(i), yqM(P, scope, [i]), st[i]);
+  return h + '</div><div class="lg"><span><i style="background:#3E8E6B"></i>≥ 100% of budget</span><span><i style="background:#D9981F"></i>90-99%</span><span><i style="background:#C0504D"></i>&lt; 90%</span><span>✓ actual</span><span><b class="pe-k"></b>dashed = forecast not fully entered</span><span>hover a chip for its numbers</span></div></div>';
+}
 
 function rQM(){
   var body = document.getElementById("qm-body"); if (!body) return;
@@ -5562,134 +5801,87 @@ function rQM(){
   YQ_RID = 0; YQ_TIPS = {}; yqTipHide();
   var per = yqPerInfo(), scope = yqScopeFn(), fy = FYN(), st = P.status;
   var cumIdx = yqRange(0, per.end);
+  var basis = S.yq.basis === "c" ? "c" : "s";
   document.getElementById("sp-qm").textContent = per.lbl + " · " + fy + " · " + yqUnit();
-  var sLbl = "Single · " + per.lbl, cLbl = "Cumulative · " + yqMonLbl(0) + " → " + yqMonLbl(per.end);
+  var sTxt = per.lbl, cTxt = "YTD " + yqMonLbl(0) + " → " + yqMonLbl(per.end);
 
   var tb = yqToolbar(P, '<span class="yq-fill"></span><label>Period</label><button class="yq-x1" onclick="yqStepPer(-1)" title="Previous">◀</button><b class="yq-per">'
     + esc(per.lbl) + '</b><button class="yq-x1" onclick="yqStepPer(1)" title="Next">▶</button>');
 
-  var strip = '<div class="card yq-c"><div class="yq-ch"><b>Choose a quarter or month</b><span>' + esc(yqScopeLabel()) + ' · % = achievement of that period</span></div>'
-    + '<div class="yq-cb">' + yqStrip(P, scope, {k:per.k, i:per.i}, "yqSetPer") + '</div></div>';
-
   var Ms = yqM(P, scope, per.idxs), Mc = yqM(P, scope, cumIdx), Mfy = yqM(P, scope, YQ_ALL12);
+  var idxB = basis === "c" ? cumIdx : per.idxs, MB = basis === "c" ? Mc : Ms;
+  var ftB = basis === "c" ? per.ftC : per.ftS, scB = basis === "c" ? "Cumulative" : "Single", txtB = basis === "c" ? cTxt : sTxt;
+  var actIdx = idxB.filter(function(i){ return st[i] === "actual"; });
+  var emptyB = idxB.filter(function(i){ return st[i] === "empty"; }).length;
+  var drvMode = S.yq.drv || "grp";
+  var drv = yqDrvList(P, scope, idxB, drvMode);
+
+  var bswitch = '<div class="yq3-basis"><span class="lb">Show</span><div class="yq3-seg big">'
+    + '<button class="' + (basis === "s" ? "on" : "") + '" onclick="yqSetBasis(\'s\')">' + esc(sTxt) + ' <small>single</small></button>'
+    + '<button class="' + (basis === "c" ? "on" : "") + '" onclick="yqSetBasis(\'c\')">' + esc(cTxt) + ' <small>cumulative</small></button></div>'
+    + '<span class="o">The other one: <b>' + (basis === "c" ? esc(sTxt) + ' ' + yqBig(Ms.fc) + ' · ' + yqPctTxt(Ms.ach) : esc(cTxt) + ' ' + yqBig(Mc.fc) + ' · ' + yqPctTxt(Mc.ach)) + '</b></span></div>';
+
   var ytd = Mfy.bm > 0 ? Mc.fc / Mfy.bm * 100 : null, plan = Mfy.bm > 0 ? Mc.bm / Mfy.bm * 100 : 0;
-  var kt = function(k, m){
-    return yqTile({k:k, v:yqBig(m.fc), bar:m.ach,
-      s:'Budget ' + yqBig(m.bm) + ' · <b style="color:' + yqAchCol(m.ach) + '">' + (m.ach == null ? "—" : Math.round(m.ach) + "%") + '</b> · Vs ' + '<span class="' + (m.gap >= 0 ? "vp" : "vn") + '">' + yqSign(m.gap) + yqBig(Math.abs(m.gap)) + '</span>'
-        + '<br>' + (m.yoy == null ? esc(yqLyName()) + " —" : esc(yqLyName()) + ' ' + yqBig(m.ly) + ' · YoY ' + yqP(m.yp))});
-  };
-  var kpis = '<div class="yq-kpis k3">' + kt("Single · " + per.lbl, Ms) + kt("Cumulative · " + yqMonLbl(0) + " → " + yqMonLbl(per.end), Mc)
-    + yqTile({k:"Cumulative vs full-year budget", tag:fy, v:ytd == null ? "—" : ytd.toFixed(1) + "%", bar:ytd, mark:plan,
-              barCol:ytd != null && ytd >= plan ? "#3E8E6B" : "#D9981F",
-              s:'Plan to date ' + plan.toFixed(0) + '% · still to go <b>' + yqBig(Math.max(0, Mfy.bm - Mc.fc)) + '</b> of ' + yqBig(Mfy.bm)})
-    + '</div>';
+  var out = yqOutlook({title:esc(txtB), M:MB, act:yqM(P, scope, actIdx), nClosed:actIdx.length, nAll:idxB.length,
+    lyName:P.lyName, lyLoading:P.lyStatus === "loading",
+    foot:'Full year: YTD = <b>' + (ytd == null ? "—" : ytd.toFixed(0) + "%") + '</b> of ' + esc(fy) + ' budget (plan ' + plan.toFixed(0) + '%) · still to go <b>' + yqBig(Math.max(0, Mfy.bm - Mc.fc)) + '</b>'});
 
-  var mkQ = function(pred){ var s = yqM(P, pred, per.idxs), c = yqM(P, pred, cumIdx); return {s:s, c:c, m:c, zero:yqIsZero(s) && yqIsZero(c)}; };
-  var SR = yqSectionRows(P, scope, mkQ);
-  var mm = YQ_ALL12.map(function(i){ return yqM(P, scope, [i]); });
-  var charts = '<div class="g2">'
-    + '<div class="card yq-c"><div class="yq-ch"><b>Achievement by group</b><span>Single vs Cumulative</span></div><div class="yq-cb"><div class="cw"><canvas id="c-qm-g"></canvas></div></div></div>'
-    + '<div class="card yq-c"><div class="yq-ch"><b>Monthly trend</b><span>' + esc(yqScopeLabel()) + '</span></div><div class="yq-cb"><div class="cw"><canvas id="c-qm-ex"></canvas></div></div></div>'
-    + '</div>';
-
-  var tab = S.yq.tabQ || "grp";
-  var dimCountry = S.yq.dim === "cty" && S.yq.item;
-  var noteC = dimCountry ? "Explanations are stored per Country report · choose View by = Country report." : "";
-  var rows, first, exS = yqSlotsScope(P);
+  var tab = S.yq.tabQ || "grp", rows, first;
+  var dimCountry = S.yq.dim === "cty" && S.yq.item, exS = dimCountry ? [] : yqSlotsScope(P);
+  var pick = function(s, c){ return basis === "c" ? c : s; };
   if (tab === "qm") {
     first = "Period";
-    rows = [{cls:"fy", label:"Full year " + esc(fy), s:Mfy, c:Mfy, exS:yqExList(dimCountry ? [] : exS, fy, "Single"), exC:yqExList(dimCountry ? [] : exS, FYC.keys[11], "Cumulative"), noEx:noteC}];
+    rows = [{cls:"fy", label:"Full year " + esc(fy), m:Mfy, ex:yqExList(exS, pick(fy, FYC.keys[11]), scB)}];
     for (var q = 0; q < 4; q++) {
       var qi = yqQIdx(q);
       rows.push({cls:"q" + (per.k==="q" && per.i===q ? " hl" : ""), label:"Q" + (q+1) + ' <span class="cty">' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + '</span>',
-        s:yqM(P, scope, qi), c:yqM(P, scope, yqRange(0, qi[2])), click:"yqSetPer('q'," + q + ")", noEx:noteC,
-        exS:yqExList(dimCountry ? [] : exS, "Q" + (q+1), "Single"), exC:yqExList(dimCountry ? [] : exS, FYC.keys[qi[2]], "Cumulative")});
+        m:pick(yqM(P, scope, qi), yqM(P, scope, yqRange(0, qi[2]))), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, pick("Q" + (q+1), FYC.keys[qi[2]]), scB)});
       qi.forEach(function(i){
-        rows.push({cls:"d" + (per.k==="m" && per.i===i ? " hl" : ""), label:yqMonLbl(i) + yqStatusTag(st[i]), s:mm[i], c:yqM(P, scope, yqRange(0, i)),
-          click:"yqSetPer('m'," + i + ")", noEx:noteC,
-          exS:yqExList(dimCountry ? [] : exS, FYC.keys[i], "Single"), exC:yqExList(dimCountry ? [] : exS, FYC.keys[i], "Cumulative")});
+        rows.push({cls:"d" + (per.k==="m" && per.i===i ? " hl" : ""), label:yqMonLbl(i) + yqStatusTag(st[i]), m:pick(yqM(P, scope, [i]), yqM(P, scope, yqRange(0, i))),
+          click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], scB)});
       });
     }
-  } else if (tab === "tot") {
-    first = "Total";
-    rows = [{cls:"fy", label:esc(yqScopeLabel()), s:Ms, c:Mc, exS:yqExList(dimCountry ? [] : exS, per.ftS, "Single"), exC:yqExList(dimCountry ? [] : exS, per.ftC, "Cumulative"), noEx:noteC}];
   } else {
-    rows = yqTabRows(SR, tab, function(r){ r.exS = yqExList(r.slots, per.ftS, "Single"); r.exC = yqExList(r.slots, per.ftC, "Cumulative"); return r; });
+    var SR = yqSectionRows(P, scope, function(pred){ var m = yqM(P, pred, idxB); return {m:m, zero:yqIsZero(m)}; });
+    rows = yqTabRows(SR, tab, function(r){ r.ex = yqExList(r.slots, ftB, scB); return r; });
     first = {seg:"Segment", grp:"Segment × Country group", dist:"Group / Distributor", rep:"Country report / Segment"}[tab];
   }
-  var hint = "hover a row with 💬 to read its explanation · click a row to view only that item" + (rows.hidden ? " · " + rows.hidden + " inactive distributor(s) hidden" : "");
-  var bd = '<div class="card yq-c">' + yqTabs("qm", tab, [["tot","Total"],["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"],["qm","All quarters & months"]], hint)
-    + yqTable("Q", rows, first, sLbl, cLbl) + '</div>';
+  var det = yqDetail("qm", tab, [["seg","Segment"],["grp","Segment × Country"],["dist","Distributor"],["rep","Country report"],["qm","All quarters & months"]], rows, first,
+                     txtB + " (" + (basis === "c" ? "cumulative" : "single") + ") · " + yqUnit());
 
-  body.innerHTML = tb + yqLyNote(P) + strip + kpis + bd + charts
-    + '<div class="yq-note">Unit ' + yqUnit() + ' · Single = the chosen period · Cumulative = from the FY start (' + esc(yqMonLbl(0)) + ') to the end of the chosen period · explanations: newest version with text · ' + esc(RULE_TEXT || "") + '</div>';
-
-  if (!SR.grp.length) { var cg = document.getElementById("c-qm-g"); if (cg) cg.parentNode.innerHTML = '<div class="yq-none" style="padding-top:40px">No group figures for ' + esc(yqScopeLabel()) + ' in this period.</div>'; }
-  else yqChartAch("c-qm-g", SR.grp.map(function(r){ return r.key; }), SR.grp.map(function(r){ return r.s; }), SR.grp.map(function(r){ return r.c; }));
-  yqChartMonthly("c-qm-ex", mm, P, per.k === "m" ? per.i : -1, per.k === "q" ? per.idxs : null, 270);
+  body.innerHTML = tb + yqLyNote(P) + yqPerPicker(P, scope, per) + bswitch + yqKeyMsg(P, MB, drv, txtB, emptyB) + out
+    + yqDrivers(drv, drvMode, ftB, scB, txtB) + det
+    + '<div class="yq-note">Unit ' + yqUnit() + ' · Single = the chosen period · Cumulative (YTD) = from ' + esc(yqMonLbl(0)) + ' to the end of the chosen period · ' + esc(RULE_TEXT || "") + '</div>';
 }
 
-function yqChartAch(id, labels, sArr, cArr){
-  killC(id);
-  var cv = document.getElementById(id); if (!cv) return;
-  chartH(cv, 270);
-  var v = function(m){ return m.ach == null ? 0 : Math.round(m.ach); };
-  S.charts[id] = new Chart(cv, {
-    type:"bar",
-    data:{labels:labels, datasets:[
-      {label:"Single", data:sArr.map(v), backgroundColor:sArr.map(function(m){ return yqAchCol(m.ach); }), borderRadius:3, barPercentage:.8, categoryPercentage:.7,
-       datalabels:{display:true, anchor:"end", align:"right", offset:2, font:{family:FF, size:10.5, weight:"800"}, color:"#56687A", formatter:function(x){ return x + "%"; }}},
-      {label:"Cumulative", data:cArr.map(v), backgroundColor:"rgba(53,80,107,.28)", borderColor:cArr.map(function(m){ return yqAchCol(m.ach); }), borderWidth:2, borderRadius:3, barPercentage:.8, categoryPercentage:.7,
-       datalabels:{display:true, anchor:"end", align:"right", offset:2, font:{family:FF, size:10.5, weight:"700"}, color:"#6E8095", formatter:function(x){ return x + "%"; }}}
-    ]},
-    options:{indexAxis:"y", responsive:true, maintainAspectRatio:false, animation:{duration:300}, transitions:{resize:{animation:{duration:0}}},
-      plugins:{legend:{position:"bottom", labels:{font:{family:FF, size:11.5}, boxWidth:12}},
-        tooltip:{callbacks:{label:function(c){ var m = (c.datasetIndex ? cArr : sArr)[c.dataIndex];
-          return " " + c.dataset.label + ": " + c.raw + "% (F/A " + yqF(m.fc) + " / Budget " + yqF(m.bm) + " " + yqUnit() + ")"; }}}},
-      scales:{x:{beginAtZero:true, suggestedMax:120, ticks:{callback:function(x){ return x + "%"; }, font:{family:FF, size:10.5}}, grid:{color:"rgba(148,163,184,.18)"}},
-              y:{grid:{display:false}, ticks:{font:{family:FF, size:11.5, weight:"800"}}}},
-      layout:{padding:{right:30}}}
-  });
-}
-
+// monthly chart: budget bars + F/A bars (solid = actual, hatched = forecast), LY line optional
 function yqChartMonthly(id, mm, P, selIdx, selArr, h){
   killC(id);
   var cv = document.getElementById(id); if (!cv) return;
-  chartH(cv, h || 320);
+  chartH(cv, h || 300);
   var st = P.status, hatch = hatchFill("rgba(91,135,184,.85)");
-  var cb = 0, cf = 0, cum = mm.map(function(m){ cb += m.bm; cf += m.fc; return cb > 0 ? cf / cb * 100 : null; });
   var ds = [
-    {type:"bar", label:"Budget Mani", data:mm.map(function(m){ return m.bm; }), backgroundColor:"rgba(201,214,227,.95)",
-     borderRadius:3, barPercentage:.85, categoryPercentage:.72, order:2, datalabels:{display:false}},
+    {type:"bar", label:"Budget Mani", data:mm.map(function(m){ return m.bm; }), backgroundColor:"rgba(221,227,234,1)",
+     borderRadius:3, barPercentage:.85, categoryPercentage:.7, order:2, datalabels:{display:false}},
     {type:"bar", label:"Forecast / Actual", data:mm.map(function(m){ return m.fc; }),
      backgroundColor:mm.map(function(m, i){ return st[i] === "actual" ? "rgba(91,135,184,.92)" : hatch; }),
      borderColor:"rgba(91,135,184,.9)", borderWidth:function(c){ return st[c.dataIndex] === "actual" ? 0 : 1.2; },
-     borderRadius:3, barPercentage:.85, categoryPercentage:.72, order:2,
-     datalabels:{display:true, anchor:"end", align:"top", offset:1, clip:false, font:{family:FF, size:10.5, weight:"800"},
-       color:function(c){ var m = mm[c.dataIndex]; return m.ach == null ? "#6E8095" : yqAchCol(m.ach); },
-       formatter:function(v, c){ var m = mm[c.dataIndex]; return m.ach == null ? "" : Math.round(m.ach) + "%"; }}}
+     borderRadius:3, barPercentage:.85, categoryPercentage:.7, order:2, datalabels:{display:false}}
   ];
-  if (P.ly) ds.push({type:"line", label:yqLyName(), data:mm.map(function(m){ return m.ly; }), borderColor:"#EFCB4A", backgroundColor:"#EFCB4A",
-                     borderWidth:2.5, pointRadius:3, tension:.25, order:1, datalabels:{display:false}});
-  ds.push({type:"line", label:"Cumulative achievement %", data:cum, yAxisID:"y1", borderColor:"#3E8E6B", backgroundColor:"#3E8E6B", borderDash:[5,4],
-           borderWidth:2, pointRadius:2, tension:.2, order:0, datalabels:{display:false}});
+  if (P.ly && S.yq.showLy) ds.push({type:"line", label:yqLyName(), data:mm.map(function(m){ return m.ly; }), borderColor:"#EFCB4A", backgroundColor:"#EFCB4A",
+                     borderWidth:2, pointRadius:2, tension:.25, order:1, datalabels:{display:false}});
   S.charts[id] = new Chart(cv, {
     data:{labels:MONTHLY_GRAND.map(function(m){ return m.lbl; }), datasets:ds},
     options:{responsive:true, maintainAspectRatio:false, animation:{duration:300}, transitions:{resize:{animation:{duration:0}}}, interaction:{mode:"index", intersect:false},
       onClick:function(e, els){ if (els && els.length) yqOpenPer("m", els[0].index); },
-      plugins:{legend:{position:"bottom", labels:{font:{family:FF, size:12}, boxWidth:12}},
-        tooltip:{callbacks:{label:function(c){
-          if (c.dataset.yAxisID === "y1") return " Cumulative achievement: " + (c.raw == null ? "—" : c.raw.toFixed(1) + "%");
-          return " " + c.dataset.label + ": " + yqF(c.raw) + " " + yqUnit(); },
+      plugins:{datalabels:{display:false}, legend:{position:"bottom", labels:{font:{family:FF, size:11.5}, boxWidth:11, color:"#6E8095"}},
+        tooltip:{callbacks:{label:function(c){ return " " + c.dataset.label + ": " + yqF(c.raw) + " " + yqUnit(); },
           afterBody:function(items){ var i = items[0].dataIndex, m = mm[i];
-            return ["Vs. Budget: " + (m.gap >= 0 ? "+" : "−") + yqF(Math.abs(m.gap)) + " (" + (m.gp == null ? "—" : m.gp.toFixed(1) + "%") + ")",
+            return ["Achievement: " + yqPctTxt(m.ach) + " · Vs. budget " + (m.gap >= 0 ? "+" : "−") + yqF(Math.abs(m.gap)),
                     "Status: " + (st[i] === "actual" ? "Actual" : (st[i] === "empty" ? "Forecast partly entered" : "Forecast"))]; }}}},
-      scales:{x:{grid:{display:false}, ticks:{autoSkip:false, maxRotation:0,
-          color:function(c){ var i = c.index; return (i === selIdx || (selArr && selArr.indexOf(i) >= 0)) ? "#A87514" : "#6E8095"; },
-          font:function(c){ var i = c.index; var on = (i === selIdx || (selArr && selArr.indexOf(i) >= 0)); return {family:FF, size:on ? 12.5 : 11.5, weight:on ? "900" : "700"}; }}},
-        y:{beginAtZero:true, grace:"14%", ticks:{callback:function(v){ return fKS(v); }, font:{family:FF, size:11}}, grid:{color:"rgba(148,163,184,.18)"}},
-        y1:{position:"right", beginAtZero:true, suggestedMax:120, grid:{display:false}, ticks:{callback:function(v){ return v + "%"; }, font:{family:FF, size:10.5}}}},
-      layout:{padding:{top:14}}}
+      scales:{x:{grid:{display:false}, ticks:{autoSkip:true, maxRotation:0, color:"#6E8095", font:{family:FF, size:11, weight:"700"}}},
+        y:{beginAtZero:true, grace:"8%", ticks:{maxTicksLimit:5, callback:function(v){ return fKS(v); }, color:"#8A97A6", font:{family:FF, size:10.5}}, grid:{color:"rgba(148,163,184,.15)"}, border:{display:false}}},
+      layout:{padding:{top:6}}}
   });
 }
 
@@ -5752,7 +5944,6 @@ function pptBuildYQ(c, tab){
   var s3 = pptContentSlide(c.pptx, "Distributors", yqPptLabel(tab) + " · " + unit, c.nextPage());
   s3.addTable(r3, c.baseTableOpts({y:1.45, colW:[3.3, 1.5, 1.6, 1.5, 1.2, 1.6, 1.44], rowH:0.25, fontSize:9, autoPage:true}));
 }
-
 
 // ══ RENDER ALL ══
 // ⭐ v7.1 — only the visible tab is drawn; the others are drawn when opened
