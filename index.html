@@ -1504,6 +1504,9 @@ html[data-theme="dark"] .yq3-seg button { color:var(--t2); }
   .yq3-half .yq3-drv { padding:6px 8px 2px; }
   .yq3-out.in { padding:12px; }
 }
+/* "fcst 9/41" tag: forecast entered on few budget lines (not loading) */
+.yq3-st.e { background:#FFF6D9; color:#8A6A1C; padding:0 6px; box-shadow:inset 0 0 0 1px #EFDC9A; font-size:10px; font-weight:800; white-space:nowrap; }
+html[data-theme="dark"] .yq3-st.e { background:rgba(239,203,74,.12); color:#EFCB4A; box-shadow:none; }
 </style>
 </head>
 <body>
@@ -5551,7 +5554,7 @@ function yqDrvPhrase(drv){
   return t;
 }
 function yqKeyBox(t, empty){
-  if (empty) t += '. <span class="yq3-warn">⏳ ' + empty + ' month' + (empty > 1 ? "s" : "") + ' not fully forecast yet</span>';
+  if (empty) t += '. <span class="yq3-warn">' + empty + ' month' + (empty > 1 ? "s" : "") + ' with forecast not fully entered (figures not final)</span>';
   return '<div class="yq3-key"><span class="tg">KEY MESSAGE</span><span class="tx">' + t + '.</span></div>';
 }
 
@@ -5675,9 +5678,15 @@ function yqDetailHead(view, tab, list, caption, hidden){
       return '<button class="' + (tab === t[0] ? "on" : "") + '" onclick="yqSetTab(\'' + view + '\',\'' + t[0] + '\')">' + t[1] + '</button>'; }).join("")
     + '<span class="h">💬 hover = explanation · click a row = open it' + (hidden ? " · " + hidden + " inactive distributor(s) hidden" : "") + '</span></div>';
 }
-function yqStatusTag(st){
+// "fcst 9/41" = forecast entered on 9 of the 41 budget lines of that month (less than half → not final)
+function yqFillTxt(i){
+  var ms = (typeof MONTH_STATUS !== "undefined" && MONTH_STATUS) ? MONTH_STATUS[IS_JIZAI() ? "jizai" : "turnover"] : null;
+  var x = ms && ms[i]; return x && x.bud ? x.filled + "/" + x.bud : "";
+}
+function yqStatusTag(st, i){
   if (st === "actual") return '<span class="yq3-st a" title="Actual closed">actual</span>';
-  if (st === "empty")  return '<span class="yq3-st e" title="Forecast not fully entered yet">⏳</span>';
+  if (st === "empty") { var f = i == null ? "" : yqFillTxt(i);
+    return '<span class="yq3-st e" title="Forecast entered on only ' + (f ? f.replace("/", " of ") + " budget lines" : "part of the budget lines") + ' of this month · the figure is not final yet">fcst ' + (f || "partial") + '</span>'; }
   return '';
 }
 
@@ -5772,7 +5781,7 @@ function yqQChips(P, scope, fnName){
   var st = P.status;
   return '<div class="yq3-qs">' + [0,1,2,3].map(function(q){
     var m = yqM(P, scope, yqQIdx(q)), s = st.slice(q*3, q*3+3);
-    var tag = s.some(function(x){ return x === "empty"; }) ? '<span class="yq3-st e" title="Forecast not fully entered">⏳</span>' : '';
+    var tag = s.some(function(x){ return x === "empty"; }) ? '<span class="yq3-st e" title="Some months of this quarter have forecast on less than half of their budget lines · figure not final">partial fcst</span>' : '';
     return '<button class="yq3-q" onclick="' + fnName + '(\'q\',' + q + ')" title="Budget ' + yqF(m.bm) + ' · F/A ' + yqF(m.fc) + ' · gap ' + yqG(m.gap).replace(/<[^>]+>/g, "") + ' ' + yqUnit() + '">'
       + '<span class="t">Q' + (q+1) + ' <small>' + yqMonLbl(q*3).slice(0,3) + '-' + yqMonLbl(q*3+2).slice(0,3) + '</small>' + tag + '</span>'
       + '<b style="color:' + yqGapCol(m.gp) + '">' + yqGpTxt(m.gp, 0) + '</b>'
@@ -5802,7 +5811,7 @@ function rYR(){
     lyName:P.lyName, lyLoading:P.lyStatus === "loading",
     foot:P.closed.length ? 'Closed months: gap <b style="color:' + yqGapCol(Ma.gp) + '">' + yqGpTxt(Ma.gp) + '</b> (' + yqMoney(Ma.gap) + ')' : ''});
 
-  var trend = '<div class="card yq3-card"><div class="yq3-hd"><b>Month by month</b><span class="s">% = gap vs budget · click a quarter or a bar to open it</span><span class="yq-fill"></span>'
+  var trend = '<div class="card yq3-card"><div class="yq3-hd"><b>Month by month</b><span class="s">% = gap vs budget · hatched bar = forecast · click a quarter or a bar to open it</span><span class="yq-fill"></span>'
     + '<label class="yq3-chk"><input type="checkbox"' + (S.yq.showLy ? " checked" : "") + ' onchange="yqSetLy()"> show ' + esc(yqLyName()) + '</label></div>'
     + '<div class="yq3-pad">' + yqQChips(P, scope, "yqOpenPer") + '<div class="cw" style="margin-top:8px"><canvas id="c-yr-m"></canvas></div></div></div>';
 
@@ -5816,7 +5825,7 @@ function rYR(){
       rows.push({cls:"q", label:"Q" + (q+1) + ' <span class="cty">' + yqMonLbl(qi[0]) + " → " + yqMonLbl(qi[2]) + '</span>', m:yqM(P, scope, qi),
                  ex:yqExList(exSlots, "Q" + (q+1), "Single"), click:"yqOpenPer('q'," + q + ")"});
       qi.forEach(function(i){
-        rows.push({cls:"d", label:yqMonLbl(i) + yqStatusTag(st[i]), m:mm[i], ex:yqExList(exSlots, FYC.keys[i], "Single"), click:"yqOpenPer('m'," + i + ")"});
+        rows.push({cls:"d", label:yqMonLbl(i) + yqStatusTag(st[i], i), m:mm[i], ex:yqExList(exSlots, FYC.keys[i], "Single"), click:"yqOpenPer('m'," + i + ")"});
       });
     }
   } else {
@@ -5868,7 +5877,7 @@ function yqPerPicker(P, scope, per){
   h += '<span class="sep"></span>';
   for (var i = 0; i < 12; i++) h += chip("m", i, yqMonLbl(i), yqM(P, scope, [i]), st[i]);
   return h + '</div><div class="lg"><span><i style="background:' + YQ_FILL.pos + '"></i>on or above budget</span><span><i style="background:' + YQ_FILL.amb + '"></i>gap 0 to −10%</span><span><i style="background:' + YQ_FILL.neg + '"></i>gap below −10%</span>'
-    + '<span>✓ actual</span><span><b class="pe-k"></b>dashed = forecast not fully entered</span><span>hover a chip for its numbers</span></div></div>';
+    + '<span>✓ actual</span><span><b class="pe-k"></b>dashed = forecast entered on less than half of the budget lines</span><span>hover a chip for its numbers</span></div></div>';
 }
 // two framed halves: Single (blue) | Cumulative (cream)
 function yqSplit(sHead, sBody, cHead, cBody, cls){
@@ -5922,7 +5931,7 @@ function rQM(){
       rowsS.push({cls:"q" + hq, label:ql, m:yqM(P, scope, qi), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, "Q" + (q+1), "Single")});
       rowsC.push({cls:"q" + hq, label:ql, m:yqM(P, scope, yqRange(0, qi[2])), click:"yqSetPer('q'," + q + ")", ex:yqExList(exS, FYC.keys[qi[2]], "Cumulative")});
       qi.forEach(function(i){
-        var hm = per.k === "m" && per.i === i ? " hl" : "", ml = yqMonLbl(i) + yqStatusTag(st[i]);
+        var hm = per.k === "m" && per.i === i ? " hl" : "", ml = yqMonLbl(i) + yqStatusTag(st[i], i);
         rowsS.push({cls:"d" + hm, label:ml, m:yqM(P, scope, [i]), click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], "Single")});
         rowsC.push({cls:"d" + hm, label:ml, m:yqM(P, scope, yqRange(0, i)), click:"yqSetPer('m'," + i + ")", ex:yqExList(exS, FYC.keys[i], "Cumulative")});
       });
