@@ -86,6 +86,7 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
   await page.click('#osave');
   await page.waitForTimeout(1500);
   ok(st.tt.some(r => r[3] === st.cat[0][0] && r[5] === 12 && r[1] === 202611), 'thêm đơn thực tế 12');
+  ok((st.linesCalls || 0) >= 1 && await page.locator('[data-del]').count() > 0, 'các lần đặt hàng tải riêng khi mở tab (dtLines)');
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, '5_dat_hang.png') });
 
   /* Excel: xuất ⇒ đọc lại ⇒ xem trước */
@@ -120,6 +121,19 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
   await page.waitForSelector('.nppc');
   ok(await page.locator('.nppc').count() === 3, 'tổng quan mọi NPP: 3 thẻ NPP');
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, '7_tat_ca.png'), fullPage: true });
+
+  /* Lần đầu mở: tự hiện Hướng dẫn */
+  const pgd = await M.newPage(b, M.makeState(), { guide: true, dpr: SHOTS ? 2 : 1 });
+  const t0 = Date.now(); await pgd.goto(URL0); await pgd.waitForSelector('.flow .v'); console.log('  (mở app với máy chủ giả: ' + (Date.now() - t0) + ' ms)');
+  await pgd.waitForSelector('.guide .gsteps');
+  ok(true, 'lần đầu mở ⇒ tự hiện Hướng dẫn (Ai làm gì mỗi tháng)');
+  if (SHOTS) await pgd.screenshot({ path: path.join(SHOTS, '9_huong_dan.png') });
+  await pgd.click('[data-g="where"]'); await pgd.waitForSelector('.gdl');
+  if (SHOTS) await pgd.screenshot({ path: path.join(SHOTS, '10_nhin_vao_dau.png') });
+  await pgd.click('.mbox [data-x]');
+  ok(await pgd.locator('.tipbar').count() === 1, 'dòng giải thích đầu Tổng quan');
+  await pgd.click('[data-tipx="ov"]'); await pgd.reload(); await pgd.waitForSelector('.flow .v');
+  ok(await pgd.locator('.tipbar').count() === 0, 'bấm Ẩn ⇒ không hiện lại');
 
   /* Điện thoại */
   const pm = await M.newPage(b, M.makeState(), { viewport: { width: 390, height: 844 }, dpr: SHOTS ? 2 : 1 });

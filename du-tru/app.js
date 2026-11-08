@@ -110,7 +110,7 @@ function userChip(){
 function roleName(){ var a=D&&D.access; if(!a) return ""; return a.admin?"Admin":(a.edit?"Xem + sửa":"Chỉ xem")+(a.all?" · mọi NPP":" · "+D.npps.join(", ")); }
 
 /* ═════════ DỮ LIỆU ═════════ */
-var D=null, I=null, CAT={}, GROUPS=[], OB=[], obBusy=false;
+var D=null, I=null, CAT={}, GROUPS=[], OB=[], obBusy=false, LINES={};
 var S={ tab:"ov", npp:0, M:0, T:0, unit:"v", q:"", grp:"", lv:"", sort:"risk", all:false, lim:120, om:0, draft:{}, planQ:"", planOnly:"" };
 try{ var u0=JSON.parse(localStorage.getItem(LS_UI)||"{}"); ["tab","unit","sort"].forEach(function(k){ if(u0[k]) S[k]=u0[k]; }); if(u0.nppName) S._nppName=u0.nppName; }catch(_){}
 try{ OB=JSON.parse(localStorage.getItem(LS_OB)||"[]")||[]; }catch(_){ OB=[]; }
@@ -135,10 +135,21 @@ function load(force){
   });
 }
 
+/* máy chủ v1.1 (fmt 2): mảng số phẳng [iNPP, iMã, tháng (tính từ m0), SL] ⇒ dòng [iNPP, yyyymm, mã, SL] như bản cũ */
+function unpack(d){
+  if(d.fmt!==2) return;
+  var L=d.cat.list;
+  ["dt","dk","tt"].forEach(function(s){ var a=d[s], out=[]; if(!a||Array.isArray(a[0])) return;
+    for(var i=0;i<a.length;i+=4) out.push([a[i], addM(d.m0, a[i+2]), L[a[i+1]][0], a[i+3]]);
+    d[s]=out; });
+  d.cat.list=L.slice(0, d.cat.nCat==null?L.length:d.cat.nCat).concat(L.slice(d.cat.nCat==null?L.length:d.cat.nCat).map(function(r){ return [r[0], r[1], "Khác", 0, 1]; }));
+  d.fmt=1;
+}
 function use(d, cached){
-  D=d; D.cached=cached;
+  unpack(d);
+  D=d; D.cached=cached; LINES={};
   CAT={}; var gs={};
-  (d.cat.list||[]).forEach(function(r){ CAT[K(r[0])]={code:String(r[0]), name:r[1]||"", group:r[2]||"Khác", price:+r[3]||0}; gs[r[2]||"Khác"]=1; });
+  (d.cat.list||[]).forEach(function(r){ CAT[K(r[0])]={code:String(r[0]), name:r[1]||"", group:r[2]||"Khác", price:+r[3]||0, extra:!!r[4]}; if(!r[4]) gs[r[2]||"Khác"]=1; });
   D.hasPrice=Object.keys(CAT).some(function(k){ return CAT[k].price>0; });
   if(!D.hasPrice) S.unit="q";
   OB.forEach(function(o){ applyOps(o.ops, true); });
@@ -153,6 +164,7 @@ function use(d, cached){
   if(S.npp>=D.npps.length) S.npp=0;
   $("ver").textContent="v"+(window.DT_VER||"");
   userChip(); header(); render(); obChip(); obRun();
+  if(!cached){ var seen=null; try{ seen=localStorage.getItem("dt_guide_v1"); }catch(_){} if(!seen && !window.DT_NOGUIDE) setTimeout(function(){ help("flow"); }, 300); }
 }
 
 /* raw rows ⇒ chỉ mục theo NPP: dt/dk/tt[mã][tháng] = SL, đơn thực tế từng dòng, tháng có đơn thực tế gần nhất */
@@ -162,8 +174,7 @@ function index(){
     var t=o[s][c]=o[s][c]||{}; t[r[1]]=(t[r[1]]||0)+(+r[3]||0); o.codes[c]=1; I.groups[CAT[c].group]=1; }
   D.dt.forEach(function(r){ var o=I.n[r[0]]; if(o) add(o,"dt",r); });
   D.dk.forEach(function(r){ var o=I.n[r[0]]; if(o) add(o,"dk",r); });
-  D.tt.forEach(function(r){ var o=I.n[r[0]]; if(!o) return; add(o,"tt",r); o.lines.push({m:r[1], code:K(r[2]), q:+r[3]||0, row:r[4], day:r[5]||"", note:r[6]||"", tmp:r[7]||""});
-    if((+r[3]||0)>0 && r[1]>o.lastAct) o.lastAct=r[1]; });
+  D.tt.forEach(function(r){ var o=I.n[r[0]]; if(!o) return; add(o,"tt",r); if((+r[3]||0)>0 && r[1]>o.lastAct) o.lastAct=r[1]; });
 }
 function g(o,s,c,m){ var t=o[s][c]; return t ? (t[m]||0) : 0; }
 function has(o,s,c,m){ var t=o[s][c]; return !!(t && t[m]!==undefined); }
@@ -287,7 +298,7 @@ function header(){
   $("tabs").onclick=function(e){ var b=e.target.closest("[data-tab]"); if(b){ S.tab=b.dataset.tab; saveUi(); header(); render(); window.scrollTo(0,0); } };
   $("reload").onclick=function(){ load(true); };
   $("b-xl").onclick=function(){ XL.open(); };
-  $("b-help").onclick=help;
+  $("b-help").onclick=function(){ help(); };
 }
 function render(){
   if(!D) return;
@@ -319,21 +330,21 @@ function vOv(){
   var st=D.set, M=S.M, f0=fy0(M), months=range(f0, addM(f0,11)), A=agg(scope(),M,months), nm=S.npp<0?"tất cả NPP":D.npps[S.npp];
   var lastAct=Math.max.apply(null, scope().map(function(i){ return I.n[i].lastAct||0; }));
   var r=A.sdt? A.p/A.sdt : 0, lvAll=!A.sdt?"idle":(r>=st.high?"high":(r>=st.watch?"watch":"ok"));
-  var h='<div class="split"><div><h2>Tình hình '+esc(nm)+' đến hết '+lbl(M)+'</h2><p class="sub">Kỳ '+fyName(M)+' từ '+lbl(f0)+' · tính theo '+unitName()+' · đơn thực tế đã nhập đến tháng '+(lastAct?lbl(lastAct):"—")+
+  var h=tipbar("ov",'Màn này trả lời: <b>NPP đang ôm bao nhiêu hàng chờ</b> (đã dự trù mà chưa đặt) tính đến tháng chọn ở thanh trên. Ô cam càng lớn càng rủi ro tồn kho. <button class="lnk" data-guide="where" type="button">Xem giải thích từng phần</button>')+'<div class="split"><div><h2>Tình hình '+esc(nm)+' đến hết '+lbl(M)+'</h2><p class="sub">Kỳ '+fyName(M)+' từ '+lbl(f0)+' · tính theo '+unitName()+' · đơn thực tế đã nhập đến tháng '+(lastAct?lbl(lastAct):"—")+
     (M>=st.cm?' · từ '+lbl(Math.max(st.cm, lastAct?addM(lastAct,1):st.cm))+' trở đi dùng đặt hàng dự kiến':'')+'</p></div>'+
     (D.hasPrice?'<div class="chips"><button class="chipf'+(S.unit==="v"?" on":"")+'" data-u="v" type="button">Giá trị</button><button class="chipf'+(S.unit==="q"?" on":"")+'" data-u="q" type="button">Số lượng</button></div>':'')+'</div>';
   var tot=A.sdh+A.sdt||1;
   h+='<div class="grid g4">'+
-    flowCard("① Dự trù cố định","var(--dt)",A.sdt,"NPP đã gửi từ "+lbl(f0)+" đến "+lbl(M))+
-    flowCard("② Đặt hàng thực tế","var(--tt)",A.stt,"Đơn đã đặt (MMH cập nhật)")+
-    flowCard("③ Đặt hàng dự kiến","var(--fc)",A.sdk,"Các tháng chưa có đơn thực tế")+
-    '<div class="card flow pen"><div class="lb"><i style="background:var(--pen)"></i>Dự trù chưa đặt hàng</div><div class="v num">'+fmtU(A.p)+'</div><div class="vv">'+pct(r)+' số đã dự trù · '+pill(lvAll)+'</div>'+
+    flowCard("① Dự trù","var(--dt)",A.sdt,"NPP cam kết lấy · "+lbl(f0)+" → "+lbl(M))+
+    flowCard("② Đã đặt thực tế","var(--tt)",A.stt,"Đơn NPP đã đặt (MMH nhập)")+
+    flowCard("③ Dự kiến sẽ đặt","var(--fc)",A.sdk,"NPP dự báo, tháng chưa có đơn")+
+    '<div class="card flow pen"><div class="lb"><i style="background:var(--pen)"></i>④ Hàng chờ NPP lấy</div><div class="v num">'+fmtU(A.p)+'</div><div class="vv">'+pct(r)+' số đã dự trù · '+pill(lvAll)+'</div>'+
       '<div class="gauge"><div class="gbar"><span style="left:0;width:'+Math.min(100,A.sdh/Math.max(A.sdt,A.sdh,1)*100)+'%;background:var(--tt)"></span>'+
       (A.p?'<span style="left:'+Math.min(100,A.sdh/Math.max(A.sdt,A.sdh,1)*100)+'%;width:'+Math.min(100,A.p/Math.max(A.sdt,A.sdh,1)*100)+'%;background:var(--pen);opacity:.85"></span>':'')+
       '</div><div class="glab"><span>đã / sẽ đặt</span><span>chưa đặt</span></div></div></div>'+
   '</div>';
   h+='<div class="grid g2" style="margin-top:12px"><div class="card chart"><div class="split"><h3>Theo tháng · '+fyName(M)+'</h3><span class="sm mut">Rê chuột vào cột để xem số</span></div>'+chartSvg(months, A.mon, M)+
-    '<div class="legend"><span><i style="background:var(--dt)"></i>Dự trù</span><span><i style="background:var(--tt)"></i>Đặt hàng thực tế</span><span><i style="background:repeating-linear-gradient(45deg,var(--fc),var(--fc) 2px,#fff 2px,#fff 4px);border:1px solid var(--fc)"></i>Đặt hàng dự kiến</span><span><i style="background:var(--pen);height:3px"></i>Dự trù chưa đặt hàng cộng dồn (nét đứt: dự báo sau tháng đang xem)</span></div></div>';
+    '<div class="legend"><span><i style="background:var(--dt)"></i>Dự trù</span><span><i style="background:var(--tt)"></i>Đặt hàng thực tế</span><span><i style="background:repeating-linear-gradient(45deg,var(--fc),var(--fc) 2px,#fff 2px,#fff 4px);border:1px solid var(--fc)"></i>Đặt hàng dự kiến</span><span><i style="background:var(--pen);height:3px"></i>Hàng chờ cộng dồn (nét đứt: dự báo sau tháng đang xem)</span></div></div>';
   h+='<div class="card"><h3>Cần chú ý đến hết '+lbl(M)+'</h3><div class="chips" style="margin-bottom:10px">'+
     [["high","Cao"],["dead","Không có đơn 6 tháng"],["watch","Theo dõi"],["none","Chưa dự trù"],["ok","Ổn"]].map(function(t){ return '<button class="chipf" data-go="'+t[0]+'" type="button">'+pill(t[0])+'<b>'+A.n[t[0]]+'</b> mã</button>'; }).join("")+'</div>';
   var top=A.rows.filter(function(x){ return x.p>0 && (x.lv==="high"||x.lv==="watch"||x.dead); }).sort(function(a,b){ return U(b.p,b.c)-U(a.p,a.c); }).slice(0,8);
@@ -430,7 +441,7 @@ function vCodes(){
   var sorters={ risk:function(a,b){ return rank(b)-rank(a) || U(b.p,b.c)-U(a.p,a.c); }, pend:function(a,b){ return U(b.p,b.c)-U(a.p,a.c); },
     dt:function(a,b){ return U(b.sdt,b.c)-U(a.sdt,a.c); }, code:function(a,b){ return a.c.localeCompare(b.c); } };
   f.sort(sorters[S.sort]||sorters.risk);
-  var h='<div class="bar"><input class="inp" id="cq" placeholder="Tìm mã / tên…" value="'+esc(S.q)+'" style="width:220px">'+
+  var h=tipbar("codes",'Mỗi thẻ = 1 mã của NPP. <b>Viền trái màu đỏ / cam</b> = mã đang có nhiều hàng chờ. Thanh ngang: <b style="color:var(--tt)">xanh</b> = đã / sẽ đặt, <b style="color:var(--pen)">cam</b> = hàng chờ. Bấm thẻ để xem từng tháng.')+'<div class="bar"><input class="inp" id="cq" placeholder="Tìm mã / tên…" value="'+esc(S.q)+'" style="width:220px">'+
     '<select class="inp" id="cg"><option value="">Mọi nhóm</option>'+GROUPS.map(function(gname){ return '<option'+(gname===S.grp?" selected":"")+'>'+esc(gname)+'</option>'; }).join("")+'</select>'+
     '<select class="inp" id="cs"><option value="risk">Xếp: rủi ro trước</option><option value="pend">Chưa đặt nhiều nhất</option><option value="dt">Dự trù nhiều nhất</option><option value="code">Theo mã</option></select>'+
     '<label class="sm mut"><input type="checkbox" id="call"'+(S.all?" checked":"")+'> Cả mã chưa phát sinh</label>'+
@@ -529,7 +540,7 @@ function vPlan(){
     if(S.planOnly==="warn" && !(r.x.lv==="high"||r.x.dead||(r.hasDt&&r.dx!==null&&r.dtT>r.dx))) return false;
     if(S.grp && it.group!==S.grp) return false; return true; });
   rows.sort(function(a,b){ var ga=CAT[a.c].group, gb=CAT[b.c].group; return ga.localeCompare(gb,"vi") || a.c.localeCompare(b.c); });
-  var h='<div class="split"><div><h2>Lên dự trù tháng '+lbl(P.T)+' · '+esc(D.npps[S.npp])+'</h2><p class="sub">Hạn NPP gửi: '+han+(P.T<st.fromDT?' · <b style="color:var(--hi)">tháng này đã chốt dự trù</b>':' · đang nhận dự trù')+' · tháng hiện tại '+lbl(P.cm)+'</p></div>'+
+  var h=tipbar("plan",'Dùng khi NPP báo số qua điện thoại / email, hoặc để kiểm tra trước khi gửi file cho NPP. Nhập ở <b>ô vàng</b>, cột <b>Đề xuất</b> tự tính, xong bấm <b>Lưu vào file gốc</b> ở cuối trang.')+'<div class="split"><div><h2>Lên dự trù tháng '+lbl(P.T)+' · '+esc(D.npps[S.npp])+'</h2><p class="sub">Hạn NPP gửi: '+han+(P.T<st.fromDT?' · <b style="color:var(--hi)">tháng này đã chốt dự trù</b>':' · đang nhận dự trù')+' · tháng hiện tại '+lbl(P.cm)+'</p></div>'+
     '<div class="row"><span class="sm mut">Tháng dự trù</span><select class="inp" id="pT">'+tOpts.map(function(m){ return '<option value="'+m+'"'+(m===P.T?" selected":"")+'>'+lbl(m)+(m<st.fromDT?" (đã chốt)":"")+'</option>'; }).join("")+'</select></div></div>';
   h+='<div class="steps"><div class="step"><b><em>1</em>Cập nhật đặt hàng dự kiến</b>Nhu cầu thực tế từng tháng '+lbl(P.cm)+' → '+lbl(P.T)+' (ô vàng). Dự kiến là "góc nhìn từ bây giờ", sửa bất cứ lúc nào.</div>'+
     '<div class="step"><b><em>2</em>Xem dự trù đề xuất</b>Đề xuất '+lbl(P.T)+' = dự kiến '+lbl(P.T)+' − dự trù chưa đặt hàng dự kiến đến hết '+lbl(addM(P.T,-1))+'.</div>'+
@@ -616,16 +627,22 @@ function qin(s,c,m,o,dis,over){
 function vOrders(){
   var st=D.set;
   if(S.npp<0){ $("main").innerHTML='<div class="note">Chọn 1 nhà phân phối ở thanh trên.</div>'; return; }
-  var o=I.n[S.npp], m=S.om, can=D.access&&D.access.edit, codes={};
-  o.lines.forEach(function(l){ if(l.m===m) codes[l.code]=1; });
+  var o=I.n[S.npp], m=S.om, can=D.access&&D.access.edit, codes={}, lk=S.npp+"|"+m, LL=LINES[lk];
+  if(!LL){ LL=LINES[lk]={lines:[], loading:true};
+    getJSON(API+"?"+qs({action:"dtLines", tk:tk(), npp:D.npps[S.npp], m:m})).then(function(d){
+      LL.loading=false; if(d&&d.ok) LL.lines=d.lines.map(function(r){ return {m:m, code:K(r[1]), q:r[2], row:r[0], day:r[3], note:r[4]}; }).concat(LL.lines.filter(function(l){ return l.tmp; }));
+      else LL.err=(d&&d.error)||"Không đọc được"; if(S.tab==="orders") vOrders(); },
+      function(e){ LL.loading=false; LL.err=e.message; if(S.tab==="orders") vOrders(); }); }
+  LL.lines.forEach(function(l){ if(!CAT[l.code]) CAT[l.code]={code:l.code, name:"", group:"Khác", price:0, extra:true}; });
+  Object.keys(o.tt).forEach(function(c){ if(o.tt[c][m]) codes[c]=1; });
   Object.keys(o.dk).forEach(function(c){ if(o.dk[c][m]) codes[c]=1; });
   Object.keys(o.dt).forEach(function(c){ if(o.dt[c][m]) codes[c]=1; });
   var list=Object.keys(codes).map(function(c){ var x=calc(o,c,m), tt=g(o,"tt",c,m), dk=g(o,"dk",c,m), dt=g(o,"dt",c,m); return {c:c, tt:tt, dk:dk, dt:dt, x:x}; })
     .sort(function(a,b){ return (b.dk-b.tt)-(a.dk-a.tt) || a.c.localeCompare(b.c); });
-  var lines=o.lines.filter(function(l){ return l.m===m; }).sort(function(a,b){ return String(b.day).localeCompare(String(a.day)) || b.row-a.row; });
+  var lines=LL.lines.slice().sort(function(a,b){ return String(b.day).localeCompare(String(a.day)) || b.row-a.row; });
   var opts=range(addM(st.cm,-12), addM(st.cm,1)).map(function(x){ return '<option value="'+x+'"'+(x===m?" selected":"")+'>'+lbl(x)+(x===st.cm?" · tháng này":"")+'</option>'; }).join("");
   var tT=0, tK=0, tD=0; list.forEach(function(r){ tT+=r.tt; tK+=r.dk; tD+=r.dt; });
-  var h='<div class="split"><div><h2>Đặt hàng thực tế · '+esc(D.npps[S.npp])+'</h2><p class="sub">Mỗi lần NPP đặt hàng = 1 dòng. Đơn thực tế của tháng đã qua thay cho đặt hàng dự kiến khi tính dự trù chưa đặt hàng.</p></div>'+
+  var h=tipbar("orders",'MMH nhập <b>mỗi lần NPP đặt hàng</b> (1 tháng có thể nhiều lần). Bảng trái cho biết tháng này mỗi mã đã đặt bao nhiêu so với dự kiến.')+'<div class="split"><div><h2>Đặt hàng thực tế · '+esc(D.npps[S.npp])+'</h2><p class="sub">Mỗi lần NPP đặt hàng = 1 dòng. Đơn thực tế của tháng đã qua thay cho đặt hàng dự kiến khi tính dự trù chưa đặt hàng.</p></div>'+
     '<div class="row"><span class="sm mut">Tháng</span><select class="inp" id="om">'+opts+'</select></div></div>';
   h+='<div class="grid g4" style="margin-bottom:12px">'+flowCardQ("Dự trù tháng "+lbl(m),"var(--dt)",tD)+flowCardQ("Đặt hàng dự kiến","var(--fc)",tK)+flowCardQ("Đã đặt (thực tế)","var(--tt)",tT)+
     '<div class="card flow"><div class="lb">Tiến độ so với dự kiến</div><div class="v num">'+(tK?pct(tT/tK):"–")+'</div><div class="vv">'+lines.length+' lần đặt trong tháng</div></div></div>';
@@ -637,11 +654,11 @@ function vOrders(){
     (list.length?'':'<tr><td colspan="7" class="mut">Chưa có dự trù / dự kiến / đơn tháng này.</td></tr>')+'</table></div>';
   h+='<div class="tw"><table class="tbl"><tr><th>Ngày / lần đặt</th><th>Mã</th><th class="r">SL</th><th>Ghi chú</th><th></th></tr>'+
     lines.map(function(l){ return '<tr><td>'+esc(l.day||"—")+'</td><td><b>'+esc(CAT[l.code].code)+'</b><span class="mini">'+esc(CAT[l.code].name)+'</span></td><td class="r num">'+n0(l.q)+'</td><td class="sm mut" style="max-width:220px">'+esc(l.note)+'</td><td>'+(can&&l.row?'<button class="lnk sm" data-del="'+l.row+'" type="button">Xoá</button>':(l.tmp?'<span class="mini">đang ghi</span>':''))+'</td></tr>'; }).join("")+
-    (lines.length?'':'<tr><td colspan="5" class="mut">Chưa có đơn nào trong tháng.</td></tr>')+'</table></div></div>';
+    (lines.length?'':'<tr><td colspan="5" class="mut">'+(LL.loading?'Đang tải các lần đặt hàng…':(LL.err?esc(LL.err):'Chưa có đơn nào trong tháng.'))+'</td></tr>')+'</table></div></div>';
   $("main").innerHTML=h;
   $("om").onchange=function(){ S.om=+this.value; vOrders(); };
   $("main").querySelectorAll("tr[data-code]").forEach(function(b){ b.onclick=function(){ detail(S.npp, b.dataset.code); }; });
-  $("main").querySelectorAll("[data-del]").forEach(function(b){ b.onclick=function(){ var l=o.lines.filter(function(x){ return x.row===+b.dataset.del; })[0]; if(!l) return;
+  $("main").querySelectorAll("[data-del]").forEach(function(b){ b.onclick=function(){ var l=LL.lines.filter(function(x){ return x.row===+b.dataset.del; })[0]; if(!l) return;
     confirmBox("Xoá dòng đặt hàng "+CAT[l.code].code+" · "+n0(l.q)+" ("+(l.day||lbl(l.m))+")?", function(){ queue([{s:"tt", op:"del", npp:D.npps[S.npp], m:l.m, code:CAT[l.code].code, q:l.q, row:l.row}], "Xoá đơn thực tế"); vOrders(); }); }; });
   if(can){
     var buf=[];
@@ -690,8 +707,9 @@ function applyOps(ops, overlay){
   ops.forEach(function(op){
     var ni=D.npps.indexOf(op.npp); if(ni<0) return;
     if(op.s==="tt"){
-      if(op.op==="del"){ D.tt=D.tt.filter(function(r){ return !(r[0]===ni && r[4]===op.row); }); }
-      else if(!overlay || !op._done) D.tt.push([ni, op.m, op.code, op.q, 0, op.day||"", op.note||"", "tmp"]);
+      var lk=ni+"|"+op.m, L=LINES[lk];
+      if(op.op==="del"){ D.tt.push([ni, op.m, op.code, -op.q]); if(L) L.lines=L.lines.filter(function(l){ return l.row!==op.row; }); }
+      else { D.tt.push([ni, op.m, op.code, op.q]); if(L) L.lines.push({m:op.m, code:K(op.code), q:op.q, row:0, day:op.day||"", note:op.note||"", tmp:1}); }
       return;
     }
     var arr=D[op.s], k=K(op.code);
@@ -737,18 +755,53 @@ function modal(html){ var m=$("modal"); m.innerHTML='<div class="mbox"><button c
   m.querySelectorAll("[data-x]").forEach(function(b){ b.onclick=closeModal; }); m.onclick=function(e){ if(e.target===m) closeModal(); }; return m; }
 function closeModal(){ $("modal").hidden=true; $("modal").innerHTML=""; }
 function confirmBox(t, ok){ modal('<h3>Xác nhận</h3><p>'+esc(t)+'</p><div class="row"><button class="btn" data-x="1" type="button">Huỷ</button><button class="btn pri" id="cf-ok" type="button">Đồng ý</button></div>'); $("cf-ok").onclick=function(){ closeModal(); ok(); }; }
-function help(){
-  var st=D?D.set:{watch:.1,high:.2,lead:3,hanDay:5,tbN:6};
-  modal('<h3>Cách tính</h3>'+
-    '<p><b>3 nguồn số liệu</b> (file gốc "Dự trù NPP Dashboard"):</p><ol class="sm"><li><b>Dự trù cố định</b> — hằng tháng NPP gửi cho tháng thứ '+st.lead+' kế tiếp (hạn ngày '+String(st.hanDay).padStart(2,"0")+'). Số cố định: MMH chuẩn bị hàng, NPP cam kết lấy hết.</li>'+
-    '<li><b>Đặt hàng thực tế</b> — MMH cập nhật; NPP đặt nhiều lần trong tháng, mỗi lần 1 dòng.</li><li><b>Đặt hàng dự kiến</b> — nhu cầu thật nhìn từ bây giờ, sửa bất cứ lúc nào cho tháng hiện tại trở đi.</li></ol>'+
-    '<p><b>Đặt hàng dùng để tính</b> mỗi tháng: tháng đã qua có đơn thực tế ⇒ thực tế; tháng hiện tại và các tháng tới ⇒ số lớn hơn giữa thực tế và dự kiến.</p>'+
-    '<p><b>Dự trù chưa đặt hàng</b> (cộng dồn từ tháng 09): mỗi tháng = max(0, còn tháng trước + dự trù − đặt hàng). Đây là hàng MMH đã chuẩn bị mà NPP chưa lấy.</p>'+
-    '<p><b>Cảnh báo</b> tại tháng đang xem = dự trù chưa đặt hàng ÷ tổng dự trù từ đầu kỳ: <span class="pill lv-high">Cao</span> ≥ '+pct(st.high)+' · <span class="pill lv-watch">Theo dõi</span> '+pct(st.watch)+'–'+pct(st.high)+' · <span class="pill lv-ok">Ổn</span> dưới '+pct(st.watch)+' · <span class="pill lv-none">Chưa dự trù</span> có đặt hàng mà chưa gửi dự trù · <span class="pill lv-dead">Không có đơn 6 tháng</span> còn dự trù chưa đặt mà '+st.tbN+' tháng không có đơn.</p>'+
-    '<p><b>Đề xuất dự trù tháng T</b> = max(0, dự kiến tháng T − dự trù chưa đặt hàng dự kiến đến hết tháng T−1). Dự trù đúng đề xuất ⇒ hết tháng T không còn hàng chờ.</p>'+
-    '<p class="sm mut">"≈ tháng" = dự trù chưa đặt ÷ số đặt trung bình '+st.tbN+' tháng gần nhất: hàng chờ đủ cho bao nhiêu tháng nữa. Ngưỡng, lead time lấy ở sheet CÀI ĐẶT của file gốc.</p>'+
-    '<div class="row"><button class="btn pri" data-x="1" type="button">Đã hiểu</button></div>');
+/* ═════════ HƯỚNG DẪN (người dùng: "nhìn vào đâu thấy gì, NPP làm gì, MMH làm gì") ═════════ */
+function help(tab){
+  var st=D?D.set:{watch:.1,high:.2,lead:3,hanDay:5,tbN:6,cm:0,fromDT:0}, han=String(st.hanDay||5).padStart(2,"0");
+  var T=st.fromDT?lbl(st.fromDT):"tháng +3", cm=st.cm?lbl(st.cm):"tháng này";
+  var P={
+  flow:'<h4>3 loại số — hiểu là đủ dùng app</h4><div class="gl3">'+
+    '<div><i style="background:var(--dt)"></i><b>Dự trù</b><span>NPP <b>cam kết lấy</b>, gửi trước '+st.lead+' tháng (hạn ngày '+han+'). MMH đặt hàng về kho theo số này.</span></div>'+
+    '<div><i style="background:var(--fc)"></i><b>Đặt hàng dự kiến</b><span>NPP <b>dự báo</b> sẽ đặt bao nhiêu mỗi tháng. Sửa lúc nào cũng được, càng sát thực tế càng tốt.</span></div>'+
+    '<div><i style="background:var(--tt)"></i><b>Đặt hàng thực tế</b><span>NPP <b>đã đặt</b> (1 tháng đặt nhiều lần). MMH nhập.</span></div></div>'+
+    '<div class="note" style="margin-top:10px"><b style="color:var(--pen)">Hàng chờ</b> (= dự trù chưa đặt hàng) = phần NPP đã dự trù mà chưa đặt. Hàng chờ càng lớn ⇒ MMH càng ôm tồn kho. App cảnh báo khi hàng chờ lớn.</div>'+
+    '<h4>Mỗi tháng, ai làm gì?</h4><ol class="gsteps">'+
+    '<li><em class="mmh">MMH</em><b>Trong tháng:</b> mỗi lần NPP đặt hàng ⇒ nhập ở tab <u>Đặt hàng thực tế</u> (hoặc sheet "2 Đặt hàng thực tế").</li>'+
+    '<li><em class="mmh">MMH</em><b>Khoảng ngày 20–25:</b> mở <u>Tổng quan</u> + <u>Mã hàng</u> xem NPP nào, mã nào hàng chờ nhiều ⇒ bấm <u>Excel cho NPP</u> ▸ Tải file dự trù tháng <b>'+T+'</b> ⇒ gửi từng NPP.</li>'+
+    '<li><em class="npp">NPP</em><b>Trước ngày '+han+' tháng sau:</b> mở file ▸ sheet LÊN DỰ TRÙ: ① sửa <b>đặt hàng dự kiến</b> các tháng (ô vàng) ⇒ ② xem <b>dự trù đề xuất</b> (tự tính) ⇒ ③ nhập <b>số dự trù '+T+'</b> ⇒ gửi lại file cho MMH.</li>'+
+    '<li><em class="mmh">MMH</em><b>Nhận file:</b> <u>Excel cho NPP</u> ▸ Nhập file NPP gửi lại ⇒ xem các dòng cảnh báo (cao hơn đề xuất, mã đang có hàng chờ lớn) ⇒ trao đổi lại với NPP nếu cần ⇒ bấm <b>Ghi vào file gốc</b>.</li>'+
+    '<li><em class="mmh">MMH</em><b>Sau ngày '+han+':</b> dự trù tháng đó chốt, không sửa nữa. Tiếp tục theo dõi ở <u>Tổng quan</u>.</li></ol>'+
+    '<p class="sm mut">Không gửi file Excel được? MMH làm thay ở tab <u>Lên dự trù</u> theo số NPP báo (điện thoại, email) — cùng 3 bước.</p>',
+  where:'<h4>Nhìn vào đâu, thấy gì</h4><dl class="gdl">'+
+    '<dt>Thanh trên cùng</dt><dd>Chọn <b>NPP</b> (hoặc Tất cả NPP). <b>"Tình hình đến hết"</b> = cộng dồn từ tháng 09 đến tháng chọn. Mặc định là tháng cuối đã chốt dự trù.</dd>'+
+    '<dt>Tổng quan ▸ 4 ô số</dt><dd>① Dự trù NPP đã cam kết · ② Đã đặt thật · ③ Dự kiến sẽ đặt (tháng chưa có đơn) · ④ <b style="color:var(--pen)">Hàng chờ</b> = ① − (② + ③). Thanh dưới ô ④: xanh = đã / sẽ đặt, cam = còn chờ.</dd>'+
+    '<dt>Tổng quan ▸ biểu đồ</dt><dd>Mỗi tháng 2 cột: <b>đậm</b> = dự trù, <b>xanh</b> = đã đặt (sọc = dự kiến). <b style="color:var(--pen)">Đường cam</b> = hàng chờ cộng dồn — đường đi lên là hàng chờ đang tăng. Rê chuột vào cột để xem số.</dd>'+
+    '<dt>Tổng quan ▸ Cần chú ý</dt><dd>Số mã theo mức (bấm để lọc) + các mã hàng chờ lớn nhất. "≈ tháng" = hàng chờ đủ cho mấy tháng đặt hàng bình thường.</dd>'+
+    '<dt>Mã hàng</dt><dd>Mỗi mã 1 thẻ có ảnh. <b>Viền trái màu</b> = mức cảnh báo. Thanh ngang: xanh = đã / sẽ đặt, cam = hàng chờ. Bấm thẻ ⇒ xem từng tháng + sửa nhanh.</dd>'+
+    '<dt>Lên dự trù</dt><dd>Bảng giống file Excel của NPP. <b>Ô vàng</b> là ô nhập. Cột <b>Đề xuất</b> (xanh) tự tính. Cột "Còn chưa đặt sau…" về 0 là dự trù vừa khớp nhu cầu.</dd>'+
+    '<dt>Đặt hàng thực tế</dt><dd>Chọn tháng ⇒ thấy dự trù · dự kiến · đã đặt từng mã, và từng lần đặt. Thêm / xoá lần đặt ở đây.</dd>'+
+    '<dt>Excel cho NPP</dt><dd>Tải file riêng từng NPP (NPP chỉ thấy số của mình) · nhập file NPP gửi lại.</dd></dl>'+
+    '<h4>Màu cảnh báo</h4><p class="sm"><span class="pill lv-high">Cao</span> hàng chờ ≥ '+pct(st.high)+' số đã dự trù — NPP nên đặt hết hàng chờ, hạn chế dự trù thêm · <span class="pill lv-watch">Theo dõi</span> '+pct(st.watch)+'–'+pct(st.high)+' · <span class="pill lv-ok">Ổn</span> dưới '+pct(st.watch)+' · <span class="pill lv-none">Chưa dự trù</span> có đặt mà không dự trù · <span class="pill lv-dead">Không có đơn 6 tháng</span> còn hàng chờ mà '+st.tbN+' tháng không đặt — rủi ro nhất.</p>',
+  calc:'<h4>Cách tính</h4><ul class="sm">'+
+    '<li><b>Đặt hàng dùng để tính</b> mỗi tháng: tháng đã qua có đơn ⇒ số thực tế; tháng này và các tháng tới ⇒ số lớn hơn giữa thực tế và dự kiến.</li>'+
+    '<li><b>Hàng chờ</b> cuối tháng = hàng chờ tháng trước + dự trù − đặt hàng (không âm). Về 0 đầu kỳ (tháng 09).</li>'+
+    '<li><b>Mức cảnh báo</b> = hàng chờ ÷ tổng dự trù từ tháng 09 (ngưỡng ở sheet CÀI ĐẶT).</li>'+
+    '<li><b>Dự trù đề xuất tháng T</b> = dự kiến tháng T − hàng chờ dự kiến đến hết tháng T−1 (không âm). Nhập đúng đề xuất ⇒ hết tháng T không còn hàng chờ.</li>'+
+    '<li><b>≈ tháng</b> = hàng chờ ÷ số đặt trung bình '+st.tbN+' tháng gần nhất.</li></ul>'
+  };
+  var tabs=[["flow","Ai làm gì mỗi tháng"],["where","Nhìn vào đâu thấy gì"],["calc","Cách tính"]], cur=P[tab]?tab:"flow";
+  function paint(){ var m=modal('<h3>Hướng dẫn · Dự trù NPP</h3><div class="chips" style="margin:6px 0 12px">'+tabs.map(function(t){ return '<button class="chipf'+(t[0]===cur?" on":"")+'" data-g="'+t[0]+'" type="button">'+t[1]+'</button>'; }).join("")+'</div><div class="guide">'+P[cur]+'</div><div class="row" style="margin-top:12px"><button class="btn pri" data-x="1" type="button">Đã hiểu</button></div>');
+    m.querySelectorAll("[data-g]").forEach(function(b){ b.onclick=function(){ cur=b.dataset.g; paint(); }; }); }
+  paint();
+  try{ localStorage.setItem("dt_guide_v1","1"); }catch(_){}
 }
+/* dòng giải thích ngắn đầu mỗi tab (ẩn được) */
+function tipbar(k, html){
+  try{ if(localStorage.getItem("dt_tip_"+k)) return ""; }catch(_){}
+  return '<div class="tipbar" data-tip="'+k+'"><span>'+html+'</span><button class="lnk sm" data-tipx="'+k+'" type="button">Ẩn</button></div>';
+}
+document.addEventListener("click",function(e){ var b=e.target.closest("[data-tipx]"); if(b){ try{ localStorage.setItem("dt_tip_"+b.dataset.tipx,"1"); }catch(_){} var t=b.closest(".tipbar"); if(t) t.remove(); }
+  var g=e.target.closest("[data-guide]"); if(g) help(g.dataset.guide); });
 
 /* ═════════ EXCEL CHO NPP (tải thư viện khi cần) ═════════ */
 var XL={ open:function(){ if(!D) return; loadXL().then(function(){ window.DTXL.open(api()); }, function(e){ toast("Không tải được bộ tạo Excel ("+e.message+")."); }); } };

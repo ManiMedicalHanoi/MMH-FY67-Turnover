@@ -35,9 +35,13 @@ function makeState(opt = {}) {
     me: opt.me || { pic: 'Giang', local: 'mmh.product', level: 'admin', admin: true }, day: opt.day || 8, rids: {} };
 }
 
-function rows(st, sheet, allow) {
-  const out = [];
-  st[sheet].forEach((r, i) => { const k = allow.indexOf(r[0]); if (k < 0) return; out.push([k, r[1], r[3], r[5], i + 2, r[2] || '', r[6] || '']); });
+/* như máy chủ v1.1: mảng phẳng [iNPP, iMã, tháng − m0, SL] cộng theo NPP + tháng + mã */
+function pack(st, sheet, allow, m0, codes, ix) {
+  const sum = {}, out = [], base = Math.floor(m0 / 100) * 12 + (m0 % 100 - 1);
+  st[sheet].forEach(r => { const k = allow.indexOf(r[0]); if (k < 0 || r[1] < m0) return;
+    let ci = ix[String(r[3]).toUpperCase()]; if (ci === undefined) { ci = ix[String(r[3]).toUpperCase()] = codes.length; codes.push([r[3], r[4] || '', 'Khác', 0]); }
+    const mo = Math.floor(r[1] / 100) * 12 + (r[1] % 100 - 1) - base, kk = k + '|' + ci + '|' + mo;
+    if (kk in sum) out[sum[kk] + 3] += r[5]; else { sum[kk] = out.length; out.push(k, ci, mo, r[5]); } });
   return out;
 }
 function boot(st) {
@@ -47,10 +51,12 @@ function boot(st) {
   return { ok: true, v: '1.0 · mock', me: st.me, access: { all: allow.length === st.npps.length, edit: !!st.me.admin || !!st.edit, admin: !!st.me.admin }, npps: allow,
     at: '08/11/2026 09:00', today: '2026-11-08',
     set: { cm: st.cm, lead: st.lead, T: addM(st.cm, st.lead), fromDT, day: st.day, hanDay: 5, watch: 0.1, high: 0.2, tbN: 6 },
-    cat: { list: st.cat, head: ['Mã hàng', 'Tên hàng', 'Nhóm hàng', 'Đơn giá'], price: 'Đơn giá' },
     head: { dt: ['Nhà phân phối', 'Tháng', 'Tháng gửi', 'Mã hàng', 'Tên hàng', 'Số lượng', 'Ghi chú'], tt: ['Nhà phân phối', 'Tháng', 'Ngày đặt', 'Mã hàng', 'Tên hàng', 'Số lượng', 'Ghi chú'],
       dk: ['Nhà phân phối', 'Tháng', 'Cập nhật', 'Mã hàng', 'Tên hàng', 'Số lượng', 'Ghi chú'] },
-    dt: rows(st, 'dt', allow), tt: rows(st, 'tt', allow), dk: rows(st, 'dk', allow), files: {}, sheetUrl: '' };
+    ...(() => { const codes = st.cat.slice(), ix = {}; codes.forEach((c, i) => { ix[String(c[0]).toUpperCase()] = i; });
+      const m0 = 202509, o = { fmt: 2, m0, dt: pack(st, 'dt', allow, m0, codes, ix), dk: pack(st, 'dk', allow, m0, codes, ix), tt: pack(st, 'tt', allow, m0, codes, ix) };
+      o.cat = { list: codes, nCat: st.cat.length, head: ['Mã hàng', 'Tên hàng', 'Nhóm hàng', 'Đơn giá'], price: 'Đơn giá' }; return o; })(),
+    files: {}, sheetUrl: '' };
 }
 function save(st, p) {
   if (p.rid && st.rids[p.rid]) return st.rids[p.rid];
@@ -78,6 +84,7 @@ async function attach(page, st) {
     let out;
     if (p.action === 'dtBoot') out = boot(st);
     else if (p.action === 'dtSave') out = save(st, p);
+    else if (p.action === 'dtLines') { st.linesCalls = (st.linesCalls || 0) + 1; out = { ok: true, npp: p.npp, m: +p.m, lines: st.tt.map((r, i) => [i + 2, r[3], r[5], r[2], r[6]]).filter((x, i) => st.tt[i][0] === p.npp && st.tt[i][1] === +p.m) }; }
     else if (p.action === 'dtLog') { st.logs.push(p); out = { ok: true }; }
     else if (p.action === 'dtAccess') out = { ok: true, rows: st.acl.map((a, i) => ({ row: i + 2, ...a })), people: [{ pic: 'Minh Trang' }, { pic: 'Thuong' }, { pic: 'Viet' }], npps: st.npps };
     else if (p.action === 'dtAccessSave') { st.acl = p.rows; out = { ok: true, rows: st.acl, people: [{ pic: 'Minh Trang' }], npps: st.npps }; }
@@ -95,8 +102,9 @@ async function newPage(browser, st, opt = {}) {
   page.on('pageerror', e => console.log('PAGEERR', e.message));
   await page.addInitScript(([api, login]) => {
     window.DT_API = api;
+    if (!login || login === 'guide') {} else localStorage.setItem('dt_guide_v1', '1');
     if (login) localStorage.setItem('mmh_tk', JSON.stringify({ tk: 'tok.mock', exp: Date.now() + 864e5, user: { pic: 'Giang', email: 'mmh.product@manimedicalhanoi.com' } }));
-  }, [API, opt.login !== false]);
+  }, [API, opt.guide ? 'guide' : opt.login !== false]);
   await attach(page, st);
   return page;
 }

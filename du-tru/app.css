@@ -189,3 +189,22 @@ h3{font-size:15px;color:var(--ink);margin:0 0 8px}
   main{padding:10px}.kv{grid-template-columns:repeat(2,1fr)}.tstat{display:none}.cards{grid-template-columns:1fr}.tmon>span{display:none}
 }
 @media print{.top,.tabs,.qchip,.sticky-ft .sp{display:none}main{max-width:none}}
+
+/* v1.1 — hướng dẫn */
+.tipbar{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:#FFFBEA;border:1px solid #F3E2A6;border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:#5B4A12}
+.guide h4{font-size:14px;color:var(--ink);margin:14px 0 8px}
+.guide h4:first-child{margin-top:0}
+.gl3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gl3>div{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.gl3 i{width:22px;height:8px;border-radius:3px;display:block}
+.gl3 b{color:var(--ink)}
+.gsteps{padding-left:0;list-style:none;margin:0;display:flex;flex-direction:column;gap:7px;counter-reset:g}
+.gsteps li{font-size:13px;line-height:1.5;padding:8px 10px 8px 38px;border:1px solid var(--line);border-radius:10px;position:relative}
+.gsteps li::before{counter-increment:g;content:counter(g);position:absolute;left:10px;top:9px;width:20px;height:20px;border-radius:50%;background:var(--soft);color:var(--pri);font-weight:700;font-size:12px;text-align:center;line-height:20px}
+.gsteps em{font-style:normal;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;margin-right:6px}
+.gsteps em.mmh{background:var(--ink);color:#fff} .gsteps em.npp{background:#FFE699;color:#5B4A12}
+.gsteps b{color:var(--ink);margin-right:3px}
+.gdl{margin:0;font-size:13px}
+.gdl dt{font-weight:700;color:var(--ink);margin-top:8px}
+.gdl dd{margin:2px 0 0 0;color:var(--txt)}
+@media(max-width:640px){.gl3{grid-template-columns:1fr}}
