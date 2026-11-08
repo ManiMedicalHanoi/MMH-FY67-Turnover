@@ -24,6 +24,12 @@ App cho nhân sự MMH theo dõi **dự trù cố định · đặt hàng dự k
 - Mức: p ÷ Σ dự trù từ đầu kỳ ⇒ Cao ≥ ngưỡng CAO, Theo dõi ≥ ngưỡng THEO DÕI (sheet CÀI ĐẶT); Chưa dự trù; Không có đơn 6 tháng.
 - Đề xuất dự trù T = max(0, dự kiến T − p đến hết T−1).
 
+## v1.1 (09/11/2026)
+- Mở nhanh hơn: máy chủ gửi dữ liệu gọn (đã cộng theo NPP + tháng + mã) và đệm 10 phút; từng lần đặt hàng thực tế chỉ tải khi mở tab Đặt hàng thực tế.
+  Lần mở sau trên cùng máy hiện ngay bản lưu (IndexedDB) rồi cập nhật ngầm.
+- Nút **Hướng dẫn** (tự mở lần đầu): Ai làm gì mỗi tháng (MMH / NPP) · Nhìn vào đâu thấy gì · Cách tính; dòng giải thích ngắn đầu mỗi tab (ẩn được).
+  "Dự trù chưa đặt hàng" gọi gọn là **hàng chờ**.
+
 ## Phát triển
 - `app.js` (lõi + màn hình), `xl.js` (Excel, ExcelJS ở `vendor/`, tải khi cần), `img/` (ảnh dựng bằng `tools/build_img.py` từ kho mmh-library).
 - Kiểm thử với máy chủ giả lập (dữ liệu giả): ở thư mục gốc repo `python3 -m http.server 8790` rồi
