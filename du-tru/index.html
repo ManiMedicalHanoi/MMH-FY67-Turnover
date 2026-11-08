@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dự trù NPP · MMH</title>
+<meta name="theme-color" content="#003047">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23003047'/%3E%3Cpath d='M8 22V10h4l4 6 4-6h4v12' stroke='%23fff' stroke-width='2.4' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css?v=1.0">
+<script>
+/* Máy chủ: web app của file gốc "Dự trù NPP Dashboard" (mmh-backend ▸ backends/du-tru-npp/WebApp.gs) */
+window.DT_API = window.DT_API || "https://script.google.com/macros/s/AKfycbzYRYPDuXFgb4Ft3U_MVpZvbH3zYfdwbsZZTE8zBn0i2qYdZmVsRzIj3G5_QhuteHUFyg/exec";
+window.DT_VER = "1.0";
+</script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./" title="Dự trù NPP">
+    <span class="mk">M</span><span class="bt"><b>Dự trù NPP</b><small>MMH · Turnover <span id="ver"></span></small></span>
+  </a>
+  <div class="tnpp" id="tnpp"></div>
+  <div class="tmon" id="tmon"></div>
+  <div class="tact">
+    <button class="btn ghost" id="b-xl" type="button">Excel cho NPP</button>
+    <button class="btn ghost" id="b-help" type="button">Cách tính</button>
+    <span id="uchip"></span>
+  </div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main id="main"><div class="boot">Đang mở…</div></main>
+<div id="chip-q" class="qchip" hidden></div>
+<div id="drawer" class="drawer" hidden></div>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" class="toast" hidden></div>
+<script src="app.js?v=1.0"></script>
+</body>
+</html>
