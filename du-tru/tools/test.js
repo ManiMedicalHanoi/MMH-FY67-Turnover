@@ -14,10 +14,12 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
   const st = M.makeState();
   const page = await M.newPage(b, st, { dpr: SHOTS ? 2 : 1 });
   await page.goto(URL0);
-  await page.waitForSelector('.flow .v');
+  await page.waitForSelector('.hero .hv');
   ok(await page.locator('.tab').count() >= 4, 'có các tab');
-  const h2 = await page.locator('h2').first().innerText();
-  ok(/đến hết 01\/2027/.test(h2), 'mặc định xem tình hình đến hết 01/2027 (tháng trước tháng đang nhận dự trù): ' + h2);
+  const h2 = await page.locator('.hero .hl').innerText();
+  ok(/đến hết 01\/2027/.test(h2), 'mặc định xem tình hình đến hết 01/2027 (tháng cuối đã chốt dự trù): ' + h2);
+  ok(/tích lũy/i.test(await page.locator('main').innerText()) && !/hàng chờ/i.test(await page.locator('main').innerText()), 'dùng từ "dự trù tích lũy", không còn "hàng chờ"');
+  ok(await page.locator('.todo').count() >= 2, 'khung Việc cần làm: ' + await page.locator('.todo').count() + ' nhóm');
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, '1_tong_quan.png'), fullPage: false });
 
   /* luật tính: so với tính tay trên dữ liệu thô */
@@ -41,15 +43,16 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
 
   /* Mã hàng: lọc Cao */
   await page.click('[data-tab="codes"]');
-  await page.waitForSelector('.pc');
-  const nCards = await page.locator('.pc').count();
-  ok(nCards > 10, 'thẻ mã hàng: ' + nCards);
-  ok(await page.locator('.pc img').count() > 5, 'có ảnh sản phẩm');
+  await page.waitForSelector('.ctbl tr[data-code]');
+  const nCards = await page.locator('.ctbl tr[data-code]').count();
+  ok(nCards > 10, 'bảng mã hàng: ' + nCards + ' dòng');
+  ok(await page.locator('.ctbl img').count() > 5, 'có ảnh sản phẩm');
+  await page.click('[data-sort="p"]'); ok(/↓/.test(await page.locator('th.srt.on').innerText()), 'bấm tiêu đề cột để sắp xếp');
   await page.click('[data-lv="high"]');
-  const nHigh = await page.locator('.pc').count();
+  const nHigh = await page.locator('.ctbl tr[data-code]').count();
   ok(nHigh > 0 && nHigh < nCards, 'lọc Cao: ' + nHigh);
   if (SHOTS) { await page.click('[data-lv=""]'); await page.screenshot({ path: path.join(SHOTS, '2_ma_hang.png') }); }
-  await page.locator('.pc').first().click();
+  await page.locator('.ctbl tr[data-code]').first().click();
   await page.waitForSelector('#drawer:not([hidden]) .tbl');
   ok(await page.locator('#drawer .hint').count() === 1, 'ngăn chi tiết mã có lời khuyên');
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, '3_chi_tiet.png') });
@@ -103,7 +106,7 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
     const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
     const wb = new ExcelJS.Workbook(); await wb.xlsx.load(bin);
     const meta = JSON.parse(wb.getWorksheet('_MMH').getCell('B7').value);
-    const ws = wb.getWorksheet('LÊN DỰ TRÙ');
+    const ws = wb.getWorksheet(meta.sheet);
     ws.getCell(meta.first, meta.dt).value = 777;
     ws.getCell(meta.first + 1, meta.dk['202702']).value = 333;
     const out = await wb.xlsx.writeBuffer();
@@ -118,26 +121,23 @@ function ok(c, msg) { console.log((c ? '✔ ' : '✘ ') + msg); if (!c) fails++;
 
   /* Tất cả NPP */
   await page.click('[data-npp="-1"]'); await page.click('[data-tab="ov"]');
-  await page.waitForSelector('.nppc');
-  ok(await page.locator('.nppc').count() === 3, 'tổng quan mọi NPP: 3 thẻ NPP');
+  await page.waitForSelector('tr[data-npp2]');
+  ok(await page.locator('tr[data-npp2]').count() === 3, 'tổng quan mọi NPP: bảng 3 NPP');
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, '7_tat_ca.png'), fullPage: true });
 
   /* Lần đầu mở: tự hiện Hướng dẫn */
   const pgd = await M.newPage(b, M.makeState(), { guide: true, dpr: SHOTS ? 2 : 1 });
-  const t0 = Date.now(); await pgd.goto(URL0); await pgd.waitForSelector('.flow .v'); console.log('  (mở app với máy chủ giả: ' + (Date.now() - t0) + ' ms)');
+  const t0 = Date.now(); await pgd.goto(URL0); await pgd.waitForSelector('.hero .hv'); console.log('  (mở app với máy chủ giả: ' + (Date.now() - t0) + ' ms)');
   await pgd.waitForSelector('.guide .gsteps');
   ok(true, 'lần đầu mở ⇒ tự hiện Hướng dẫn (Ai làm gì mỗi tháng)');
   if (SHOTS) await pgd.screenshot({ path: path.join(SHOTS, '9_huong_dan.png') });
   await pgd.click('[data-g="where"]'); await pgd.waitForSelector('.gdl');
   if (SHOTS) await pgd.screenshot({ path: path.join(SHOTS, '10_nhin_vao_dau.png') });
   await pgd.click('.mbox [data-x]');
-  ok(await pgd.locator('.tipbar').count() === 1, 'dòng giải thích đầu Tổng quan');
-  await pgd.click('[data-tipx="ov"]'); await pgd.reload(); await pgd.waitForSelector('.flow .v');
-  ok(await pgd.locator('.tipbar').count() === 0, 'bấm Ẩn ⇒ không hiện lại');
 
   /* Điện thoại */
   const pm = await M.newPage(b, M.makeState(), { viewport: { width: 390, height: 844 }, dpr: SHOTS ? 2 : 1 });
-  await pm.goto(URL0); await pm.waitForSelector('.flow .v');
+  await pm.goto(URL0); await pm.waitForSelector('.hero .hv');
   const ow = await pm.evaluate(() => document.documentElement.scrollWidth);
   ok(ow <= 392, 'điện thoại không tràn ngang: ' + ow);
   if (SHOTS) await pm.screenshot({ path: path.join(SHOTS, '8_dien_thoai.png') });

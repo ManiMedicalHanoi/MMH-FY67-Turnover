@@ -208,3 +208,64 @@ h3{font-size:15px;color:var(--ink);margin:0 0 8px}
 .gdl dt{font-weight:700;color:var(--ink);margin-top:8px}
 .gdl dd{margin:2px 0 0 0;color:var(--txt)}
 @media(max-width:640px){.gl3{grid-template-columns:1fr}}
+
+/* ═════ v1.2 — bố cục gọn: đầu trang, ô trả lời chính, việc cần làm, bảng mã, lên dự trù 3 bước ═════ */
+.tmon:empty{display:none}
+.phead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:2px 0 14px}
+.phead h2{font-size:20px;margin:0}
+.phead .sub{margin:3px 0 0}
+.pctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mctl{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut)}
+.segs{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.segs button{border:0;background:none;padding:5px 11px;font-size:13px;cursor:pointer;color:var(--mut)}
+.segs button.on{background:var(--soft);color:var(--pri);font-weight:600}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:26px;align-items:center;padding:18px 20px}
+.hl{font-size:13px;color:var(--mut);font-weight:600}
+.hv{font-size:38px;font-weight:700;color:var(--pen);line-height:1.15;margin:2px 0 4px}
+.hs{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--txt)}
+.hx{font-size:12.5px;color:var(--mut);margin:8px 0 0;max-width:460px}
+.sbar{height:22px;border-radius:6px;background:#EEF1F5;overflow:hidden;display:flex}
+.sbar span{height:100%}
+.s-used{background:var(--tt)} .s-p{background:var(--pen)} .s-dt{background:var(--dt)}
+.sleg{display:flex;align-items:flex-start;gap:10px;margin-top:10px;font-size:12.5px;color:var(--mut);flex-wrap:wrap}
+.sleg>div{display:flex;flex-direction:column;gap:2px}
+.sleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sleg b{font-size:17px;color:var(--ink)}
+.sleg .eq{font-size:18px;color:var(--mut2);align-self:center;padding-top:12px}
+.mini3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.mini3 small{display:block;font-size:11.5px;color:var(--mut)}
+.mini3 b{font-size:14px;color:var(--ink)}
+.todo{border-top:1px solid var(--line);padding:10px 0}
+.todo:first-of-type{border-top:0;padding-top:2px}
+.td-h{display:flex;align-items:center;gap:8px;font-size:13px}
+.td-h .lnk{margin-left:auto}
+.td-a{font-size:12.5px;color:var(--mut);margin:3px 0 6px}
+.td-r{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;font-size:12.5px;padding:4px 6px;border-radius:7px;cursor:pointer}
+.td-r:hover{background:var(--soft)}
+.td-r span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pimg.xs{width:30px;height:23px;border-radius:5px}
+.pimg.xs.dia img{max-width:20px;max-height:28px}
+.tw0{overflow:auto}
+.ctbl td{padding:5px 8px}
+.ctbl td.nm{min-width:220px}
+.ctbl .mini{display:block}
+.srt{cursor:pointer;user-select:none}
+.srt:hover{color:var(--pri)}
+.srt.on{color:var(--pri)}
+.hb-s{height:4px;margin-top:3px;min-width:70px}
+.flow3{display:flex;align-items:stretch;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.flow3>div{flex:1;min-width:200px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--mut)}
+.flow3 b{display:block;color:var(--ink);font-size:13.5px}
+.flow3 em{font-style:normal;float:left;width:22px;height:22px;border-radius:50%;background:var(--pri);color:#fff;text-align:center;line-height:22px;font-weight:700;margin:1px 9px 0 0}
+.flow3>i{align-self:center;font-style:normal;color:var(--mut2)}
+.plan thead th{position:sticky;z-index:2}
+.plan tr.g1 th{top:0}
+.plan tr.g2 th{top:34px}
+.plan th.gh{text-align:center;border-bottom:1px solid #F3E2A6}
+.plan th.in,.plan td.in{background:#FFFBEA}
+.plan .cap{display:block;font-size:10.5px;color:var(--mut2);margin-top:2px;white-space:nowrap}
+.plan td.sg .use{border:1px solid var(--line2);background:#fff;color:var(--pri);border-radius:6px;font-size:11px;padding:0 6px;margin-left:5px;cursor:pointer}
+.plan td.sg .use:hover{border-color:var(--pri)}
+.plan td[data-k="pT1"]{cursor:help;text-decoration:underline dotted #C3CDD8}
+@media(max-width:1000px){.hero{grid-template-columns:1fr}}
+@media(max-width:720px){.hm{display:none}.hv{font-size:30px}.mini3{grid-template-columns:1fr 1fr 1fr}.flow3>i{display:none}}
