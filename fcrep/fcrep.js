@@ -14,7 +14,7 @@
      ⇒ one table each), type, version (latest by default) and what to
      compare with (the sheet's "Lastest forecast/Actual" or an older version).
    · The preview is the document: explanation lines can be edited, marks
-     toggled (✅ / ❌ / none), lines added / removed. Edits are kept on this
+     toggled (✅ / ❌ / ➡️ / none), lines added / removed. Edits are kept on this
      device per version (localStorage mmh_fcr_draft) until "Reset edits".
    · Checks: gaps without explanation, total ≠ sheet Grand Total, fallback
      of the previous forecast.
@@ -39,7 +39,7 @@
     "HUNG VI", "ICARE", "AN TAM", "MHI", "BAO LINH", "UDOM", "NAM DUNG", "VIET THAI", "SPI", "MECI", "ENT",
     "MEDTRONICAM", "CPT", "USM"];
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var MK = { "+": "✅", "-": "❌", "": "" };          // ✅ ❌
+  var MK = { "+": "✅", "-": "❌", "f": "➡️", "": "" };   // ✅ positive · ❌ negative · ➡️ follow up action (legend of the sheet column)
 
   var LS = "mmh_fcr", LSD = "mmh_fcr_draft";
   var O = load(LS, {}) || {};
@@ -171,6 +171,8 @@
   /* ── explanation text → lines ───────────────────────────────────── */
   var RE_POS_MK = /^(✅|✔️?|☑️?|🟢|➕)\s*/;
   var RE_NEG_MK = /^(❌|❎|✖️?|✗|⛔|🔴|➖)\s*/;
+  var RE_FU_MK = /^(➡️?|➜|➔|⏩|🔜|👉|🔵|→|->|=>|⇒)\s*/;
+  var RE_FU_W = /^(follow[\s-]?up|next steps?|action( plan)?|to do|todo)\b/i;
   var RE_NEG_W = /\b(less|lower|decreas\w*|delay\w*|wait\w*|could not|couldn't|cannot|can't|not yet|terminat\w*|high inventory|low sell|drop\w*|lost|loss|cancel\w*|postpon\w*|shortage|out of stock|slow\w*|fewer|reduc\w*|below|fail\w*|declin\w*|behind|stopp?ed)\b/i;
   var RE_POS_W = /\b(more|higher|increas\w*|strong\w*|new tenders?|won|win\w*|stocking|additional|grow\w*|above|ahead|exceed\w*|recover\w*|improv\w*|launch\w*)\b/i;
   function splitLines(txt) {
@@ -180,9 +182,11 @@
   function ownMark(s) {
     if (RE_POS_MK.test(s)) return { m: "+", t: s.replace(RE_POS_MK, "").trim() };
     if (RE_NEG_MK.test(s)) return { m: "-", t: s.replace(RE_NEG_MK, "").trim() };
+    if (RE_FU_MK.test(s)) return { m: "f", t: s.replace(RE_FU_MK, "").trim() };
     return null;
   }
   function guessMark(s, d) {
+    if (RE_FU_W.test(s)) return "f";
     var p = /(^|[\s(])\+\s?\d/.test(s), n = /(^|[\s(])[-−–]\s?\d/.test(s);
     if (p !== n) return p ? "+" : "-";
     var wp = RE_POS_W.test(s), wn = RE_NEG_W.test(s);
@@ -191,7 +195,7 @@
     return "";
   }
   function headLines(txt) {
-    return splitLines(txt).map(function (s) { var o = ownMark(s); return o || { m: "", t: s }; });
+    return splitLines(txt).map(function (s) { var o = ownMark(s); return o || { m: RE_FU_W.test(s) ? "f" : "", t: s }; });
   }
   function distLines(d) {
     var nm = String(d.name || "");
@@ -377,7 +381,7 @@
     var L = r.lines.length ? r.lines : [];
     var x = L.map(function (l, i) {
       return '<div class="fcr-ln' + (l.auto ? " auto" : "") + '">'
-        + (edit ? '<button class="fcr-mk m' + (l.m === "+" ? "p" : l.m === "-" ? "n" : "0") + '" data-si="' + si + '" data-g="' + r.code + '" data-i="' + i + '" title="Mark: ✅ / ❌ / none">' + (MK[l.m] || "·") + "</button>" : (l.m ? '<span class="fcr-em">' + MK[l.m] + "</span> " : ""))
+        + (edit ? '<button class="fcr-mk m' + (l.m === "+" ? "p" : l.m === "-" ? "n" : l.m === "f" ? "f" : "0") + '" data-si="' + si + '" data-g="' + r.code + '" data-i="' + i + '" title="Mark: ✅ positive / ❌ negative / ➡️ follow up / none">' + (MK[l.m] || "·") + "</button>" : (l.m ? '<span class="fcr-em">' + MK[l.m] + "</span> " : ""))
         + '<span class="fcr-tx"' + (edit ? ' contenteditable="true" spellcheck="false" data-si="' + si + '" data-g="' + r.code + '" data-i="' + i + '"' : "") + ">" + h(l.t) + "</span></div>";
     }).join("");
     if (edit) x += '<button class="fcr-add" data-si="' + si + '" data-g="' + r.code + '">+ line</button>';
@@ -420,12 +424,12 @@
       + '<div class="card"><div class="ch"><div class="ct">Before sending</div></div><div class="cb fcr-chk">'
       + (notes.length ? notes.map(function (n) { return '<div class="fcr-ni ' + n.k + '">' + h(n.t) + "</div>"; }).join("") : '<div class="fcr-ni ok">Every group with a change has an explanation.</div>')
       + (anyAuto ? '<div class="fcr-ni info">Lines in <i>italics</i> were written automatically from the numbers — read them before sending.</div>' : "")
-      + '<div class="fcr-hint">Click a text line to edit it · Enter = new line · the mark button cycles ✅ / ❌ / none. Edits stay on this device for this version.</div>'
+      + '<div class="fcr-hint">Click a text line to edit it · Enter = new line · the mark button cycles ✅ / ❌ / ➡️ follow up / none. Edits stay on this device for this version.</div>'
       + (anyEd ? '<button class="fcr-btn sm" id="fcr-reset">Reset edits to the sheet text</button>' : "")
       + "</div></div>"
       + '<div class="card"><div class="ch"><div class="ct">Document</div></div><div class="cb fcr-opts">'
       + '<div class="fcr-lb">Page<div class="fcr-seg"><button data-or="l" class="' + (O.orient === "l" ? "on" : "") + '">Landscape</button><button data-or="p" class="' + (O.orient === "p" ? "on" : "") + '">Portrait</button></div></div>'
-      + ck("fcr-o-marks", O.marks, "Auto ✅ / ❌ on distributor lines")
+      + ck("fcr-o-marks", O.marks, "Auto ✅ / ❌ / ➡️ on distributor lines")
       + ck("fcr-o-dname", O.dname, "Add distributor name when a line does not mention it")
       + ck("fcr-o-other", O.other, "Row “Other” for segments outside G1–G6")
       + ck("fcr-o-movers", O.movers, "Key movers by distributor")
@@ -486,7 +490,7 @@
       var mk = e.target.closest(".fcr-mk"), add = e.target.closest(".fcr-add");
       if (mk) {
         var s = secAt(mk.dataset.si), r = rowOf(s, mk.dataset.g), l = r.lines[+mk.dataset.i];
-        l.m = l.m === "+" ? "-" : (l.m === "-" ? "" : "+"); l.auto = 0;
+        l.m = { "+": "-", "-": "f", "f": "", "": "+" }[l.m || ""]; l.auto = 0;
         commit(s, r); rerender();
       } else if (add) {
         var s2 = secAt(add.dataset.si), r2 = rowOf(s2, add.dataset.g);

@@ -99,6 +99,8 @@ const check = (c, m) => { console.log((c ? "  ok   " : "  FAIL ") + m); if (!c) 
   check(T[0] === sum(1) && T[2] === sum(3) && T[1] === sum(2), "Total = sum of rows");
   check(/❌ Product registration/.test(g("G1")[6]) && /❌ Hospitals could not/.test(g("G1")[6]) && /✅ Novatec \+5/.test(g("G1")[6]), "G1 auto marks ✅/❌");
   check(/✅ Prompt Dent \+3/.test(g("G2")[6]) && /❌ Prompt Dent still has high inventory/.test(g("G2")[6]), "G2 one distributor, two marks");
+  check(/➡️ Follow up with RA every week/.test(g("G1")[6]), "follow-up line kept with its arrow (not turned into a check / cross)");
+  check(/➡️ Follow up: check SPI stock/.test(g("G4")[6]), "line starting with Follow up: gets the arrow");
   check(/^No change from the previous forecast/.test(g("G1")[6].trim()), "G1 auto headline when vs. Prev. = 0");
   check(/Q1 total is unchanged/.test(rows[rows.length - 1][6]) && /G1 TH\/MM Surgical/.test(rows[rows.length - 1][6]), "Total auto sentence: " + rows[rows.length - 1][6].slice(0, 90));
   const sgn = await page.$eval("#fcr-paper tbody tr:nth-child(2) td:nth-child(5)", (e) => getComputedStyle(e).color);
@@ -136,6 +138,7 @@ const check = (c, m) => { console.log((c ? "  ok   " : "  FAIL ") + m); if (!c) 
   ["[Content_Types].xml", "_rels/.rels", "word/_rels/document.xml.rels", "word/styles.xml", "word/footer1.xml"].forEach((p) => check(!!z.file(p), "part " + p));
   check(doc.includes("Unit: K USD") && doc.includes("G1 TH/MM Surgical") && doc.includes("Prev. Fcst") && doc.includes("vs. Budget"), "document has unit, groups, template headers");
   check(doc.includes("Second line typed by hand") && doc.includes("✅ "), "edits + marks in the Word file");
+  check(doc.includes("\u27A1\uFE0F ") && doc.includes("Follow up with RA"), "arrow mark in the Word file");
   check(doc.includes('w:orient="landscape"') && doc.includes("<w:tblHeader/>"), "landscape, header row repeats");
   check((doc.match(/<w:tr>/g) || []).length >= 8, "rows in Word table");
 
