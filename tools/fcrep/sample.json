@@ -1,0 +1,65 @@
+{
+  "_note": "Synthetic numbers for tests only (not company data). Values in K USD; the generator stores them ×1000 like the sheet.",
+  "fy": "FY68",
+  "versions": [
+    {
+      "v": "20261020", "ft": "Q1", "sc": "Single", "tFct": "Forecast",
+      "grand": { "e": "" },
+      "segs": [
+        { "co": "t", "seg": "Surgical", "e": "", "dists": [["AFTA-INNOTECH", 300, 0, 120, ""], ["MAHACHAK", 40, 0, 30, ""], ["NOVATEC", 50, 0, 55, ""]] },
+        { "co": "t", "seg": "Dental", "e": "", "dists": [["DDI", 30, 0, 22, ""], ["PROMPT DENT", 25, 0, 20, ""], ["VRP DENT", 6, 0, 4, ""]] },
+        { "co": "t", "seg": "MMG", "e": "", "dists": [["PROMPT DENT", 12, 0, 9, ""]] },
+        { "co": "v", "seg": "Surgical", "e": "", "dists": [["AN TAM", 25, 0, 30, ""], ["ICARE", 55, 0, 70, ""], ["HUNG VI", 55, 0, 68, ""], ["MHI", 8, 0, 0, ""]] },
+        { "co": "v", "seg": "Dental", "e": "", "dists": [["NAM DUNG", 280, 0, 300, ""], ["VIET THAI", 320, 0, 325, ""], ["SPI", 380, 0, 350, ""], ["MEDTRONICAM", 50, 0, 55, ""]] },
+        { "co": "v", "seg": "MMG", "e": "", "dists": [["SPI", 45, 0, 58, ""], ["VIET THAI", 38, 0, 40, ""], ["NAM DUNG", 30, 0, 31, ""]] },
+        { "co": "v", "seg": "Eyeless", "e": "", "dists": [["CPT", 55, 0, 58, ""]] }
+      ]
+    },
+    {
+      "v": "20261110", "ft": "Q1", "sc": "Single", "tFct": "Forecast",
+      "grand": { "e": "" },
+      "segs": [
+        { "co": "t", "seg": "Surgical", "e": "", "dists": [
+          ["AFTA-INNOTECH", 300, 120, 120, "Product registration is still waiting for documents from RA.\nHospitals could not place POs during the budget closing period."],
+          ["MAHACHAK", 40, 30, 30, ""],
+          ["NOVATEC", 50, 55, 55, "Novatec +5 vs. budget thanks to orders during the license amendment."]] },
+        { "co": "t", "seg": "Dental", "e": "", "dists": [
+          ["DDI", 30, 22, 22, "DDI ordered less than expected (new channel, high inventory)."],
+          ["PROMPT DENT", 25, 20, 23, "Prompt Dent +3 vs. the previous forecast.\nPrompt Dent still has high inventory and low sell-out."],
+          ["VRP DENT", 6, 4, 4, ""]] },
+        { "co": "t", "seg": "MMG", "e": "", "dists": [["PROMPT DENT", 12, 9, 9, ""]] },
+        { "co": "v", "seg": "Surgical", "e": "", "dists": [
+          ["AN TAM", 25, 30, 36, "An Tam +6: stocking for two tender packages."],
+          ["ICARE", 55, 70, 70, "ICARE and Hung Vi are above budget from a strong private channel and new tenders."],
+          ["HUNG VI", 55, 68, 68, ""],
+          ["MHI", 8, 0, 0, ""]] },
+        { "co": "v", "seg": "Dental", "e": "❌ Viet Thai -8 vs. the previous forecast: fewer patients at dental clinics toward the end of the quarter.\nvs. budget: Nam Dung +20, offset by SPI -30 (lower demand for burs and files).", "dists": [
+          ["NAM DUNG", 280, 300, 300, ""],
+          ["VIET THAI", 320, 325, 317, ""],
+          ["SPI", 380, 350, 350, ""],
+          ["MEDTRONICAM", 50, 55, 54, ""]] },
+        { "co": "v", "seg": "MMG", "e": "Above budget: SPI +13 (whitening and bond), Viet Thai +2 (composite promotion).", "dists": [
+          ["SPI", 45, 58, 58, ""], ["VIET THAI", 38, 40, 40, ""], ["NAM DUNG", 30, 31, 31, ""]] },
+        { "co": "v", "seg": "Eyeless", "e": "CPT placed orders as forecast.", "dists": [["CPT", 55, 58, 58, ""]] }
+      ]
+    },
+    {
+      "v": "20261110", "ft": "Q1", "sc": "Cumulative", "tFct": "Forecast",
+      "grand": { "e": "YTD Q1 is on the previous forecast; the gap vs. budget is in Thailand Surgical." },
+      "segs": [
+        { "co": "t", "seg": "Surgical", "e": "Registration delay keeps Thailand Surgical below budget.", "dists": [["AFTA-INNOTECH", 300, 120, 120, ""], ["MAHACHAK", 40, 30, 30, ""], ["NOVATEC", 50, 55, 55, ""]] },
+        { "co": "t", "seg": "Dental", "e": "", "dists": [["DDI", 30, 22, 22, ""], ["PROMPT DENT", 25, 20, 23, ""], ["VRP DENT", 6, 4, 4, ""]] },
+        { "co": "v", "seg": "Surgical", "e": "", "dists": [["AN TAM", 25, 30, 36, ""], ["ICARE", 55, 70, 70, ""], ["HUNG VI", 55, 68, 68, ""]] },
+        { "co": "v", "seg": "Dental", "e": "", "dists": [["NAM DUNG", 280, 300, 300, ""], ["VIET THAI", 320, 325, 317, ""], ["SPI", 380, 350, 350, ""]] }
+      ]
+    },
+    {
+      "v": "20261105", "ft": "202610", "sc": "Single", "tFct": "Actual",
+      "grand": { "e": "" },
+      "segs": [
+        { "co": "v", "seg": "Dental", "e": "October closed with orders from all distributors.", "dists": [["NAM DUNG", 95, 100, 102, ""], ["SPI", 130, 120, 118, ""]] },
+        { "co": "t", "seg": "Eyeless", "e": "", "dists": [["DEVA", 0, 0, 3, "First trial order."]] }
+      ]
+    }
+  ]
+}
