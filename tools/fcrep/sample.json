@@ -20,7 +20,7 @@
       "grand": { "e": "" },
       "segs": [
         { "co": "t", "seg": "Surgical", "e": "", "dists": [
-          ["AFTA-INNOTECH", 300, 120, 120, "Product registration is still waiting for documents from RA.\nHospitals could not place POs during the budget closing period."],
+          ["AFTA-INNOTECH", 300, 120, 120, "Product registration is still waiting for documents from RA.\nHospitals could not place POs during the budget closing period.\n\u27A1\uFE0F Follow up with RA every week until the license is issued."],
           ["MAHACHAK", 40, 30, 30, ""],
           ["NOVATEC", 50, 55, 55, "Novatec +5 vs. budget thanks to orders during the license amendment."]] },
         { "co": "t", "seg": "Dental", "e": "", "dists": [
@@ -33,7 +33,7 @@
           ["ICARE", 55, 70, 70, "ICARE and Hung Vi are above budget from a strong private channel and new tenders."],
           ["HUNG VI", 55, 68, 68, ""],
           ["MHI", 8, 0, 0, ""]] },
-        { "co": "v", "seg": "Dental", "e": "❌ Viet Thai -8 vs. the previous forecast: fewer patients at dental clinics toward the end of the quarter.\nvs. budget: Nam Dung +20, offset by SPI -30 (lower demand for burs and files).", "dists": [
+        { "co": "v", "seg": "Dental", "e": "❌ Viet Thai -8 vs. the previous forecast: fewer patients at dental clinics toward the end of the quarter.\nvs. budget: Nam Dung +20, offset by SPI -30 (lower demand for burs and files).\nFollow up: check SPI stock of burs before the December order.", "dists": [
           ["NAM DUNG", 280, 300, 300, ""],
           ["VIET THAI", 320, 325, 317, ""],
           ["SPI", 380, 350, 350, ""],
