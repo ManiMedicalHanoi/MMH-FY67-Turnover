@@ -76,7 +76,7 @@ const check = (c, m) => { console.log((c ? "  ok   " : "  FAIL ") + m); if (!c) 
     if (f && fs.existsSync(f)) return route.fulfill({ status: 200, contentType: "application/javascript", body: fs.readFileSync(f) });
     if (/chart\.umd/.test(route.request().url())) return route.fulfill({ status: 200, contentType: "application/javascript",
       body: "window.Chart=function(){this.destroy=function(){};this.update=function(){};this.data={datasets:[]};this.options={};};Chart.register=function(){};Chart.defaults={font:{},plugins:{legend:{labels:{}},tooltip:{}},scale:{grid:{},ticks:{}}};" });
-    route.fulfill({ status: 200, contentType: "application/javascript", body: "" });
+    route.fulfill({ status: 200, contentType: "application/javascript", body: /datalabels/.test(route.request().url()) ? "window.ChartDataLabels={};" : "" });
   });
   await page.addInitScript(() => { try { localStorage.setItem("mmh_tab", "fcr"); } catch (e) {} });
   await page.goto(base + "index.html");
