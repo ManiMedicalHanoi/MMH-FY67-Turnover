@@ -195,6 +195,17 @@
     return "";
   }
   function headLines(txt) {
+    /* v10.2 — HQ layout (■ Results / Key Factors / …): 4 written sections, each led by its title; Results left out */
+    var X = window.EXF, o = X ? X.parse(txt) : null;
+    if (o && o.framed) {
+      var L = [];
+      X.WRITE.forEach(function (k) {
+        if (!o[k].length) return;
+        L.push({ m: "", t: X.secTitle(k) + ":" });
+        o[k].forEach(function (l) { L.push({ m: l.m, t: l.t }); });
+      });
+      return L;
+    }
     return splitLines(txt).map(function (s) { var o = ownMark(s); return o || { m: RE_FU_W.test(s) ? "f" : "", t: s }; });
   }
   function distLines(d) {
