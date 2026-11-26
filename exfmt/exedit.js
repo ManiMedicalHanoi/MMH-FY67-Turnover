@@ -17,7 +17,7 @@
    ════════════════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
-  var EXE_URL = "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbz26knlK_GE2mYlszlx947QWSLvfScrHFeB86XkaPWfDhKHi49cnVfCXS_kPUpkX2Fgww/exec";
+  var EXE_URL = null;                          // = GS_URL of index.html (deployment kept up to date by mmh-backend)
   var LSD = "mmh_exe_draft";
   var MKS = [["+", "✅", "Positive factor"], ["-", "❌", "Negative factor"], ["f", "➡️", "Follow up action"], ["", "–", "No mark"]];
   var HINT = {
@@ -223,7 +223,7 @@
     window[name] = function (r) { fin(r || { ok: false }); };
     s.onerror = function () { fin({ ok: false, code: "NET", error: "Could not reach the server. Check that you are signed in with your company Google account." }); };
     var q = Object.keys(params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
-    s.src = (window.EXE_URL || EXE_URL) + "?" + q + "&callback=" + name + "&_t=" + Date.now();
+    s.src = (window.EXE_URL || EXE_URL || window.GS_URL) + "?" + q + "&callback=" + name + "&_t=" + Date.now();
     document.body.appendChild(s);
   }
   function chunks(text, max) {

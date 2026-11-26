@@ -86,7 +86,7 @@ const check = (c, m) => { console.log((c ? "  ok   " : "  FAIL ") + m); if (!c) 
   const ctx = await br.newContext({ viewport: { width: 1440, height: 1000 } });
   const { page, errs } = await setup(ctx);
   console.log("Display");
-  check(hosts.some((h) => h.startsWith("AKfycbz26knl:getTurnoverData")), "reads from the managed deployment");
+  check(hosts.some((h) => h.startsWith("AKfycbwuC6gj:getTurnoverData")), "reads from the app deployment");
   const heads = await page.$$eval("#exp-content .exp-seg-row .exf:not(.exf-plain)", (x) => x.length);
   check(heads === 7, "7 segment totals (latest version) shown in the HQ layout: " + heads);
   const h1 = await page.$eval("#exp-content .exp-seg-row .exf", (e) => e.innerText);
@@ -126,7 +126,7 @@ const check = (c, m) => { console.log((c ? "  ok   " : "  FAIL ") + m); if (!c) 
   await page.waitForSelector("#exe-ov", { state: "detached" });
   const s1 = saves[saves.length - 1];
   check(s1.ver === "20261127" && s1.ft === "202611" && s1.sc === "Single" && s1.cty === "t" && s1.seg === "Dental" && s1.dist === "" && +s1.row > 0, "exSave keys: " + [s1.row, s1.ver, s1.ft, s1.sc, s1.cty, s1.seg].join(" · "));
-  check(hosts.filter((h) => /:exSave$/.test(h)).every((h) => h.startsWith("AKfycbz26knl")), "writes go to the managed deployment");
+  check(hosts.filter((h) => /:exSave$/.test(h)).every((h) => h.startsWith("AKfycbwuC6gj")), "writes go to the same deployment");
   const shown = await page.$eval("#exp-content .exp-seg-row .exf", (e) => e.innerText);
   check(/DDI won the provincial tender/.test(shown) && /visit 5 key accounts/.test(shown), "row updated right after saving");
   check(await page.evaluate(() => !localStorage.getItem("mmh_exe_draft") || localStorage.getItem("mmh_exe_draft") === "{}"), "draft cleared after save");

@@ -1744,10 +1744,7 @@ var FF = "Aptos, Inter, system-ui, sans-serif";
 // ════════════════════════════════════════════════════════════════════
 // ── WebApp URL (Google Apps Script deployment) ──
 // IMPORTANT: Sau khi deploy lại Apps Script bạn cần update URL ở đây.
-// ⭐ v10.2 — deployment do kho mmh-backend tự cập nhật (Deploy backend) ⇒ có ngay tính năng mới của backend
-//   (ghi Explanation theo khung HQ). Không đọc được ⇒ tự quay về deployment cũ (GS_URL_OLD).
-var GS_URL = "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbz26knlK_GE2mYlszlx947QWSLvfScrHFeB86XkaPWfDhKHi49cnVfCXS_kPUpkX2Fgww/exec";
-var GS_URL_OLD = "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbwuC6gjpSVK5MQ1wVHECCvtmtnD9yed_3nbAzYORR-uPz10_W6HFEGauNLYpI-hXGWZkA/exec";   // v9.8.1 (Code.gs v6.2)
+var GS_URL = "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbwuC6gjpSVK5MQ1wVHECCvtmtnD9yed_3nbAzYORR-uPz10_W6HFEGauNLYpI-hXGWZkA/exec";   // ⭐ v9.8.1 — deployment mới (Code.gs v6.2, có budgetDist) · từ 26/11/2026 kho mmh-backend tự cập nhật deployment này
 
 // ── Real-time settings ──
 // MẶC ĐỊNH: chỉ refresh thủ công (bấm nút ↻ hoặc Ctrl+R).
@@ -1777,12 +1774,9 @@ function jsonp(action, cb, errCb, timeoutMs) {
     if (done) return; done = true;
     cleanup(); cb(data);
   };
-  var base = window.__GS_BASE || GS_URL;
   s.onerror = function(){
     if (done) return; done = true;
-    cleanup();
-    if (base !== GS_URL_OLD && GS_URL_OLD) { window.__GS_BASE = GS_URL_OLD; jsonp(action, cb, errCb, timeoutMs); return; }   // ⭐ v10.2
-    if (errCb) errCb("network");
+    cleanup(); if (errCb) errCb("network");
   };
   // Support action with extra params, e.g. "getEditLog&n=10". Only encode the
   // action name itself; pass the rest through so "&n=10" stays a separate
@@ -1790,7 +1784,7 @@ function jsonp(action, cb, errCb, timeoutMs) {
   var amp = action.indexOf("&");
   var actName = amp >= 0 ? action.slice(0, amp) : action;
   var extra   = amp >= 0 ? action.slice(amp) : "";
-  s.src = base + "?action=" + encodeURIComponent(actName) + extra + "&callback=" + cbName + "&_t=" + Date.now();
+  s.src = GS_URL + "?action=" + encodeURIComponent(actName) + extra + "&callback=" + cbName + "&_t=" + Date.now();
   document.body.appendChild(s);
 }
 
